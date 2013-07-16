@@ -1,5 +1,6 @@
 BaseView = require '../lib/base_view'
-InlinePlayer = require 'views/inlineplayer'
+TracksView = require 'views/tracks_view'
+TrackCollection = require 'collections/track'
 Player = require 'views/player/player'
 
 module.exports = class AppView extends BaseView
@@ -10,6 +11,10 @@ module.exports = class AppView extends BaseView
     player: null
 
     afterRender: ->
+        # create and render the song track list
+        mainView = new TracksView
+                            collection: new TrackCollection()
+
         # soundManager is ready to be called here (cf. application.coffee)
         @player = new Player()
         @player.render()

@@ -106,6 +106,28 @@ window.require.register("application", function(exports, require, module) {
   };
   
 });
+window.require.register("collections/track", function(exports, require, module) {
+  var TrackCollection, _ref,
+    __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  module.exports = TrackCollection = (function(_super) {
+    __extends(TrackCollection, _super);
+
+    function TrackCollection() {
+      _ref = TrackCollection.__super__.constructor.apply(this, arguments);
+      return _ref;
+    }
+
+    TrackCollection.prototype.model = require('models/track');
+
+    TrackCollection.prototype.url = 'tracks';
+
+    return TrackCollection;
+
+  })(Backbone.Collection);
+  
+});
 window.require.register("initialize", function(exports, require, module) {
   var app;
 
@@ -292,6 +314,38 @@ window.require.register("lib/view_collection", function(exports, require, module
   })(BaseView);
   
 });
+window.require.register("models/track", function(exports, require, module) {
+  var Track, _ref,
+    __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  module.exports = Track = (function(_super) {
+    __extends(Track, _super);
+
+    function Track() {
+      _ref = Track.__super__.constructor.apply(this, arguments);
+      return _ref;
+    }
+
+    Track.prototype.defaults = function() {
+      if (this.id) {
+        return {
+          src: "music/" + this.id + ".mp3",
+          state: 'server'
+        };
+      } else {
+        return {
+          src: '',
+          state: 'loading'
+        };
+      }
+    };
+
+    return Track;
+
+  })(Backbone.Model);
+  
+});
 window.require.register("router", function(exports, require, module) {
   var AppView, Router, _ref,
     __hasProp = {}.hasOwnProperty,
@@ -323,13 +377,15 @@ window.require.register("router", function(exports, require, module) {
   
 });
 window.require.register("views/app_view", function(exports, require, module) {
-  var AppView, BaseView, InlinePlayer, Player, _ref,
+  var AppView, BaseView, Player, TrackCollection, TracksView, _ref,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   BaseView = require('../lib/base_view');
 
-  InlinePlayer = require('views/inlineplayer');
+  TracksView = require('views/tracks_view');
+
+  TrackCollection = require('collections/track');
 
   Player = require('views/player/player');
 
@@ -348,6 +404,10 @@ window.require.register("views/app_view", function(exports, require, module) {
     AppView.prototype.player = null;
 
     AppView.prototype.afterRender = function() {
+      var mainView;
+      mainView = new TracksView({
+        collection: new TrackCollection()
+      });
       this.player = new Player();
       this.player.render();
       return this.$('#player').append(this.player.$el);
@@ -356,249 +416,6 @@ window.require.register("views/app_view", function(exports, require, module) {
     return AppView;
 
   })(BaseView);
-  
-});
-window.require.register("views/inlineplayer", function(exports, require, module) {
-  
-  /*
-  SoundManager 2 Demo: Play MP3 links "in-place"
-  ----------------------------------------------
-
-  http://schillmania.com/projects/soundmanager2/
-
-  A simple demo making MP3s playable "inline"
-  and easily styled/customizable via CSS.
-
-  Requires SoundManager 2 Javascript API.
-  */
-  var InlinePlayer;
-
-  module.exports = InlinePlayer = (function() {
-    function InlinePlayer() {
-      var isIE, pl, self, sm;
-      self = this;
-      pl = this;
-      sm = soundManager;
-      isIE = navigator.userAgent.match(/msie/i);
-      this.playableClass = "inline-playable";
-      this.excludeClass = "inline-exclude";
-      this.links = [];
-      this.sounds = [];
-      this.soundsByURL = [];
-      this.indexByURL = [];
-      this.lastSound = null;
-      this.soundCount = 0;
-      this.config = {
-        playNext: false,
-        autoPlay: false
-      };
-      this.css = {
-        sDefault: "sm2_link",
-        sLoading: "sm2_loading",
-        sPlaying: "sm2_playing",
-        sPaused: "sm2_paused"
-      };
-      this.addEventHandler = (typeof window.addEventListener !== "undefined" ? function(o, evtName, evtHandler) {
-        return o.addEventListener(evtName, evtHandler, false);
-      } : function(o, evtName, evtHandler) {
-        return o.attachEvent("on" + evtName, evtHandler);
-      });
-      this.removeEventHandler = (typeof window.removeEventListener !== "undefined" ? function(o, evtName, evtHandler) {
-        return o.removeEventListener(evtName, evtHandler, false);
-      } : function(o, evtName, evtHandler) {
-        return o.detachEvent("on" + evtName, evtHandler);
-      });
-      this.classContains = function(o, cStr) {
-        if (typeof o.className !== "undefined") {
-          return o.className.match(new RegExp("(\\s|^)" + cStr + "(\\s|$)"));
-        } else {
-          return false;
-        }
-      };
-      this.addClass = function(o, cStr) {
-        if (!o || !cStr || self.classContains(o, cStr)) {
-          return false;
-        }
-        return o.className = (o.className ? o.className + " " : "") + cStr;
-      };
-      this.removeClass = function(o, cStr) {
-        if (!o || !cStr || !self.classContains(o, cStr)) {
-          return false;
-        }
-        return o.className = o.className.replace(new RegExp("( " + cStr + ")|(" + cStr + ")", "g"), "");
-      };
-      this.getSoundByURL = function(sURL) {
-        if (typeof self.soundsByURL[sURL] !== "undefined") {
-          return self.soundsByURL[sURL];
-        } else {
-          return null;
-        }
-      };
-      this.isChildOfNode = function(o, sNodeName) {
-        if (!o || !o.parentNode) {
-          return false;
-        }
-        sNodeName = sNodeName.toLowerCase();
-        while (true) {
-          o = o.parentNode;
-          if (!(o && o.parentNode && o.nodeName.toLowerCase() !== sNodeName)) {
-            break;
-          }
-        }
-        if (o.nodeName.toLowerCase() === sNodeName) {
-          return o;
-        } else {
-          return null;
-        }
-      };
-      this.events = {
-        play: function() {
-          pl.removeClass(this._data.oLink, this._data.className);
-          this._data.className = pl.css.sPlaying;
-          return pl.addClass(this._data.oLink, this._data.className);
-        },
-        stop: function() {
-          pl.removeClass(this._data.oLink, this._data.className);
-          return this._data.className = "";
-        },
-        pause: function() {
-          pl.removeClass(this._data.oLink, this._data.className);
-          this._data.className = pl.css.sPaused;
-          return pl.addClass(this._data.oLink, this._data.className);
-        },
-        resume: function() {
-          pl.removeClass(this._data.oLink, this._data.className);
-          this._data.className = pl.css.sPlaying;
-          return pl.addClass(this._data.oLink, this._data.className);
-        },
-        finish: function() {
-          var nextLink;
-          pl.removeClass(this._data.oLink, this._data.className);
-          this._data.className = "";
-          if (pl.config.playNext) {
-            nextLink = pl.indexByURL[this._data.oLink.href] + 1;
-            if (nextLink < pl.links.length) {
-              return pl.handleClick({
-                target: pl.links[nextLink]
-              });
-            }
-          }
-        }
-      };
-      this.stopEvent = function(e) {
-        if (typeof e !== "undefined" && typeof e.preventDefault !== "undefined") {
-          e.preventDefault();
-        } else {
-          if (typeof event !== "undefined" && typeof event.returnValue !== "undefined") {
-            event.returnValue = false;
-          }
-        }
-        return false;
-      };
-      this.getTheDamnLink = (isIE ? function(e) {
-        if (e && e.target) {
-          return e.target;
-        } else {
-          return window.event.srcElement;
-        }
-      } : function(e) {
-        return e.target;
-      });
-      this.handleClick = function(e) {
-        var o, sURL, soundURL, thisSound;
-        if (typeof e.button !== "undefined" && e.button > 1) {
-          return true;
-        }
-        o = self.getTheDamnLink(e);
-        if (o.nodeName.toLowerCase() !== "a") {
-          o = self.isChildOfNode(o, "a");
-          if (!o) {
-            return true;
-          }
-        }
-        sURL = o.getAttribute("href");
-        if (!o.href || (!sm.canPlayLink(o) && !self.classContains(o, self.playableClass)) || self.classContains(o, self.excludeClass)) {
-          return true;
-        }
-        soundURL = o.href;
-        thisSound = self.getSoundByURL(soundURL);
-        if (thisSound) {
-          if (thisSound === self.lastSound) {
-            thisSound.togglePause();
-          } else {
-            sm._writeDebug("sound different than last sound: " + self.lastSound.id);
-            if (self.lastSound) {
-              self.stopSound(self.lastSound);
-            }
-            thisSound.togglePause();
-          }
-        } else {
-          if (self.lastSound) {
-            self.stopSound(self.lastSound);
-          }
-          thisSound = sm.createSound({
-            id: "inlineMP3Sound" + (self.soundCount++),
-            url: soundURL,
-            onplay: self.events.play,
-            onstop: self.events.stop,
-            onpause: self.events.pause,
-            onresume: self.events.resume,
-            onfinish: self.events.finish,
-            type: o.type || null
-          });
-          thisSound._data = {
-            oLink: o,
-            className: self.css.sPlaying
-          };
-          self.soundsByURL[soundURL] = thisSound;
-          self.sounds.push(thisSound);
-          thisSound.play();
-        }
-        self.lastSound = thisSound;
-        if (typeof e !== "undefined" && typeof e.preventDefault !== "undefined") {
-          e.preventDefault();
-        } else {
-          event.returnValue = false;
-        }
-        return false;
-      };
-      this.stopSound = function(oSound) {
-        soundManager.stop(oSound.id);
-        return soundManager.unload(oSound.id);
-      };
-      this.init = function() {
-        var foundItems, i, j, oLinks;
-        sm._writeDebug("inlinePlayer.init()");
-        oLinks = document.getElementsByTagName("a");
-        foundItems = 0;
-        i = 0;
-        j = oLinks.length;
-        while (i < j) {
-          if ((sm.canPlayLink(oLinks[i]) || self.classContains(oLinks[i], self.playableClass)) && !self.classContains(oLinks[i], self.excludeClass)) {
-            self.addClass(oLinks[i], self.css.sDefault);
-            self.links[foundItems] = oLinks[i];
-            self.indexByURL[oLinks[i].href] = foundItems;
-            foundItems++;
-          }
-          i++;
-        }
-        if (foundItems > 0) {
-          self.addEventHandler(document, "click", self.handleClick);
-          if (self.config.autoPlay) {
-            self.handleClick({
-              target: self.links[0],
-              preventDefault: function() {}
-            });
-          }
-        }
-        return sm._writeDebug("inlinePlayer.init(): Found " + foundItems + " relevant items.");
-      };
-      this.init();
-    }
-
-    return InlinePlayer;
-
-  })();
   
 });
 window.require.register("views/player/player", function(exports, require, module) {
@@ -860,7 +677,7 @@ window.require.register("views/templates/home", function(exports, require, modul
   var buf = [];
   with (locals || {}) {
   var interp;
-  buf.push('<div id="content"><h1>CoZic</h1><h2>Put music in your Cozy</h2><ul class="graphic"><li><a href="music/Air France - Joris Delacroix.mp3">Joris</a></li><li><a href="music/COMA - Hoooooray.mp3">Coma</a></li><li><a href="music/Rone - Bye Bye Macadam.mp3">Rone</a></li></ul><div id="player"></div></div>');
+  buf.push('<div id="content"><h1>CoZic</h1><h2>Put music in your Cozy</h2><div id="track-list"></div><div id="player"></div></div>');
   }
   return buf.join("");
   };
@@ -886,4 +703,180 @@ window.require.register("views/templates/player/volumeManager", function(exports
   }
   return buf.join("");
   };
+});
+window.require.register("views/templates/track", function(exports, require, module) {
+  module.exports = function anonymous(locals, attrs, escape, rethrow, merge) {
+  attrs = attrs || jade.attrs; escape = escape || jade.escape; rethrow = rethrow || jade.rethrow; merge = merge || jade.merge;
+  var buf = [];
+  with (locals || {}) {
+  var interp;
+  buf.push('<div class="title">' + escape((interp = model.title) == null ? '' : interp) + '</div>');
+  }
+  return buf.join("");
+  };
+});
+window.require.register("views/track_view", function(exports, require, module) {
+  var BaseView, TrackView, _ref,
+    __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  BaseView = require('../lib/base_view');
+
+  module.exports = TrackView = (function(_super) {
+    __extends(TrackView, _super);
+
+    function TrackView() {
+      _ref = TrackView.__super__.constructor.apply(this, arguments);
+      return _ref;
+    }
+
+    TrackView.prototype.className = 'track';
+
+    TrackView.prototype.tagName = 'div';
+
+    TrackView.prototype.template = require('./templates/track');
+
+
+    /*
+    
+    # Register event
+    events:
+        'click .delete-button': 'onDeleteClicked'
+    
+    onDeleteClicked: ->
+        @$('.delete-button').html "deleting..."
+        @model.destroy
+          error: ->
+                alert "Server error occured, bookmark was not deleted."
+                @$('.delete-button').html "delete"
+    */
+
+    return TrackView;
+
+  })(BaseView);
+  
+});
+window.require.register("views/tracks_view", function(exports, require, module) {
+  
+  /*
+  BaseView = require '../lib/base_view'
+  FileView  = require './fileslist_item'
+  File = require '../models/file'
+  ViewCollection = require '../lib/view_collection'
+
+  module.exports = class FilesListView extends ViewCollection
+
+      template: require('./templates/fileslist')
+      itemview: FileView
+      el: 'body.application'
+      collectionEl: '#file-list'
+      @views = {}
+
+      initialize: ->
+          super
+
+      events: ->
+          'change #uploader' : 'addFile'
+
+      afterRender: ->
+          super()
+          @uploader = @$('#uploader')[0]
+          @$collectionEl.html '<em>loading...</em>'
+          @collection.fetch
+              success: (collection, response, option) =>
+                  @$collectionEl.find('em').remove()
+              error: =>
+                  msg = "Files couldn't be retrieved due to a server error."
+                  @$collectionEl.find('em').html msg
+
+
+      addFile: ()=>
+          attach = @uploader.files[0]
+          fileAttributes = {}
+          fileAttributes.name = attach.name
+          file = new File fileAttributes
+          file.file = attach
+          @collection.add file
+          @upload file
+
+
+      upload: (file) =>
+          formdata = new FormData()
+          formdata.append 'cid', file.cid
+          formdata.append 'name', file.get 'name'
+          formdata.append 'file', file.file
+          Backbone.sync 'create', file,
+              contentType:false
+              data: formdata
+  */
+  var TrackView, TracksView, ViewCollection, _ref,
+    __hasProp = {}.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  ViewCollection = require('../lib/view_collection');
+
+  TrackView = require('./track_view');
+
+  module.exports = TracksView = (function(_super) {
+    __extends(TracksView, _super);
+
+    function TracksView() {
+      _ref = TracksView.__super__.constructor.apply(this, arguments);
+      return _ref;
+    }
+
+    TracksView.prototype.template = require('./templates/home');
+
+    TracksView.prototype.itemview = TrackView;
+
+    TracksView.prototype.el = 'body.application';
+
+    TracksView.prototype.collectionEl = '#track-list';
+
+    TracksView.prototype.afterRender = function() {
+      var _this = this;
+      TracksView.__super__.afterRender.call(this);
+      this.$collectionEl.html('<em>loading...</em>');
+      return this.collection.fetch({
+        success: function(collection, response, option) {
+          return _this.$collectionEl.find('em').remove();
+        },
+        error: function() {
+          var msg;
+          msg = "Tracks couldn't be retrieved due to a server error.";
+          return _this.$collectionEl.find('em').html(msg);
+        }
+      });
+    };
+
+    return TracksView;
+
+  })(ViewCollection);
+
+
+  /*
+
+       onCreateClicked: =>
+            # Grab field data
+            title = $('.title-field').val()
+            url = $('.url-field').val()
+
+            # Validate that data are ok.
+            if title?.length > 0 and url?.length > 0
+
+              bookmark =
+                      title: title
+                      url: url
+              # Save it through collection, this will automatically add it to the
+              # current list when request finishes.
+              @collection.create bookmark,
+                  success: ->
+                      alert "Bookmark added"
+                      $('.title-field').val ''
+                      $('.url-field').val ''
+                  error: -> alert "Server error occured, Bookmark was not saved"
+            else
+                alert 'Both fields are required'
+  */
+  
 });
