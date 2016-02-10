@@ -15,10 +15,15 @@
     "backbone.marionette": "^2.4.4"
   },
   "devDependencies": {
+    "brunch": "^2.2.3",
     "babel-cli": "6.5.1",
     "babel-plugin-transform-es2015-modules-commonjs": "6.2.0",
     "babel-preset-es2015": "6.1.18",
     "babelify": "7.2.0",
     "watchify": "3.6.1"
+  },
+  "scripts": {
+    "start": "node dist/server.js",
+    "watch:js": "./scripts/watch-js"
   }
 }

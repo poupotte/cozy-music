@@ -8,13 +8,6 @@ lib-cov
 *.pid
 *.gz
 
-pids
-logs
-log
-results
-
 dist
 node_modules
 npm-debug.log
-src/client/public
-.DS_STORE

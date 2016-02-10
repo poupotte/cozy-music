@@ -1,4 +1,0 @@
-#!/bin/bash
-./node_modules/.bin/watchify -dv \
-    -t babelify \
-    --extension=".js"
