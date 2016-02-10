@@ -1,0 +1,6 @@
+#!/bin/bash
+node_modules/.bin/browserify \
+    --debug \
+    -t babelify \
+    --extension='.js' \
+    > dist/client/public/scripts/bundle.js
