@@ -13,9 +13,13 @@
     "url": "https://github.com/flyingrub/cozy-music"
   },
   "dependencies": {
-    "backbone.marionette": "^2.4.4"
+    "backbone": "^1.2.3",
+    "backbone.marionette": "^2.4.4",
+    "jquery": "^2.2.0",
+    "underscore": "^1.8.3"
   },
   "devDependencies": {
+    "babel-brunch": "^6.0.0",
     "brunch": "^2.2.3",
     "auto-reload-brunch": "^2.0.0",
     "babel-cli": "6.5.1",
