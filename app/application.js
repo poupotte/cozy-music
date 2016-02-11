@@ -13,5 +13,5 @@ class Application extends Mn.Application {
 	}
 
 };
-
+console.log('init2');
 export default new Application();

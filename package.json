@@ -2,6 +2,7 @@
   "name": "Cozic",
   "version": "0.0.1",
   "description": "Free & Open Source Music Cloud",
+  "license": "MIT",
   "cozy-type": "static",
   "cozy-displayName": "Cozic",
   "cozy-color": "#3BDA6C",
@@ -16,11 +17,10 @@
   },
   "devDependencies": {
     "brunch": "^2.2.3",
+    "auto-reload-brunch": "^2.0.0",
     "babel-cli": "6.5.1",
     "babel-plugin-transform-es2015-modules-commonjs": "6.2.0",
-    "babel-preset-es2015": "6.1.18",
-    "babelify": "7.2.0",
-    "watchify": "3.6.1"
+    "babel-preset-es2015": "6.1.18"
   },
   "scripts": {
     "start": "node dist/server.js",

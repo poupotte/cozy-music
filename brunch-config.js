@@ -1,4 +1,4 @@
-export const config = {
+exports.config = {
   npm: {
     enabled: true
   },
@@ -12,7 +12,6 @@ export const config = {
 
   files: {
     javascripts: {
-      defaultExtension: 'es6'
       joinTo: 'app.js'
     },
     stylesheets: {
