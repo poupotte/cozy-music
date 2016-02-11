@@ -1,7 +1,8 @@
 import Mn from 'backbone.marionette';
 
+const HelloView = Mn.LayoutView.extend({
+    el: '#app-hook', 
+    template: "<p>Hello, world!</p>"
+});
 
-class HelloWorld extends Mn.LayoutView {
-    super.el = '#app-hook';
-    super.template = require('./templates/hello.html');
-};
+export default HelloView;

@@ -16,6 +16,10 @@ exports.config = {
     },
     stylesheets: {
       joinTo: 'app.css'
+    },
+    templates: {
+      defaultExtension: 'jst',
+      joinTo: 'app.js'
     }
   }
 };
