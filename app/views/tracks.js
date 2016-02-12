@@ -1,7 +1,7 @@
 import Mn from 'backbone.marionette';
 import Backbone from 'backbone'
 
-const Track = Mn.LayoutView.extend({
+const Track = Mn.ItemView.extend({
     tagName: 'li',
     template: require('views/templates/track')
 });
@@ -15,8 +15,8 @@ const TrackList = Mn.CollectionView.extend({
 
   initialize: function() {
     this.collection = new Backbone.Collection([
-      {artist: 'Scott', trackname: 'test'},
-      {artist: 'Andrew', trackname: 'Do some coding'}
+        {artist: 'Scott', trackname: 'test'},
+        {artist: 'Andrew', trackname: 'Do some coding'}
     ]);
   }
 });
