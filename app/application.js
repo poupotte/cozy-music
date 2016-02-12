@@ -1,6 +1,6 @@
 import Mn from 'backbone.marionette';
 import Backbone from 'backbone';
-import helloView from './views/hello';
+import helloView from 'views/hello';
 
 class Application extends Mn.Application {
 

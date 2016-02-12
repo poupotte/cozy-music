@@ -1,7 +1,7 @@
 import Mn from 'backbone.marionette';
 
 const HelloView = Mn.LayoutView.extend({
-    el: '#app-hook', 
+    el: '#app-hook',
     template: require('views/templates/hello')
 });
 
