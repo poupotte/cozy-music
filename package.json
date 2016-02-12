@@ -23,6 +23,7 @@
     "babel-preset-es2015": "^6.5.0",
     "browser-sync-brunch": "0.0.9",
     "brunch": "^2.2.3",
+    "css-brunch": "^2.0.0",
     "underscore-brunch": "^1.4.0"
   },
   "scripts": {
