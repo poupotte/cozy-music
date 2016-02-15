@@ -32,7 +32,13 @@
   },
   "cozy-permissions": {
     "File": {
-      "description": "Acess music from files"
+      "description": "Acess music from files."
+    },
+    "Track": {
+        "description": "Hear your track in your cozy."
+    },
+    "Playlist": {
+        "description": "Manage your playlist."
     }
   }
 }

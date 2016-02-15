@@ -1,34 +1,32 @@
 import Backbone from 'backbone'
 
-const Track = Backbone.Model.extend({
+const Playlist = Backbone.Model.extend({
     defaults: {
         id: '',
-        playlists: '',
-        metas: '',
-        dateAdded: Date.now,
-        plays: 0,
-        ressource: ''
+        title: '',
+        tracks: '',
+        dateAdded: Date.now
     },
     sync: (method, model, options) => {
         switch (method) {
             case 'create':
-                cozysdk.create('Track', model, (error, response) => {
+                cozysdk.create('Playlist', model, (error, response) => {
                     console.log(error, response);
                 });
                 break;
             case 'read':
-                cozysdk.find('Track', model.id, (error, response) => {
+                cozysdk.find('Playlist', model.id, (error, response) => {
                     console.log(error, response);
                  });
                 break;
             case 'update':
                 cozysdk.updateAttributes(
-                    'Track', model.id, model, (error, response) => {
+                    'Playlist', model.id, model, (error, response) => {
                     console.log(error, response);
                 });
                 break;
             case 'delete':
-                cozysdk.destroy('Track', model.id, (error, response) => {
+                cozysdk.destroy('Playlist', model.id, (error, response) => {
                     console.log(error, response);
                 });
                 break;
@@ -37,4 +35,4 @@ const Track = Backbone.Model.extend({
 });
 
 
-export default Track;
+export default Playlist;

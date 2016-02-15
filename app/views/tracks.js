@@ -1,25 +1,24 @@
 import Mn from 'backbone.marionette';
-import Backbone from 'backbone'
+import Tracks from '../collections/tracks'
 
-const Track = Mn.ItemView.extend({
+const tracks = new Tracks();
+
+const TrackView = Mn.ItemView.extend({
     tagName: 'li',
     template: require('views/templates/track')
 });
 
 
-const TrackList = Mn.CollectionView.extend({  
+const TracksView = Mn.CollectionView.extend({  
   el: '#app-hook',
   tagName: 'ul',
 
-  childView: Track,
+  childView: TrackView,
 
   initialize: function() {
-    this.collection = new Backbone.Collection([
-        {artist: 'Scott', trackname: 'test'},
-        {artist: 'Andrew', trackname: 'Do some coding'}
-    ]);
+    this.collection = tracks.fetch();
   }
 });
 
 
-export default TrackList;
+export default TracksView;
