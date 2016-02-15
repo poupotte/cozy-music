@@ -27,7 +27,7 @@
     "underscore-brunch": "^1.4.0"
   },
   "scripts": {
-    "start": "node dist/server.js",
+    "start": "brunch watch --server",
     "watch": "brunch watch --server"
   },
   "cozy-permissions": {

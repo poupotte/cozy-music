@@ -1,0 +1,1 @@
+{"version":3,"sources":["app/styles/main.css"],"names":[],"mappings":"AAAA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA","file":"public/app.css","sourcesContent":["body {\n    margin:40px auto;\n    max-width:650px;\n    line-height:1.6;\n    font-size:18px;\n    color:#444;\n    padding:0 10px\n}\nh1,h2,h3{\n    line-height:1.2\n}\n"]}

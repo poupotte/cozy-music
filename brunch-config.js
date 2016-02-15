@@ -5,13 +5,17 @@ exports.config = {
 
   files: {
     javascripts: {
-      joinTo: 'app.js'
+      joinTo: '/public/app.js'
     },
     stylesheets: {
-      joinTo: 'app.css'
+      joinTo: '/public/app.css'
     },
     templates: {
-      joinTo: 'app.js'
+      joinTo: '/public/app.js'
     }
+  },
+
+  paths: {
+    public: '.'
   }
 };

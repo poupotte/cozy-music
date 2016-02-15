@@ -1,7 +1,7 @@
 import Backbone from 'backbone'
 import Track from '../models/track'
 
-cozysdk.defineRequest('File', 'getMusicFile', (doc) => {
+cozysdk.defineRequest('File', 'getMusicFiles', (doc) => {
     type = file.headers['content-type']
     if (type.split('/')[0] == 'audio') {
         emit(doc);
@@ -12,11 +12,11 @@ cozysdk.defineRequest('Track', 'getAllTrack', (doc) => {
     emit(doc);
 });
 
-/*
-cozysdk.run('Files', 'getMusic', {}, (error, response) => {
-    console.log(error, response);
+// TEST MUSIC FILE
+cozysdk.run('Files', 'getMusicFiles', {}, (error, response) => {
+    console.log('FILEMUSIC', error, response);
 });
-*/
+
 
 const Tracks = Backbone.Collection.extend({
     model: Track,
