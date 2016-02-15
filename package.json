@@ -29,5 +29,10 @@
   "scripts": {
     "start": "node dist/server.js",
     "watch": "brunch watch --server"
+  },
+  "cozy-permissions": {
+    "File": {
+      "description": "Acess music from files"
+    }
   }
 }
