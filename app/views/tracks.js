@@ -10,14 +10,14 @@ const TrackView = Mn.ItemView.extend({
 
 
 const TracksView = Mn.CollectionView.extend({  
-  el: '#app-hook',
-  tagName: 'ul',
+    el: '#app-hook',
+    tagName: 'ul',
 
-  childView: TrackView,
+    childView: TrackView,
 
-  initialize: function() {
-    this.collection = tracks.fetch();
-  }
+    initialize: function() {
+        this.collection = tracks.fetch();
+    }
 });
 
 

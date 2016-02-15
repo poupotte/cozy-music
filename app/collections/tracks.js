@@ -19,30 +19,13 @@ cozysdk.run('Files', 'getMusic', {}, (error, response) => {
 */
 
 const Tracks = Backbone.Collection.extend({
-	model: Track,
+    model: Track,
     sync: (method, model, options) => {
-        switch (method) {
-            case 'create':
-                cozysdk.create('Tracks', model, (error, response) => {
-                    console.log(error, response);
-                });
-                break;
-            case 'read':
-                cozysdk.find('Tracks', model.id, (error, response) => {
-                    console.log(error, response);
-                 });
-                break;
-            case 'update':
-                cozysdk.updateAttributes(
-                    'Tracks', model.id, model, (error, response) => {
-                    console.log(error, response);
-                });
-                break;
-            case 'delete':
-                cozysdk.destroy('Tracks', model.id, (error, response) => {
-                    console.log(error, response);
-                });
-                break;
+        if (method == 'read') {
+            console.log('fetch');
+            cozysdk.run('Files', 'getAllTrack', {}, (error, response) => {
+                console.log('getAllTrack', error, response);
+            });
         }
     }
 });
