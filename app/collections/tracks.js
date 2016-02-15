@@ -23,7 +23,7 @@ const Tracks = Backbone.Collection.extend({
     sync: (method, model, options) => {
         if (method == 'read') {
             console.log('fetch');
-            cozysdk.run('Files', 'getAllTrack', {}, (error, response) => {
+            cozysdk.run('Track', 'getAllTrack', {}, (error, response) => {
                 console.log('getAllTrack', error, response);
             });
         }
