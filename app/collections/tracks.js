@@ -9,19 +9,21 @@ cozysdk.run('File', 'getMusicFiles', {}, (error, response) => {
 
 const Tracks = Backbone.Collection.extend({
     model: Track,
+    initialize: () => {
+
+    },
     sync: (method, model, options) => {
         if (method == 'read') {
             console.log('fetch');
             cozysdk.run('File', 'getMusicFiles', {}, (error, response) => {
                 if (response) {
-                    for (const track of response) {
-                        Tracks.create({
+                    for (const track of tracks) {
+                        this.create({
                             metas : { 
                                 title: track.name
                             }
                         });
                     }
-                    console.log(Tracks)
                 }
             });
         }
