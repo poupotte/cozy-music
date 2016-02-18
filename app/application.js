@@ -5,10 +5,9 @@ import trackView from 'views/tracks';
 class Application extends Mn.Application {
 
     initialize() {
-        console.log('init');
         super.initialize();
         this.on('start', () => {
-            console.log('render');
+            console.log('start');
             if (Backbone.history) {
                 Backbone.history.start();
             }

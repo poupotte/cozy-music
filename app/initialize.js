@@ -1,8 +1,6 @@
 import application from './application'
 window._ = require('underscore');
 
-console.log('start');
-
 cozysdk.defineRequest('File', 'getMusicFiles', (doc) => {
         if (doc.class == 'music') {
             emit(doc);

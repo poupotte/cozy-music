@@ -17829,10 +17829,9 @@ var Application = function (_Mn$Application) {
     _createClass(Application, [{
         key: 'initialize',
         value: function initialize() {
-            console.log('init');
             _get(Object.getPrototypeOf(Application.prototype), 'initialize', this).call(this);
             this.on('start', function () {
-                console.log('render');
+                console.log('start');
                 if (_backbone4.default.history) {
                     _backbone4.default.history.start();
                 }
@@ -17891,45 +17890,24 @@ var _track2 = _interopRequireDefault(_track);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-cozysdk.run('File', 'getMusicFiles', {}, function (error, response) {
-    console.log('FILEMUSIC', error, response);
-});
-
 var Tracks = _backbone2.default.Collection.extend({
     model: _track2.default,
-    initialize: function initialize() {},
     sync: function sync(method, model, options) {
+        var _this = this;
+
         if (method == 'read') {
             console.log('fetch');
-            cozysdk.run('File', 'getMusicFiles', {}, function (error, response) {
-                if (response) {
-                    var _iteratorNormalCompletion = true;
-                    var _didIteratorError = false;
-                    var _iteratorError = undefined;
-
-                    try {
-                        for (var _iterator = tracks[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                            var track = _step.value;
-
-                            undefined.create({
-                                metas: {
-                                    title: track.name
-                                }
-                            });
-                        }
-                    } catch (err) {
-                        _didIteratorError = true;
-                        _iteratorError = err;
-                    } finally {
-                        try {
-                            if (!_iteratorNormalCompletion && _iterator.return) {
-                                _iterator.return();
+            cozysdk.run('File', 'getMusicFiles', {}, function (err, res) {
+                //console.log("collection fetch", err, res);
+                if (res) {
+                    var tracks = JSON.parse("" + res);
+                    for (var i = 0; i < tracks.length; i++) {
+                        var trackname = tracks[i].key.name;
+                        _this.add({
+                            metas: {
+                                title: trackname
                             }
-                        } finally {
-                            if (_didIteratorError) {
-                                throw _iteratorError;
-                            }
-                        }
+                        });
                     }
                 }
             });
@@ -17950,8 +17928,6 @@ var _application2 = _interopRequireDefault(_application);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 window._ = require('underscore');
-
-console.log('start');
 
 cozysdk.defineRequest('File', 'getMusicFiles', function (doc) {
     if (doc.class == 'music') {
@@ -18086,8 +18062,6 @@ module.exports = function(obj){
 var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
 with(obj||{}){
 __p+=''+
-((__t=( artist ))==null?'':_.escape(__t))+
-' &mdash; '+
 ((__t=( trackname ))==null?'':_.escape(__t))+
 '';
 }
@@ -18113,10 +18087,16 @@ var _tracks2 = _interopRequireDefault(_tracks);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var tracks = new _tracks2.default();
+tracks.fetch();
 
 var TrackView = _backbone2.default.ItemView.extend({
     tagName: 'li',
-    template: require('views/templates/track')
+    template: require('views/templates/track'),
+    serializeData: function serializeData() {
+        return {
+            trackname: this.model.get('metas').title
+        };
+    }
 });
 
 var TracksView = _backbone2.default.CollectionView.extend({
@@ -18126,7 +18106,7 @@ var TracksView = _backbone2.default.CollectionView.extend({
     childView: TrackView,
 
     initialize: function initialize() {
-        this.collection = tracks.fetch();
+        this.collection = tracks;
     }
 });
 
