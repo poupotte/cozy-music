@@ -17879,6 +17879,7 @@ require.register("collections/tracks", function(exports, require, module) {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.syncFiles = undefined;
 
 var _backbone = require('backbone');
 
@@ -17897,23 +17898,36 @@ var Tracks = _backbone2.default.Collection.extend({
 
         if (method == 'read') {
             console.log('fetch');
-            cozysdk.run('File', 'getMusicFiles', {}, function (err, res) {
-                //console.log("collection fetch", err, res);
+            cozysdk.run('Track', 'all', {}, function (err, res) {
+                console.log("TRACKS fetch", err, res);
                 if (res) {
                     var tracks = JSON.parse("" + res);
                     for (var i = 0; i < tracks.length; i++) {
-                        var trackname = tracks[i].key.name;
-                        _this.add({
-                            metas: {
-                                title: trackname
-                            }
-                        });
+                        _this.add(tracks[i]);
                     }
                 }
             });
         }
     }
 });
+
+var syncFiles = exports.syncFiles = function syncFiles() {
+    cozysdk.run('File', 'music', {}, function (err, res) {
+        console.log("SYNC", err, res);
+        if (res) {
+            var tracks = JSON.parse("" + res);
+            for (var i = 0; i < tracks.length; i++) {
+                var trackname = tracks[i].key.name;
+                var t = new _track2.default({
+                    metas: {
+                        title: trackname
+                    }
+                });
+                t.save();
+            }
+        }
+    });
+};
 
 exports.default = Tracks;
 });
@@ -17925,24 +17939,31 @@ var _application = require('./application');
 
 var _application2 = _interopRequireDefault(_application);
 
+var _tracks = require('./collections/tracks');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 window._ = require('underscore');
 
-cozysdk.defineRequest('File', 'getMusicFiles', function (doc) {
+cozysdk.defineRequest('File', 'music', function (doc) {
     if (doc.class == 'music') {
         emit(doc);
     }
 }, function (error, response) {
     console.log('FILEMUSICREQ', error, response);
-    run();
 });
 
-cozysdk.defineRequest('Track', 'getAllTrack', function (doc) {
+cozysdk.defineRequest('Track', 'all', function (doc) {
     emit(doc);
 }, function (error, response) {
     console.log('ALLTRACKREQ', error, response);
+    run();
 });
+
+var sync = document.querySelector("#sync-from-files");
+sync.addEventListener("click", function () {
+    (0, _tracks.syncFiles)();
+}, false);
 
 function run() {
     _application2.default.start();
@@ -18013,7 +18034,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var Track = _backbone2.default.Model.extend({
     defaults: {
-        id: '',
+        id: undefined,
         playlists: '',
         metas: '',
         dateAdded: Date.now,
@@ -18024,22 +18045,22 @@ var Track = _backbone2.default.Model.extend({
         switch (method) {
             case 'create':
                 cozysdk.create('Track', model, function (error, response) {
-                    console.log(error, response);
+                    console.log('CREATE TRACK', error, response);
                 });
                 break;
             case 'read':
                 cozysdk.find('Track', model.id, function (error, response) {
-                    console.log(error, response);
+                    console.log('READ TRACK', error, response);
                 });
                 break;
             case 'update':
                 cozysdk.updateAttributes('Track', model.id, model, function (error, response) {
-                    console.log(error, response);
+                    console.log('UPDATE TRACK', error, response);
                 });
                 break;
             case 'delete':
                 cozysdk.destroy('Track', model.id, function (error, response) {
-                    console.log(error, response);
+                    console.log('DELETE TRACK', error, response);
                 });
                 break;
         }
@@ -18086,9 +18107,6 @@ var _tracks2 = _interopRequireDefault(_tracks);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var tracks = new _tracks2.default();
-tracks.fetch();
-
 var TrackView = _backbone2.default.ItemView.extend({
     tagName: 'li',
     template: require('views/templates/track'),
@@ -18106,6 +18124,8 @@ var TracksView = _backbone2.default.CollectionView.extend({
     childView: TrackView,
 
     initialize: function initialize() {
+        var tracks = new _tracks2.default();
+        tracks.fetch();
         this.collection = tracks;
     }
 });

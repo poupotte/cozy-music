@@ -1,9 +1,6 @@
 import Mn from 'backbone.marionette';
 import Tracks from '../collections/tracks'
 
-const tracks = new Tracks();
-tracks.fetch();
-
 const TrackView = Mn.ItemView.extend({
     tagName: 'li',
     template: require('views/templates/track'),
@@ -22,6 +19,8 @@ const TracksView = Mn.CollectionView.extend({
     childView: TrackView,
 
     initialize: function() {
+        const tracks = new Tracks();
+        tracks.fetch();
         this.collection = tracks;
     }
 });
