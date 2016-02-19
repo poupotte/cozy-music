@@ -17903,31 +17903,74 @@ var Tracks = _backbone2.default.Collection.extend({
                 if (res) {
                     var tracks = JSON.parse("" + res);
                     for (var i = 0; i < tracks.length; i++) {
-                        _this.add(tracks[i]);
+                        _this.add(tracks[i].value);
                     }
                 }
             });
         }
+    },
+    fileIDexist: function fileIDexist(fileID) {
+        var res = false;
+        console.log('YO', fileID);
+        console.log('YO', this.models.length);
+        for (var i = 0; i < this.models.length; i++) {
+            var track = this.at(i);
+            console.log('TESTID', track.get('ressource').fileID, fileID);
+            if (track.get('ressource').fileID == fileID) {
+                res = true;
+            }
+        }
+        return res;
     }
 });
 
 var syncFiles = exports.syncFiles = function syncFiles() {
     cozysdk.run('File', 'music', {}, function (err, res) {
-        console.log("SYNC", err, res);
+        console.log("syncFiles", err, res);
         if (res) {
-            var tracks = JSON.parse("" + res);
-            for (var i = 0; i < tracks.length; i++) {
-                var trackname = tracks[i].key.name;
-                var t = new _track2.default({
-                    metas: {
-                        title: trackname
-                    }
-                });
-                t.save();
-            }
+            var files = JSON.parse("" + res);
+            getAllTracksFileId(files);
         }
     });
 };
+
+function getAllTracksFileId(musicFiles) {
+    cozysdk.run('Track', 'all', {}, function (err, res) {
+        console.log("getAllTracksFileId", err, res);
+        var tracksFileId = [];
+        if (res) {
+            var tracks = JSON.parse("" + res);
+            for (var i = 0; i < tracks.length; i++) {
+                if (tracks[i].value.ressource.fileID) {
+                    tracksFileId.push(tracks[i].value.ressource.fileID);
+                }
+            }
+        }
+        saveTrack(musicFiles, tracksFileId);
+    });
+}
+
+function saveTrack(musicFiles, tracksFileId) {
+    var files = musicFiles;
+    for (var i = 0; i < files.length; i++) {
+        var file = files[i].value;
+        var trackname = file.name; // TO DO : ID3TAG
+        var fileid = file._id;
+        var t = new _track2.default({
+            metas: {
+                title: trackname
+            },
+            ressource: {
+                fileID: fileid
+            }
+        });
+
+        if (tracksFileId.indexOf(fileid) <= -1) {
+            // does not contains fileid
+            t.save();
+        }
+    }
+}
 
 exports.default = Tracks;
 });
@@ -17947,17 +17990,16 @@ window._ = require('underscore');
 
 cozysdk.defineRequest('File', 'music', function (doc) {
     if (doc.class == 'music') {
-        emit(doc);
+        emit(doc._id, doc);
     }
 }, function (error, response) {
     console.log('FILEMUSICREQ', error, response);
-});
-
-cozysdk.defineRequest('Track', 'all', function (doc) {
-    emit(doc);
-}, function (error, response) {
-    console.log('ALLTRACKREQ', error, response);
-    run();
+    cozysdk.defineRequest('Track', 'all', function (doc) {
+        emit(doc._id, doc);
+    }, function (error, response) {
+        console.log('ALLTRACKREQ', error, response);
+        start();
+    });
 });
 
 var sync = document.querySelector("#sync-from-files");
@@ -17965,7 +18007,7 @@ sync.addEventListener("click", function () {
     (0, _tracks.syncFiles)();
 }, false);
 
-function run() {
+function start() {
     _application2.default.start();
 }
 });
@@ -18044,22 +18086,22 @@ var Track = _backbone2.default.Model.extend({
     sync: function sync(method, model, options) {
         switch (method) {
             case 'create':
-                cozysdk.create('Track', model, function (error, response) {
+                cozysdk.create('Track', model.toJSON(), function (error, response) {
                     console.log('CREATE TRACK', error, response);
                 });
                 break;
             case 'read':
-                cozysdk.find('Track', model.id, function (error, response) {
+                cozysdk.find('Track', model.get('id'), function (error, response) {
                     console.log('READ TRACK', error, response);
                 });
                 break;
             case 'update':
-                cozysdk.updateAttributes('Track', model.id, model, function (error, response) {
+                cozysdk.updateAttributes('Track', model.id, model.toJSON(), function (error, response) {
                     console.log('UPDATE TRACK', error, response);
                 });
                 break;
             case 'delete':
-                cozysdk.destroy('Track', model.id, function (error, response) {
+                cozysdk.destroy('Track', model.get('id'), function (error, response) {
                     console.log('DELETE TRACK', error, response);
                 });
                 break;
