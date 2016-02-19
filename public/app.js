@@ -17938,16 +17938,33 @@ function getAllTracksFileId(musicFiles) {
     cozysdk.run('Track', 'all', {}, function (err, res) {
         console.log("getAllTracksFileId", err, res);
         var tracksFileId = [];
+        var allTracksFiles = [];
+        var musicFilesFileId = [];
         if (res) {
             var tracks = JSON.parse("" + res);
             for (var i = 0; i < tracks.length; i++) {
                 if (tracks[i].value.ressource.fileID) {
+                    // ressource is a file
                     tracksFileId.push(tracks[i].value.ressource.fileID);
+                    allTracksFiles.push(new _track2.default(tracks[i].value));
                 }
             }
+            for (var i = 0; i < musicFiles.length; i++) {
+                musicFilesFileId.push(musicFiles[i].value._id);
+            }
+            saveTrack(musicFiles, tracksFileId);
+            deleteTrack(allTracksFiles, musicFilesFileId);
         }
-        saveTrack(musicFiles, tracksFileId);
     });
+}
+
+function deleteTrack(allTracks, musicFilesFileId) {
+    for (var i = 0; i < allTracks.length; i++) {
+        var t = allTracks[i];
+        if (musicFilesFileId.indexOf(t.get('ressource').fileID) <= -1) {
+            t.destroy();
+        }
+    }
 }
 
 function saveTrack(musicFiles, tracksFileId) {
@@ -18076,12 +18093,16 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var Track = _backbone2.default.Model.extend({
     defaults: {
-        id: undefined,
+        _id: undefined,
         playlists: '',
         metas: '',
         dateAdded: Date.now,
         plays: 0,
         ressource: ''
+    },
+    isNew: function isNew() {
+        console.log(!this.has("_id"));
+        return !this.has("_id");
     },
     sync: function sync(method, model, options) {
         switch (method) {
@@ -18091,7 +18112,7 @@ var Track = _backbone2.default.Model.extend({
                 });
                 break;
             case 'read':
-                cozysdk.find('Track', model.get('id'), function (error, response) {
+                cozysdk.find('Track', model.get('_id'), function (error, response) {
                     console.log('READ TRACK', error, response);
                 });
                 break;
@@ -18101,7 +18122,7 @@ var Track = _backbone2.default.Model.extend({
                 });
                 break;
             case 'delete':
-                cozysdk.destroy('Track', model.get('id'), function (error, response) {
+                cozysdk.destroy('Track', model.get('_id'), function (error, response) {
                     console.log('DELETE TRACK', error, response);
                 });
                 break;

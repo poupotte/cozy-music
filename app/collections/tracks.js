@@ -46,16 +46,33 @@ function getAllTracksFileId(musicFiles) {
     cozysdk.run('Track', 'all', {}, (err, res) => {
         console.log("getAllTracksFileId", err, res);
         let tracksFileId = [];
+        let allTracksFiles = [];
+        let musicFilesFileId = [];
         if (res) {
             const tracks = JSON.parse("" + res);
             for (let i = 0; i < tracks.length; i++) {
                 if (tracks[i].value.ressource.fileID) {
+                    // ressource is a file
                     tracksFileId.push(tracks[i].value.ressource.fileID);
+                    allTracksFiles.push(new Track(tracks[i].value));
                 }
             }
+            for (let i = 0; i < musicFiles.length; i++) {
+                musicFilesFileId.push(musicFiles[i].value._id);
+            }
+            saveTrack(musicFiles, tracksFileId);
+            deleteTrack(allTracksFiles, musicFilesFileId);
         }
-        saveTrack(musicFiles, tracksFileId)
     });
+}
+
+function deleteTrack(allTracks, musicFilesFileId) {
+    for (let i = 0; i < allTracks.length; i++) {
+        const t = allTracks[i];
+        if (musicFilesFileId.indexOf(t.get('ressource').fileID) <= -1) { 
+            t.destroy();
+        }
+    }
 }
 
 function saveTrack(musicFiles, tracksFileId) {
@@ -76,7 +93,7 @@ function saveTrack(musicFiles, tracksFileId) {
         if (tracksFileId.indexOf(fileid) <= -1) { // does not contains fileid 
             t.save();
         }
-    }   
+    }
 }
 
 

@@ -2,14 +2,18 @@ import Backbone from 'backbone'
 
 const Track = Backbone.Model.extend({
     defaults: {
-        id: undefined,
+        _id: undefined,
         playlists: '',
         metas: '',
         dateAdded: Date.now,
         plays: 0,
         ressource: ''
     },
-    sync: (method, model, options) => {
+    isNew: function() {
+        console.log(!this.has("_id"));
+        return !this.has("_id");
+    },
+    sync: function (method, model, options) {
         switch (method) {
             case 'create':
                 cozysdk.create('Track', model.toJSON(), (error, response) => {
@@ -17,7 +21,7 @@ const Track = Backbone.Model.extend({
                 });
                 break;
             case 'read':
-                cozysdk.find('Track', model.get('id'), (error, response) => {
+                cozysdk.find('Track', model.get('_id'), (error, response) => {
                     console.log('READ TRACK', error, response);
                  });
                 break;
@@ -28,7 +32,7 @@ const Track = Backbone.Model.extend({
                 });
                 break;
             case 'delete':
-                cozysdk.destroy('Track', model.get('id'), (error, response) => {
+                cozysdk.destroy('Track', model.get('_id'), (error, response) => {
                     console.log('DELETE TRACK', error, response);
                 });
                 break;
