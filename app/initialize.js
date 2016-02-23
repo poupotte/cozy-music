@@ -18,7 +18,7 @@ cozysdk.defineRequest('File', 'music', (doc) => {
 });
 
 
-
+window.player = document.querySelector("#player");
 
 const sync = document.querySelector("#sync-from-files");
 sync.addEventListener("click", () => {

@@ -9,10 +9,7 @@ const Track = Backbone.Model.extend({
         plays: 0,
         ressource: ''
     },
-    isNew: function() {
-        console.log(!this.has("_id"));
-        return !this.has("_id");
-    },
+    idAttribute:"_id",
     sync: function (method, model, options) {
         switch (method) {
             case 'create':

@@ -16,6 +16,7 @@
     "backbone": "^1.2.3",
     "backbone.marionette": "^2.4.4",
     "jquery": "^2.2.0",
+    "sass-brunch": "^2.0.0",
     "underscore": "^1.8.3"
   },
   "devDependencies": {
@@ -35,10 +36,10 @@
       "description": "Acess music from files."
     },
     "Track": {
-        "description": "Hear your track in your cozy."
+      "description": "Hear your track in your cozy."
     },
     "Playlist": {
-        "description": "Manage your playlist."
+      "description": "Manage your playlist."
     }
   }
 }

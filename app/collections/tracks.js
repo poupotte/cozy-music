@@ -16,19 +16,6 @@ const Tracks = Backbone.Collection.extend({
                 }
             });
         }
-    },
-    fileIDexist: function(fileID) {
-        let res = false;
-        console.log('YO', fileID);
-        console.log('YO', this.models.length);
-        for (let i = 0; i < this.models.length; i++) {
-            const track = this.at(i);
-            console.log('TESTID', track.get('ressource').fileID, fileID);
-            if (track.get('ressource').fileID == fileID) {
-                res = true;
-            }
-        }
-        return res;
     }
 });
 
