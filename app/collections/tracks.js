@@ -6,7 +6,7 @@ const Tracks = Backbone.Collection.extend({
     sync: function (method, model, options) {
         if (method == 'read') {
             console.log('fetch');
-            cozysdk.run('Track', 'all', {}, (err, res) => {
+            cozysdk.run('Track', 'playable', {}, (err, res) => {
                 console.log("TRACKS fetch", err, res);
                 if (res) {
                     const tracks = JSON.parse("" + res);

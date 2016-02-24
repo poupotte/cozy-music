@@ -17928,7 +17928,7 @@ var Tracks = _backbone2.default.Collection.extend({
 
         if (method == 'read') {
             console.log('fetch');
-            cozysdk.run('Track', 'all', {}, function (err, res) {
+            cozysdk.run('Track', 'playable', {}, function (err, res) {
                 console.log("TRACKS fetch", err, res);
                 if (res) {
                     var tracks = JSON.parse("" + res);
@@ -18020,22 +18020,42 @@ var _tracks = require('./collections/tracks');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-window._ = require('underscore');
+function defineRequestFileMusic() {
+    cozysdk.defineRequest('File', 'music', function (doc) {
+        if (doc.class == 'music') {
+            emit(doc._id, doc);
+        }
+    }, function (error, response) {
+        console.log('FILEMUSICREQ', error, response);
+        defineRequestTrackAll();
+    });
+}
 
-cozysdk.defineRequest('File', 'music', function (doc) {
-    if (doc.class == 'music') {
-        emit(doc._id, doc);
-    }
-}, function (error, response) {
-    console.log('FILEMUSICREQ', error, response);
+function defineRequestTrackAll() {
     cozysdk.defineRequest('Track', 'all', function (doc) {
         emit(doc._id, doc);
     }, function (error, response) {
         console.log('ALLTRACKREQ', error, response);
+        defineRequestTrackNotHidden();
+    });
+}
+
+function defineRequestTrackNotHidden() {
+    cozysdk.defineRequest('Track', 'playable', function (doc) {
+        if (!doc.hidden) {
+            emit(doc._id, doc);
+        }
+    }, function (error, response) {
+        console.log('PLAYABLEREQ', error, response);
         start();
     });
-});
+}
 
+function start() {
+    _application2.default.start();
+}
+
+window._ = require('underscore');
 window.player = document.querySelector("#player");
 
 var sync = document.querySelector("#sync-from-files");
@@ -18043,9 +18063,7 @@ sync.addEventListener("click", function () {
     (0, _tracks.syncFiles)();
 }, false);
 
-function start() {
-    _application2.default.start();
-}
+defineRequestFileMusic();
 });
 
 ;require.register("models/playlist", function(exports, require, module) {
@@ -18117,7 +18135,8 @@ var Track = _backbone2.default.Model.extend({
         metas: '',
         dateAdded: Date.now,
         plays: 0,
-        ressource: ''
+        ressource: '',
+        hidden: false
     },
     idAttribute: "_id",
     sync: function sync(method, model, options) {
@@ -18161,11 +18180,13 @@ require.register("routes/index", function(exports, require, module) {
 module.exports = function(obj){
 var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
 with(obj||{}){
-__p+='<li><a href="#" data-id='+
+__p+='<li>\n    <a href="#" data-id='+
 ((__t=( id ))==null?'':_.escape(__t))+
 '>'+
 ((__t=( trackname ))==null?'':_.escape(__t))+
-'</a></li>';
+'</a>\n    <input class="delete" type="submit" value="X" data-id='+
+((__t=( id ))==null?'':_.escape(__t))+
+'></input>\n</li>\n';
 }
 return __p;
 };
@@ -18204,7 +18225,8 @@ var TracksView = _backbone2.default.CollectionView.extend({
 
     childView: TrackView,
     events: {
-        "click a": "clicked"
+        "click a": "clicked",
+        "click .delete": "delete"
     },
     clicked: function clicked(e) {
         var id = e.currentTarget.dataset.id;
@@ -18215,12 +18237,18 @@ var TracksView = _backbone2.default.CollectionView.extend({
             cozysdk.getFileURL(_id, 'file', function (err, resp) {
                 console.log("FILEURL", err, resp);
                 if (resp) {
+                    resp = "http://" + resp.split('@')[1];
                     playAudio(resp);
                 }
             });
         }
     },
-
+    delete: function _delete(e) {
+        var id = e.currentTarget.dataset.id;
+        var item = this.collection.get(id);
+        item.set('hidden', true);
+        item.save();
+    },
     initialize: function initialize() {
         var tracks = new _tracks2.default();
         tracks.fetch();

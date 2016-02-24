@@ -7,7 +7,8 @@ const Track = Backbone.Model.extend({
         metas: '',
         dateAdded: Date.now,
         plays: 0,
-        ressource: ''
+        ressource: '',
+        hidden: false
     },
     idAttribute:"_id",
     sync: function (method, model, options) {

@@ -1,23 +1,45 @@
 import application from './application'
 import { syncFiles } from './collections/tracks'
 
-window._ = require('underscore');
 
-cozysdk.defineRequest('File', 'music', (doc) => {
-        if (doc.class == 'music') {
-            emit(doc._id, doc);
-        }
-    }, (error, response) => {
-        console.log('FILEMUSICREQ', error, response);
-        cozysdk.defineRequest('Track', 'all', (doc) => {
+function defineRequestFileMusic() {
+    cozysdk.defineRequest('File', 'music', (doc) => {
+            if (doc.class == 'music') {
                 emit(doc._id, doc);
-            }, (error, response) => {
-                console.log('ALLTRACKREQ', error, response);
-                start();
-        });
-});
+            }
+        }, (error, response) => {
+            console.log('FILEMUSICREQ', error, response);
+            defineRequestTrackAll();
+
+    });
+}
+
+function defineRequestTrackAll() {
+    cozysdk.defineRequest('Track', 'all', (doc) => {
+            emit(doc._id, doc);
+        }, (error, response) => {
+            console.log('ALLTRACKREQ', error, response);
+            defineRequestTrackNotHidden();
+    });
+}
+
+function defineRequestTrackNotHidden() {
+    cozysdk.defineRequest('Track', 'playable', (doc) => {
+            if (!doc.hidden) {
+                emit(doc._id, doc);
+            }
+        }, (error, response) => {
+            console.log('PLAYABLEREQ', error, response);
+            start();
+    });
+}
+
+function start() {
+    application.start();
+}
 
 
+window._ = require('underscore');
 window.player = document.querySelector("#player");
 
 const sync = document.querySelector("#sync-from-files");
@@ -25,7 +47,4 @@ sync.addEventListener("click", () => {
     syncFiles();
 }, false);
 
-function start() {
-    application.start();
-}
-
+defineRequestFileMusic()

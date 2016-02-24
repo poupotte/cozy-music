@@ -17,7 +17,8 @@ const TracksView = Mn.CollectionView.extend({
 
     childView: TrackView,
     events: {
-        "click a": "clicked"
+        "click a": "clicked",
+        "click .delete": "delete"
     },
     clicked: function (e) {
         const id = e.currentTarget.dataset.id;
@@ -28,12 +29,18 @@ const TracksView = Mn.CollectionView.extend({
             cozysdk.getFileURL(id, 'file', (err, resp) => {
                 console.log("FILEURL", err, resp);
                 if (resp) {
+                    resp = "http://" + resp.split('@')[1];
                     playAudio(resp);
                 }
             })
         }
     },
-
+    delete: function (e) {
+        const id = e.currentTarget.dataset.id;
+        const item = this.collection.get(id);
+        item.set('hidden', true);
+        item.save();
+    },
     initialize: function() {
         const tracks = new Tracks();
         tracks.fetch();
