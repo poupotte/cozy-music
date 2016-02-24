@@ -17559,7 +17559,7 @@ require.register('underscore', function(exports,req,module){
 
     })(exports,require,module);
   });
-})();(function(/* BrowserSync-Brunch */) {
+})();window._ = require('underscore');window.$ = require('jquery');(function(/* BrowserSync-Brunch */) {
   var url = "//" + location.hostname + ":3000/browser-sync/browser-sync-client.2.1.6.js";
   var bs = document.createElement("script");
   bs.type = "text/javascript"; bs.async = true; bs.src = url;
@@ -17825,8 +17825,6 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-
 var _backbone = require('backbone.marionette');
 
 var _backbone2 = _interopRequireDefault(_backbone);
@@ -17857,17 +17855,14 @@ var Application = function (_Mn$Application) {
     }
 
     _createClass(Application, [{
-        key: 'initialize',
-        value: function initialize() {
-            _get(Object.getPrototypeOf(Application.prototype), 'initialize', this).call(this);
-            this.on('start', function () {
-                console.log('start');
-                if (_backbone4.default.history) {
-                    _backbone4.default.history.start();
-                }
-                var tracks = new _tracks2.default();
-                tracks.render();
-            });
+        key: 'onStart',
+        value: function onStart() {
+            console.log('start');
+            if (_backbone4.default.history) {
+                _backbone4.default.history.start();
+            }
+            var tracks = new _tracks2.default();
+            tracks.render();
         }
     }]);
 
@@ -18055,7 +18050,6 @@ function start() {
     _application2.default.start();
 }
 
-window._ = require('underscore');
 window.player = document.querySelector("#player");
 
 var sync = document.querySelector("#sync-from-files");
@@ -18064,6 +18058,18 @@ sync.addEventListener("click", function () {
 }, false);
 
 defineRequestFileMusic();
+});
+
+;require.register("libs/soundcloud", function(exports, require, module) {
+"use strict";
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var apiURL = "https://api.soundcloud.com";
+
+var Soundcloud = function Soundcloud() {
+    _classCallCheck(this, Soundcloud);
+};
 });
 
 ;require.register("models/playlist", function(exports, require, module) {
@@ -18186,7 +18192,7 @@ __p+='<li>\n    <a href="#" data-id='+
 ((__t=( trackname ))==null?'':_.escape(__t))+
 '</a>\n    <input class="delete" type="submit" value="X" data-id='+
 ((__t=( id ))==null?'':_.escape(__t))+
-'></input>\n</li>\n';
+'>\n</li>\n';
 }
 return __p;
 };
