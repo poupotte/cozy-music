@@ -39,7 +39,6 @@ function start() {
 }
 
 
-window._ = require('underscore');
 window.player = document.querySelector("#player");
 
 const sync = document.querySelector("#sync-from-files");
