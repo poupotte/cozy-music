@@ -1,5 +1,6 @@
-import Backbone from 'backbone'
-import Track from '../models/track'
+import Backbone from 'backbone';
+import Track from '../models/track';
+
 
 const Tracks = Backbone.Collection.extend({
     model: Track,

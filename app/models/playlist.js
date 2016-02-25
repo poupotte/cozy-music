@@ -1,4 +1,5 @@
-import Backbone from 'backbone'
+import Backbone from 'backbone';
+
 
 const Playlist = Backbone.Model.extend({
     defaults: {
@@ -33,6 +34,5 @@ const Playlist = Backbone.Model.extend({
         }
     }
 });
-
 
 export default Playlist;

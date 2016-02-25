@@ -2,6 +2,7 @@ import Mn from 'backbone.marionette';
 import Backbone from 'backbone';
 import trackView from 'views/tracks';
 
+
 class Application extends Mn.Application {
 
     onStart () {

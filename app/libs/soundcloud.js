@@ -1,4 +1,5 @@
-import Track from '../models/track'
+import Track from '../models/track';
+
 
 const api = 'https://api.soundcloud.com';
 const clientID = '02gUJC0hH2ct1EGOcYXQIzRFU91c72Ea';

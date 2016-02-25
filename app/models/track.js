@@ -1,7 +1,9 @@
-import Backbone from 'backbone'
+import Backbone from 'backbone';
 import scdl from '../libs/soundcloud';
 
+
 const Track = Backbone.Model.extend({
+
     defaults: {
         _id: undefined,
         playlists: '',
@@ -11,7 +13,9 @@ const Track = Backbone.Model.extend({
         ressource: '',
         hidden: false
     },
+
     idAttribute:"_id",
+
     sync: function (method, model, options) {
         switch (method) {
             case 'create':
@@ -37,6 +41,7 @@ const Track = Backbone.Model.extend({
                 break;
         }
     },
+
     getStreamURL: function (play) {
         const ressource = this.get("ressource");
         switch (ressource.type) {
@@ -58,6 +63,5 @@ const Track = Backbone.Model.extend({
         }
     }
 });
-
 
 export default Track;

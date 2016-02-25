@@ -1,4 +1,5 @@
-import Track from '../models/track'
+import Track from '../models/track';
+
 
 export const syncFiles = function () {
     cozysdk.run('File', 'music', {}, (err, res) => {

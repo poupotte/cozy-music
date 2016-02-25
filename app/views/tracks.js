@@ -45,5 +45,4 @@ const playAudio = function(url) {
     window.player.play();
 }
 
-
 export default TracksView;
