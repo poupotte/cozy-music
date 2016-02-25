@@ -1,5 +1,6 @@
 import Mn from 'backbone.marionette';
-import Tracks from '../collections/tracks'
+import Tracks from '../collections/tracks';
+
 
 const TrackView = Mn.ItemView.extend({
     template: require('views/templates/track'),
@@ -17,23 +18,13 @@ const TracksView = Mn.CollectionView.extend({
 
     childView: TrackView,
     events: {
-        "click a": "clicked",
+        "click a": "play",
         "click .delete": "delete"
     },
-    clicked: function (e) {
+    play: function (e) {
         const id = e.currentTarget.dataset.id;
         const item = this.collection.get(id);
-        const ressource = item.get("ressource");
-        if (ressource.fileID) {
-            const id = item.get("ressource").fileID;
-            cozysdk.getFileURL(id, 'file', (err, resp) => {
-                console.log("FILEURL", err, resp);
-                if (resp) {
-                    resp = "http://" + resp.split('@')[1];
-                    playAudio(resp);
-                }
-            })
-        }
+        item.getStreamURL(playAudio);
     },
     delete: function (e) {
         const id = e.currentTarget.dataset.id;

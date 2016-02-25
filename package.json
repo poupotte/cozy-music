@@ -16,7 +16,6 @@
     "backbone": "^1.2.3",
     "backbone.marionette": "^2.4.4",
     "jquery": "^2.2.0",
-    "request-json": "^0.5.5",
     "sass-brunch": "^2.0.0",
     "underscore": "^1.8.3"
   },

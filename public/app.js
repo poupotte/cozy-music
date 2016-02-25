@@ -17904,7 +17904,6 @@ require.register("collections/tracks", function(exports, require, module) {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.syncFiles = undefined;
 
 var _backbone = require('backbone');
 
@@ -17936,71 +17935,6 @@ var Tracks = _backbone2.default.Collection.extend({
     }
 });
 
-var syncFiles = exports.syncFiles = function syncFiles() {
-    cozysdk.run('File', 'music', {}, function (err, res) {
-        console.log("syncFiles", err, res);
-        if (res) {
-            var files = JSON.parse("" + res);
-            getAllTracksFileId(files);
-        }
-    });
-};
-
-function getAllTracksFileId(musicFiles) {
-    cozysdk.run('Track', 'all', {}, function (err, res) {
-        console.log("getAllTracksFileId", err, res);
-        var tracksFileId = [];
-        var allTracksFiles = [];
-        var musicFilesFileId = [];
-        if (res) {
-            var tracks = JSON.parse("" + res);
-            for (var i = 0; i < tracks.length; i++) {
-                if (tracks[i].value.ressource.fileID) {
-                    // ressource is a file
-                    tracksFileId.push(tracks[i].value.ressource.fileID);
-                    allTracksFiles.push(new _track2.default(tracks[i].value));
-                }
-            }
-            for (var i = 0; i < musicFiles.length; i++) {
-                musicFilesFileId.push(musicFiles[i].value._id);
-            }
-            saveTrack(musicFiles, tracksFileId);
-            deleteTrack(allTracksFiles, musicFilesFileId);
-        }
-    });
-}
-
-function deleteTrack(allTracks, musicFilesFileId) {
-    for (var i = 0; i < allTracks.length; i++) {
-        var t = allTracks[i];
-        if (musicFilesFileId.indexOf(t.get('ressource').fileID) <= -1) {
-            t.destroy();
-        }
-    }
-}
-
-function saveTrack(musicFiles, tracksFileId) {
-    var files = musicFiles;
-    for (var i = 0; i < files.length; i++) {
-        var file = files[i].value;
-        var trackname = file.name; // TO DO : ID3TAG
-        var fileid = file._id;
-        var t = new _track2.default({
-            metas: {
-                title: trackname
-            },
-            ressource: {
-                fileID: fileid
-            }
-        });
-
-        if (tracksFileId.indexOf(fileid) <= -1) {
-            // does not contains fileid
-            t.save();
-        }
-    }
-}
-
 exports.default = Tracks;
 });
 
@@ -18011,7 +17945,11 @@ var _application = require('./application');
 
 var _application2 = _interopRequireDefault(_application);
 
-var _tracks = require('./collections/tracks');
+var _file = require('./libs/file');
+
+var _soundcloud = require('./libs/soundcloud');
+
+var _soundcloud2 = _interopRequireDefault(_soundcloud);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -18042,6 +17980,28 @@ function defineRequestTrackNotHidden() {
         }
     }, function (error, response) {
         console.log('PLAYABLEREQ', error, response);
+        defineRequestTrackFile();
+    });
+}
+
+function defineRequestTrackFile() {
+    cozysdk.defineRequest('Track', 'file', function (doc) {
+        if (doc.ressource.type == "file") {
+            emit(doc._id, doc);
+        }
+    }, function (error, response) {
+        console.log('TRACKFILEREQ', error, response);
+        defineRequestTrackSoundcloud();
+    });
+}
+
+function defineRequestTrackSoundcloud() {
+    cozysdk.defineRequest('Track', 'soundcloud', function (doc) {
+        if (doc.ressource.type == "soundcloud") {
+            emit(doc._id, doc);
+        }
+    }, function (error, response) {
+        console.log('TRACKSCREQ', error, response);
         start();
     });
 }
@@ -18051,28 +18011,219 @@ function start() {
 }
 
 window.player = document.querySelector("#player");
-
 var sync = document.querySelector("#sync-from-files");
 sync.addEventListener("click", function () {
-    (0, _tracks.syncFiles)();
+    (0, _file.syncFiles)();
+}, false);
+
+var importSC = document.querySelector("#import");
+var importURL = document.querySelector("#import-text");
+importSC.addEventListener("click", function () {
+    _soundcloud2.default.import(importURL.value);
 }, false);
 
 defineRequestFileMusic();
 });
 
+;require.register("libs/file", function(exports, require, module) {
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.syncFiles = undefined;
+
+var _track = require('../models/track');
+
+var _track2 = _interopRequireDefault(_track);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var syncFiles = exports.syncFiles = function syncFiles() {
+    cozysdk.run('File', 'music', {}, function (err, res) {
+        console.log("syncFiles", err, res);
+        if (res) {
+            var files = JSON.parse("" + res);
+            getAllTracksFileId(files);
+        }
+    });
+};
+
+function getAllTracksFileId(musicFiles) {
+    cozysdk.run('Track', 'file', {}, function (err, res) {
+        console.log("getAllTracksFileId", err, res);
+        var tracksFileId = [];
+        var allTracksFiles = [];
+        var musicFilesFileId = [];
+        if (res) {
+            var tracks = JSON.parse("" + res);
+            for (var i = 0; i < tracks.length; i++) {
+                tracksFileId.push(tracks[i].value.ressource.fileID);
+                allTracksFiles.push(new _track2.default(tracks[i].value));
+            }
+            for (var i = 0; i < musicFiles.length; i++) {
+                musicFilesFileId.push(musicFiles[i].value._id);
+            }
+            saveTrack(musicFiles, tracksFileId);
+            deleteTrack(allTracksFiles, musicFilesFileId);
+        }
+    });
+}
+
+function deleteTrack(allTracks, musicFilesFileId) {
+    for (var i = 0; i < allTracks.length; i++) {
+        var t = allTracks[i];
+        if (musicFilesFileId.indexOf(t.get('ressource').fileID) <= -1) {
+            t.destroy();
+        }
+    }
+}
+
+function saveTrack(musicFiles, tracksFileId) {
+    var files = musicFiles;
+    for (var i = 0; i < files.length; i++) {
+        var file = files[i].value;
+        var trackname = file.name; // TO DO : ID3TAG
+        var fileid = file._id;
+        var t = new _track2.default({
+            metas: {
+                title: trackname
+            },
+            ressource: {
+                type: "file",
+                fileID: fileid
+            }
+        });
+
+        if (tracksFileId.indexOf(fileid) <= -1) {
+            // does not contains fileid
+            t.save();
+        }
+    }
+}
+});
+
 ;require.register("libs/soundcloud", function(exports, require, module) {
-"use strict";
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _track = require('../models/track');
+
+var _track2 = _interopRequireDefault(_track);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var apiURL = "https://api.soundcloud.com";
+var api = 'https://api.soundcloud.com';
+var clientID = '02gUJC0hH2ct1EGOcYXQIzRFU91c72Ea';
 
-var Soundcloud = function Soundcloud() {
-    _classCallCheck(this, Soundcloud);
-};
+var Soundcloud = function () {
+    function Soundcloud() {
+        _classCallCheck(this, Soundcloud);
+    }
+
+    _createClass(Soundcloud, [{
+        key: 'import',
+        value: function _import(url) {
+            var _this = this;
+
+            this.get('/resolve', { url: url }, function (res) {
+                if (res.kind == 'playlist') {} else if (res.kind == 'track') {
+                    _this.checkIfAlreadyExist(res);
+                }
+            });
+        }
+    }, {
+        key: 'checkIfAlreadyExist',
+        value: function checkIfAlreadyExist(track) {
+            var _this2 = this;
+
+            cozysdk.run('Track', 'soundcloud', {}, function (err, res) {
+                if (res) {
+                    var exist = false;
+                    var tracks = JSON.parse("" + res);
+                    for (var i = 0; i < tracks.length; i++) {
+                        if (tracks[i].value.ressource.url == track.stream_url) {
+                            exist = true;
+                        }
+                    }
+                    if (!exist) {
+                        _this2.importTrack(res);
+                    } else {
+                        alert('Already in DB');
+                    }
+                }
+            });
+        }
+    }, {
+        key: 'importTrack',
+        value: function importTrack(track) {
+            if (!track.streamable) {
+                alert('Track is not streamable');
+                return;
+            }
+            var newTrack = new _track2.default();
+            newTrack.set('ressource', {
+                type: "soundcloud",
+                url: track.stream_url
+            });
+            newTrack.set('metas', {
+                title: track.title,
+                artist: track.user.username,
+                genre: track.genre
+            });
+            console.log(newTrack);
+            newTrack.save();
+        }
+    }, {
+        key: 'addClientID',
+        value: function addClientID(url) {
+            return url + '?client_id=' + clientID;
+        }
+    }, {
+        key: 'get',
+        value: function get(endpoint, params, callback) {
+            if (typeof params === 'function') {
+                callback = params;
+                params = {};
+            }
+
+            var url = undefined;
+            if (endpoint.includes(api)) {
+                url = this.addClientID(endpoint);
+            } else {
+                url = this.addClientID(api + endpoint);
+            }
+
+            for (var key in params) {
+                if (params.hasOwnProperty(key)) {
+                    url += '&' + key + '=' + params[key];
+                }
+            }
+
+            console.log('SCDL', url);
+
+            $.ajax({
+                dataType: 'json',
+                url: url,
+                success: callback
+            });
+        }
+    }]);
+
+    return Soundcloud;
+}();
+
+exports.default = new Soundcloud();
 });
 
-;require.register("models/playlist", function(exports, require, module) {
+require.register("models/playlist", function(exports, require, module) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -18132,6 +18283,10 @@ var _backbone = require('backbone');
 
 var _backbone2 = _interopRequireDefault(_backbone);
 
+var _soundcloud = require('../libs/soundcloud');
+
+var _soundcloud2 = _interopRequireDefault(_soundcloud);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Track = _backbone2.default.Model.extend({
@@ -18167,6 +18322,26 @@ var Track = _backbone2.default.Model.extend({
                     console.log('DELETE TRACK', error, response);
                 });
                 break;
+        }
+    },
+    getStreamURL: function getStreamURL(play) {
+        var ressource = this.get("ressource");
+        switch (ressource.type) {
+            case "file":
+                var id = this.get("ressource").fileID;
+                cozysdk.getFileURL(id, 'file', function (err, resp) {
+                    console.log("FILEURL", err, resp);
+                    if (resp) {
+                        resp = "http://" + resp.split('@')[1];
+                        play(resp);
+                    }
+                });
+                break;
+            case "soundcloud":
+                var url = this.get("ressource").url;
+                play(_soundcloud2.default.addClientID(url));
+                break;
+
         }
     }
 });
@@ -18231,23 +18406,13 @@ var TracksView = _backbone2.default.CollectionView.extend({
 
     childView: TrackView,
     events: {
-        "click a": "clicked",
+        "click a": "play",
         "click .delete": "delete"
     },
-    clicked: function clicked(e) {
+    play: function play(e) {
         var id = e.currentTarget.dataset.id;
         var item = this.collection.get(id);
-        var ressource = item.get("ressource");
-        if (ressource.fileID) {
-            var _id = item.get("ressource").fileID;
-            cozysdk.getFileURL(_id, 'file', function (err, resp) {
-                console.log("FILEURL", err, resp);
-                if (resp) {
-                    resp = "http://" + resp.split('@')[1];
-                    playAudio(resp);
-                }
-            });
-        }
+        item.getStreamURL(playAudio);
     },
     delete: function _delete(e) {
         var id = e.currentTarget.dataset.id;

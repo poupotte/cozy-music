@@ -1,4 +1,5 @@
 import Backbone from 'backbone'
+import scdl from '../libs/soundcloud';
 
 const Track = Backbone.Model.extend({
     defaults: {
@@ -34,6 +35,26 @@ const Track = Backbone.Model.extend({
                     console.log('DELETE TRACK', error, response);
                 });
                 break;
+        }
+    },
+    getStreamURL: function (play) {
+        const ressource = this.get("ressource");
+        switch (ressource.type) {
+            case "file":
+                const id = this.get("ressource").fileID;
+                cozysdk.getFileURL(id, 'file', (err, resp) => {
+                    console.log("FILEURL", err, resp);
+                    if (resp) {
+                        resp = "http://" + resp.split('@')[1];
+                        play(resp);
+                    }
+                })
+                break;
+            case "soundcloud":
+                const url = this.get("ressource").url;
+                play(scdl.addClientID(url));
+                break;
+
         }
     }
 });
