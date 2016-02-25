@@ -42,6 +42,11 @@ const Track = Backbone.Model.extend({
         }
     },
 
+    updatePlays: function () {
+        this.set('plays', this.get('plays') +1);
+        this.save();
+    },
+
     getStreamURL: function (play) {
         const ressource = this.get("ressource");
         switch (ressource.type) {
@@ -51,12 +56,14 @@ const Track = Backbone.Model.extend({
                     console.log("FILEURL", err, resp);
                     if (resp) {
                         resp = "http://" + resp.split('@')[1];
+                        this.updatePlays();
                         play(resp);
                     }
                 })
                 break;
             case "soundcloud":
                 const url = this.get("ressource").url;
+                this.updatePlays();
                 play(scdl.addClientID(url));
                 break;
 

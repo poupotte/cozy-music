@@ -18011,6 +18011,7 @@ function start() {
 }
 
 window.player = document.querySelector("#player");
+
 var sync = document.querySelector("#sync-from-files");
 sync.addEventListener("click", function () {
     (0, _file.syncFiles)();
@@ -18238,32 +18239,36 @@ var _backbone2 = _interopRequireDefault(_backbone);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Playlist = _backbone2.default.Model.extend({
+
     defaults: {
-        id: '',
+        _id: undefined,
         title: '',
         tracks: '',
         dateAdded: Date.now
     },
+
+    idAttribute: "_id",
+
     sync: function sync(method, model, options) {
         switch (method) {
             case 'create':
-                cozysdk.create('Playlist', model, function (error, response) {
-                    console.log(error, response);
+                cozysdk.create('Playlist', model.toJSON(), function (error, response) {
+                    console.log('CREATE Playlist', error, response);
                 });
                 break;
             case 'read':
-                cozysdk.find('Playlist', model.id, function (error, response) {
-                    console.log(error, response);
+                cozysdk.find('Playlist', model.get('_id'), function (error, response) {
+                    console.log('READ Playlist', error, response);
                 });
                 break;
             case 'update':
-                cozysdk.updateAttributes('Playlist', model.id, model, function (error, response) {
-                    console.log(error, response);
+                cozysdk.updateAttributes('Playlist', model.id, model.toJSON(), function (error, response) {
+                    console.log('UPDATE Playlist', error, response);
                 });
                 break;
             case 'delete':
-                cozysdk.destroy('Playlist', model.id, function (error, response) {
-                    console.log(error, response);
+                cozysdk.destroy('Playlist', model.get('_id'), function (error, response) {
+                    console.log('DELETE Playlist', error, response);
                 });
                 break;
         }
@@ -18291,6 +18296,7 @@ var _soundcloud2 = _interopRequireDefault(_soundcloud);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Track = _backbone2.default.Model.extend({
+
     defaults: {
         _id: undefined,
         playlists: '',
@@ -18300,7 +18306,9 @@ var Track = _backbone2.default.Model.extend({
         ressource: '',
         hidden: false
     },
+
     idAttribute: "_id",
+
     sync: function sync(method, model, options) {
         switch (method) {
             case 'create':
@@ -18325,7 +18333,15 @@ var Track = _backbone2.default.Model.extend({
                 break;
         }
     },
+
+    updatePlays: function updatePlays() {
+        this.set('plays', this.get('plays') + 1);
+        this.save();
+    },
+
     getStreamURL: function getStreamURL(play) {
+        var _this = this;
+
         var ressource = this.get("ressource");
         switch (ressource.type) {
             case "file":
@@ -18334,12 +18350,14 @@ var Track = _backbone2.default.Model.extend({
                     console.log("FILEURL", err, resp);
                     if (resp) {
                         resp = "http://" + resp.split('@')[1];
+                        _this.updatePlays();
                         play(resp);
                     }
                 });
                 break;
             case "soundcloud":
                 var url = this.get("ressource").url;
+                this.updatePlays();
                 play(_soundcloud2.default.addClientID(url));
                 break;
 
