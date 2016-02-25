@@ -18154,7 +18154,7 @@ var Soundcloud = function () {
                         }
                     }
                     if (!exist) {
-                        _this2.importTrack(res);
+                        _this2.importTrack(track);
                     } else {
                         alert('Already in DB');
                     }
@@ -18180,6 +18180,7 @@ var Soundcloud = function () {
             });
             console.log(newTrack);
             newTrack.save();
+            alert('Imported ' + track.title);
         }
     }, {
         key: 'addClientID',

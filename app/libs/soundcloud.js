@@ -26,7 +26,7 @@ class Soundcloud {
                     }
                 }
                 if (!exist) {
-                    this.importTrack(res);
+                    this.importTrack(track);
                 } else {
                     alert('Already in DB')
                 }
@@ -51,6 +51,7 @@ class Soundcloud {
         });
         console.log(newTrack);
         newTrack.save();
+        alert('Imported ' + track.title);
     }
 
     addClientID(url) {
