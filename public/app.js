@@ -17917,6 +17917,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var Tracks = _backbone2.default.Collection.extend({
     model: _track2.default,
+
+    comparator: function comparator(collection) {
+        return collection.get('metas').title;
+    },
+
     sync: function sync(method, model, options) {
         var _this = this;
 

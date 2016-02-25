@@ -4,6 +4,11 @@ import Track from '../models/track';
 
 const Tracks = Backbone.Collection.extend({
     model: Track,
+    
+    comparator: function (collection) {
+        return collection.get('metas').title;
+    },
+    
     sync: function (method, model, options) {
         if (method == 'read') {
             console.log('fetch');
