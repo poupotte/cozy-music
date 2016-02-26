@@ -14,7 +14,7 @@ const Track = Backbone.Model.extend({
         hidden: false
     },
 
-    idAttribute:"_id",
+    idAttribute:'_id',
 
     sync: function (method, model, options) {
         switch (method) {
@@ -48,21 +48,21 @@ const Track = Backbone.Model.extend({
     },
 
     getStreamURL: function (play) {
-        const ressource = this.get("ressource");
+        const ressource = this.get('ressource');
         switch (ressource.type) {
-            case "file":
-                const id = this.get("ressource").fileID;
+            case 'file':
+                const id = this.get('ressource').fileID;
                 cozysdk.getFileURL(id, 'file', (err, resp) => {
-                    console.log("FILEURL", err, resp);
+                    console.log('FILEURL', err, resp);
                     if (resp) {
-                        resp = "http://" + resp.split('@')[1];
+                        resp = 'http://' + resp.split('@')[1];
                         this.updatePlays();
                         play(resp);
                     }
                 })
                 break;
-            case "soundcloud":
-                const url = this.get("ressource").url;
+            case 'soundcloud':
+                const url = this.get('ressource').url;
                 this.updatePlays();
                 play(scdl.addClientID(url));
                 break;

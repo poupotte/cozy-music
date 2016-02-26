@@ -3,9 +3,9 @@ import Track from '../models/track';
 
 export const syncFiles = function () {
     cozysdk.run('File', 'music', {}, (err, res) => {
-        console.log("syncFiles", err, res);
+        console.log('syncFiles', err, res);
         if (res) {
-            const files = JSON.parse("" + res);
+            const files = JSON.parse('' + res);
             getAllTracksFileId(files);
         }
     });
@@ -13,12 +13,12 @@ export const syncFiles = function () {
 
 function getAllTracksFileId(musicFiles) {
     cozysdk.run('Track', 'file', {}, (err, res) => {
-        console.log("getAllTracksFileId", err, res);
+        console.log('getAllTracksFileId', err, res);
         let tracksFileId = [];
         let allTracksFiles = [];
         let musicFilesFileId = [];
         if (res) {
-            const tracks = JSON.parse("" + res);
+            const tracks = JSON.parse('' + res);
             for (let i = 0; i < tracks.length; i++) {
                 tracksFileId.push(tracks[i].value.ressource.fileID);
                 allTracksFiles.push(new Track(tracks[i].value));
@@ -52,7 +52,7 @@ function saveTrack(musicFiles, tracksFileId) {
                 title: trackname
             },
             ressource: {
-                type: "file",
+                type: 'file',
                 fileID: fileid
             }
         });
