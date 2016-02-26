@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <title>Cozic</title>
     <link rel="stylesheet" href="app.css">
-    <script async src="app.js" onload="require('initialize')"></script>
+    <script async src="app.js"></script>
 </head>
 
-<body>
+<body onload="require('initialize')">
 	<input id="sync-from-files" type="submit" value="Get tracks from files">
 	<hr>
 	<input id="import-text" type="text" placeholder="enter a soundcloud link">

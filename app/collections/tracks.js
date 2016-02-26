@@ -25,4 +25,42 @@ const Tracks = Backbone.Collection.extend({
     }
 });
 
+cozysdk.defineRequest('File', 'music', (doc) => {
+        if (doc.class == 'music') {
+            emit(doc._id, doc);
+        }
+    }, (error, response) => {
+        console.log('FILEMUSICREQ', error, response);
+});
+
+cozysdk.defineRequest('Track', 'all', (doc) => {
+        emit(doc._id, doc);
+    }, (error, response) => {
+        console.log('ALLTRACKREQ', error, response);
+});
+
+cozysdk.defineRequest('Track', 'playable', (doc) => {
+        if (!doc.hidden) {
+            emit(doc._id, doc);
+        }
+    }, (error, response) => {
+        console.log('PLAYABLEREQ', error, response);
+});
+
+cozysdk.defineRequest('Track', 'file', (doc) => {
+        if (doc.ressource.type == "file") {
+            emit(doc._id, doc);
+        }
+    }, (error, response) => {
+        console.log('TRACKFILEREQ', error, response);
+});
+
+cozysdk.defineRequest('Track', 'soundcloud', (doc) => {
+        if (doc.ressource.type == "soundcloud") {
+            emit(doc._id, doc);
+        }
+    }, (error, response) => {
+        console.log('TRACKSCREQ', error, response);
+});
+
 export default Tracks;
