@@ -19,24 +19,24 @@ const Track = Backbone.Model.extend({
     sync: function (method, model, options) {
         switch (method) {
             case 'create':
-                cozysdk.create('Track', model.toJSON(), (error, response) => {
-                    console.log('CREATE TRACK', error, response);
+                cozysdk.create('Track', model.toJSON(), (err, res) => {
+                    console.log('CREATE TRACK', err, res);
                 });
                 break;
             case 'read':
-                cozysdk.find('Track', model.get('_id'), (error, response) => {
-                    console.log('READ TRACK', error, response);
+                cozysdk.find('Track', model.get('_id'), (err, res) => {
+                    console.log('READ TRACK', err, res);
                  });
                 break;
             case 'update':
                 cozysdk.updateAttributes(
-                    'Track', model.id, model.toJSON(), (error, response) => {
-                    console.log('UPDATE TRACK', error, response);
+                    'Track', model.id, model.toJSON(), (err, res) => {
+                    console.log('UPDATE TRACK', err, res);
                 });
                 break;
             case 'delete':
-                cozysdk.destroy('Track', model.get('_id'), (error, response) => {
-                    console.log('DELETE TRACK', error, response);
+                cozysdk.destroy('Track', model.get('_id'), (err, res) => {
+                    console.log('DELETE TRACK', err, res);
                 });
                 break;
         }
@@ -52,12 +52,12 @@ const Track = Backbone.Model.extend({
         switch (ressource.type) {
             case 'file':
                 const id = this.get('ressource').fileID;
-                cozysdk.getFileURL(id, 'file', (err, resp) => {
-                    console.log('FILEURL', err, resp);
-                    if (resp) {
-                        resp = 'http://' + resp.split('@')[1];
+                cozysdk.getFileURL(id, 'file', (err, res) => {
+                    console.log('FILEURL', err, res);
+                    if (res) {
+                        res = 'http://' + res.split('@')[1];
                         this.updatePlays();
-                        play(resp);
+                        play(res);
                     }
                 })
                 break;

@@ -15,24 +15,24 @@ const Playlist = Backbone.Model.extend({
     sync: function (method, model, options) {
         switch (method) {
             case 'create':
-                cozysdk.create('Playlist', model.toJSON(), (error, response) => {
-                    console.log('CREATE Playlist', error, response);
+                cozysdk.create('Playlist', model.toJSON(), (err, res) => {
+                    console.log('CREATE Playlist', err, res);
                 });
                 break;
             case 'read':
-                cozysdk.find('Playlist', model.get('_id'), (error, response) => {
-                    console.log('READ Playlist', error, response);
+                cozysdk.find('Playlist', model.get('_id'), (err, res) => {
+                    console.log('READ Playlist', err, res);
                  });
                 break;
             case 'update':
                 cozysdk.updateAttributes(
-                    'Playlist', model.id, model.toJSON(), (error, response) => {
-                    console.log('UPDATE Playlist', error, response);
+                    'Playlist', model.id, model.toJSON(), (err, res) => {
+                    console.log('UPDATE Playlist', err, res);
                 });
                 break;
             case 'delete':
-                cozysdk.destroy('Playlist', model.get('_id'), (error, response) => {
-                    console.log('DELETE Playlist', error, response);
+                cozysdk.destroy('Playlist', model.get('_id'), (err, res) => {
+                    console.log('DELETE Playlist', err, res);
                 });
                 break;
         }
