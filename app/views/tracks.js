@@ -1,16 +1,6 @@
 import Mn from 'backbone.marionette';
 import Tracks from '../collections/tracks';
-
-
-const TrackView = Mn.ItemView.extend({
-    template: require('views/templates/track'),
-    serializeData: function() {
-        return {
-            trackname: this.model.get('metas').title,
-            id: this.model.get('_id')
-        };
-    }
-});
+import TrackView from './track';
 
 const TracksView = Mn.CollectionView.extend({  
     el: '#app-hook',
@@ -18,8 +8,8 @@ const TracksView = Mn.CollectionView.extend({
 
     childView: TrackView,
     events: {
-        "click a": "play",
-        "click .delete": "delete"
+        'click a': 'play',
+        'click .delete': 'delete'
     },
     play: function (e) {
         const id = e.currentTarget.dataset.id;
