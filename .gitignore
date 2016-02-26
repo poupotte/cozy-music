@@ -8,5 +8,6 @@ lib-cov
 *.pid
 *.gz
 
+public
 node_modules
 npm-debug.log

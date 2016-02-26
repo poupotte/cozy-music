@@ -10,7 +10,7 @@ const Playlist = Backbone.Model.extend({
         dateAdded: Date.now
     },
 
-    idAttribute:"_id",
+    idAttribute:'_id',
 
     sync: function (method, model, options) {
         switch (method) {
