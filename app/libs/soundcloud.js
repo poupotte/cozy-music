@@ -1,4 +1,5 @@
 import Track from '../models/track';
+import application from '../application';
 
 
 const api = 'https://api.soundcloud.com';
@@ -29,7 +30,7 @@ class Soundcloud {
                 if (!exist) {
                     this.importTrack(track);
                 } else {
-                    alert('Already in DB')
+                    alert('This track is already in the Database')
                 }
             }
         });
@@ -37,7 +38,7 @@ class Soundcloud {
 
     importTrack(track) {
         if (!track.streamable) {
-            alert('Track is not streamable');
+            alert('This track is not streamable');
             return;
         }
         let newTrack = new Track();
@@ -50,9 +51,7 @@ class Soundcloud {
             artist: track.user.username,
             genre: track.genre,
         });
-        console.log(newTrack);
-        newTrack.save();
-        alert('Imported ' + track.title);
+        application.allTracks.add(newTrack);
     }
 
     addClientID(url) {

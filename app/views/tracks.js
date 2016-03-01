@@ -1,38 +1,19 @@
 import Mn from 'backbone.marionette';
-import Tracks from '../collections/tracks';
 import TrackView from './track';
+import application from '../application';
 
-const TracksView = Mn.CollectionView.extend({  
-    el: '#app-hook',
-    tagName: 'ul',
+
+const TracksView = Mn.CompositeView.extend({
+
+    template: require('views/templates/tracks'),
+
+    childViewContainer: '#track-list',
 
     childView: TrackView,
-    events: {
-        'click a': 'play',
-        'click .delete': 'delete'
-    },
-    play: function (e) {
-        const id = e.currentTarget.dataset.id;
-        const item = this.collection.get(id);
-        item.getStreamURL(playAudio);
-    },
-    delete: function (e) {
-        const id = e.currentTarget.dataset.id;
-        const item = this.collection.get(id);
-        item.set('hidden', true);
-        item.save();
-    },
+    
     initialize: function() {
-        const tracks = new Tracks();
-        tracks.fetch();
-        this.collection = tracks;
-    }
+        this.collection = application.allTracks;
+    },
 });
-
-const playAudio = function(url) {
-    window.player.src = url;
-    window.player.load();
-    window.player.play();
-}
 
 export default TracksView;

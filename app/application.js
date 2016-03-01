@@ -1,18 +1,33 @@
 import Mn from 'backbone.marionette';
 import Backbone from 'backbone';
-import tracksView from 'views/tracks';
+import Tracks from './collections/tracks';
+import Playlists from './collections/playlists';
+import AppLayout from './views/app_layout';
 
 
-class Application extends Mn.Application {
+const Application = Mn.Application.extend({
 
-    onStart () {
-        console.log('start');
+	initialize: function () {
+		this.allTracks = new Tracks();
+        this.allTracks.fetch();
+        this.upNext = new Tracks();
+
+        this.allPlaylists = new Playlists();
+        this.allPlaylists.fetch();
+
+        this.headerInfos = new Backbone.Model({
+            title: 'All Songs',
+            count: 0
+        });
+	},
+
+    onStart: function () {
         if (Backbone.history) {
             Backbone.history.start();
         }
-        const tracks = new tracksView();
-        tracks.render();
+        this.appLayout = new AppLayout();
+        this.appLayout.render();
     }
-};
+});
 
 export default new Application();
