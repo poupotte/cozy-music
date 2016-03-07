@@ -19,32 +19,27 @@ var optimize = process.env.OPTIMIZE === 'true';
  * - images are cache-busted in production build
  */
 var cssOptions = optimize? 'css?-svgo&-autoprefixer&-mergeRules!postcss':'css';
-var imgPath = 'img/' + '[name]' + (optimize? '.[hash]': '') + '.[ext]';
 var loaders = [
     {
         test: /\.js$/,
-        exclude: /(node_modules)/,
+        exclude: /node_modules/,
         loader: 'babel', // 'babel-loader' is also a legal name to reference
         query: {
             presets: ['es2015']
         }
     },
     {
-        test: /\.css$/,
-        exclude: /vendor/,
-        loader: ExtractTextPlugin.extract('style', cssOptions)
-    },
-    {
         test: /\.jst$/,
-        loader: "underscore-template-loader" 
+        loader: 'underscore'
     },
     {
         test: /\.styl$/,
         loader: ExtractTextPlugin.extract('style', cssOptions + '!stylus')
     },
     {
-        test: /\.(png|gif|jpe?g|svg)$/i,
-        loader: 'file?name=' + imgPath
+        test: /\.svg$/,
+        include: /icons/,
+        loader: 'svg-sprite'
     }
 ];
 
@@ -68,10 +63,10 @@ var loaders = [
 var plugins = [
     new ExtractTextPlugin(optimize? 'app.[hash].css' : 'app.css'),
     new CopyPlugin([
-        { 
-            from: 'app/assets/index.html' 
+        {
+            from: 'app/assets/index.html'
         },
-        { 
+        {
             from: 'app/assets/fonts',
             to: 'fonts'
         }

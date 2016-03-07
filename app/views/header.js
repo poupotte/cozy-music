@@ -4,7 +4,7 @@ import application from '../application';
 const Header = Mn.ItemView.extend({
 
     template: require('./templates/header'),
-    
+
     initialize: function() {
         this.model = application.headerInfos;
         if (this.model) {
@@ -22,4 +22,3 @@ const Header = Mn.ItemView.extend({
 });
 
 export default Header;
-
