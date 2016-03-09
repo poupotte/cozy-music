@@ -13,25 +13,20 @@ const TrackView = Mn.ItemView.extend({
         'click .delete': 'delete'
     },
 
+    modelEvents: { change: 'render' },
+
     play: function (e) {
-        this.model.getStreamAndPlay();
-        $(e.currentTarget)
-            .addClass('playing')
-            .siblings()
-            .removeClass('playing');
+        application.upNext.setAttr('currentTrack', this.model);
     },
     
     delete: function (e) {
+        console.log('delete')
         const item = this.model;
         item.set('hidden', true);
         item.save();
         application.allTracks.remove(item);
-    },
-    
-    initialize: function () {
-        if (this.model) {
-            this.model.on('change', this.render, this);
-        }
+        application.upNext.remove(item);
+        e.stopPropagation();
     },
     
     serializeData: function() {

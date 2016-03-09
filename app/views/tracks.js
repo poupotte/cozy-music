@@ -10,10 +10,24 @@ const TracksView = Mn.CompositeView.extend({
     childViewContainer: '#track-list',
 
     childView: TrackView,
-    
-    initialize: function() {
-        this.collection = application.allTracks;
+
+    onRender: function() {
+        this.setCurrentTrack();
+        this.listenTo(
+            application.upNext,
+            'change:currentTrack',
+            this.setCurrentTrack
+        );
     },
+
+    setCurrentTrack: function() {
+        if (application.upNext && application.upNext.getAttr('currentTrack')) {
+            const track = application.upNext.getAttr('currentTrack');
+            const item = this.children.findByModel(track);
+            item.$el.addClass('playing').siblings().removeClass('playing');
+        }
+    }
+
 });
 
 export default TracksView;

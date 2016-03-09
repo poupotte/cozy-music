@@ -6,13 +6,26 @@ import cozysdk from 'cozysdk-client';
 const Tracks = Backbone.Collection.extend({
     model: Track,
 
-    initialize: function() {
+    initialize: function(models, options) {
         this.on('add', this.onAdd, this);
+        if (options) {
+            this.type = options.type;
+        }
+        this._attributes = {}
+    },
+
+    setAttr: function(prop, value) {
+        this._attributes[prop] = value;
+        this.trigger('change:' + prop, value);
+    },
+
+    getAttr: function(prop) {
+        return this._attributes[prop];
     },
 
     onAdd: function(track) {
         if (!track.get('_id')) {
-            track.save()
+            track.save();
         }
     },
     
@@ -21,9 +34,9 @@ const Tracks = Backbone.Collection.extend({
     },
     
     sync: function (method, model, options) {
-        if (method == 'read') {
+        if (method == 'read' && this.type) {
             console.log('fetch');
-            cozysdk.run('Track', 'playable', {}, (err, res) => {
+            cozysdk.run('Track', this.type, {}, (err, res) => {
                 console.log('TRACKS fetch', err, res);
                 if (res) {
                     const tracks = JSON.parse('' + res);

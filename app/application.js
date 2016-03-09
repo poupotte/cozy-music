@@ -8,10 +8,23 @@ require('./styles/app.styl');
 
 const Application = Mn.Application.extend({
 
-	initialize: function () {
-		this.allTracks = new Tracks();
-        this.allTracks.fetch();
+    initialize: function () {
+        this.allTracks = new Tracks([], { type: 'all' });
         this.upNext = new Tracks();
+        this.upNext.on('change:currentTrack', function() {
+            const upNext = app.upNext;
+            const currentTrack = upNext.getAttr('currentTrack');
+            if (!upNext.contains(currentTrack)) {
+                upNext.push(currentTrack);
+            }
+        });
+        this.allTracks.fetch({
+            success: function() {
+                app.allTracks.each(function(track) {
+                    app.upNext.add(track);
+                });
+            }
+        });
 
         this.allPlaylists = new Playlists();
         this.allPlaylists.fetch();
@@ -20,7 +33,7 @@ const Application = Mn.Application.extend({
             title: 'All Songs',
             count: 0
         });
-	},
+    },
 
     onStart: function () {
         if (Backbone.history) {
@@ -28,7 +41,13 @@ const Application = Mn.Application.extend({
         }
         this.appLayout = new AppLayout();
         this.appLayout.render();
+    },
+
+    switchPlaylist: function(collection) {
+        return this.appLayout.content.currentView.switchPlaylist(collection);
     }
 });
 
-export default new Application();
+const app = new Application();
+
+export default app;
