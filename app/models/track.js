@@ -53,7 +53,7 @@ const Track = Backbone.Model.extend({
 
     getStream(callback) {
         let ressource = this.get('ressource');
-        this.set('plays', this.get('plays') +1);
+        this.set('plays', this.get('plays') +1); // Update the plays number
         this.save();
         switch (ressource.type) {
             case 'file':

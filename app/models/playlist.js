@@ -54,6 +54,7 @@ const Playlist = Backbone.Model.extend({
         }
     },
 
+    // Add a track to the playlist
     addTrack(track) {
         this.set('tracks', this.get('tracks').push(track));
     }

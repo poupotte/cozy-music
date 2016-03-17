@@ -9,7 +9,7 @@ const clientID = '02gUJC0hH2ct1EGOcYXQIzRFU91c72Ea';
 class Soundcloud {
 
     import(url) {
-        this.get('/resolve', { url: url}, (res) => {
+        this.get('/resolve', { url: url }, (res) => {
             if (res.kind == 'playlist') {
 
             } else if (res.kind == 'track') {
@@ -18,6 +18,7 @@ class Soundcloud {
         });
     }
 
+    // Check if the track is already in the database
     checkIfAlreadyExist(track) {
         cozysdk.run('Track', 'soundcloud', {}, (err, res) => {
             if (res) {
@@ -38,6 +39,7 @@ class Soundcloud {
         });
     }
 
+    // Set the track's metas and save it.
     importTrack(track) {
         if (!track.streamable) {
             alert('This track is not streamable');
@@ -59,10 +61,12 @@ class Soundcloud {
         application.channel.request('notification', msg);
     }
 
+    // Add our clientID to the current url
     addClientID(url) {
         return url + '?client_id=' + clientID;
     }
 
+    // Call the soundcoud API
     get(endpoint, params, callback) {
         if (typeof params === 'function') {
             callback = params;

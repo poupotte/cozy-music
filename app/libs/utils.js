@@ -1,3 +1,4 @@
+// convert a duration in second to a readable string
 export function timeToString(time) {
     var totalSec = Math.floor(time);
     var hours = Math.floor(totalSec / 3600) % 24;

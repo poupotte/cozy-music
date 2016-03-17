@@ -42,6 +42,7 @@ const Toolbar = Mn.LayoutView.extend({
         application.channel.reply('notification', this.showNotification, this);
     },
 
+    // Import the track when `Enter` is pressed
     keyImportScText(e) {
         let url = this.ui.importText.val();
         if(e.keyCode == 13) {
@@ -51,12 +52,16 @@ const Toolbar = Mn.LayoutView.extend({
         }
     },
 
-    focusoutSearch() {
-        if (this.ui.searchText.val() == '') {
-            this.ui.search.removeClass('input-focused');
-        }
+    // Show the input
+    importStream() {
+        this.ui.importSC
+            .removeClass('button')
+            .addClass('input')
+            .addClass('input-focused');
+        this.ui.importText.focus();
     },
 
+    // Hide the input
     focusoutImportSc() {
         if (this.ui.importText.val() == '') {
             this.ui.importSC
@@ -66,23 +71,21 @@ const Toolbar = Mn.LayoutView.extend({
         }
     },
 
+    search() {
+        this.ui.search.addClass('input-focused');
+    },
+
+    focusoutSearch() {
+        if (this.ui.searchText.val() == '') {
+            this.ui.search.removeClass('input-focused');
+        }
+    },
+
     showNotification(msg) {
         this.showChildView(
             'notification',
             new NotificationView({ message: msg })
         );
-    },
-
-    importStream() {
-        this.ui.importSC
-            .removeClass('button')
-            .addClass('input')
-            .addClass('input-focused');
-        this.ui.importText.focus();
-    },
-
-    search() {
-        this.ui.search.addClass('input-focused');
     }
 });
 

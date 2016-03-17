@@ -14,7 +14,7 @@ const Notification = Mn.ItemView.extend({
     },
 
     onRender() {
-        this.ui.notification.removeClass('notify').addClass('notify');
+        this.ui.notification.addClass('notify');
     },
 
     serializeData() {

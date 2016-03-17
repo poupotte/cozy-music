@@ -23,12 +23,12 @@ const Player = Mn.LayoutView.extend({
         'click #prev': 'prev',
         'click #play': 'toggle',
         'click #next': 'next',
-        'click @ui.progressBar': 'scroll',
+        'click @ui.progressBar': 'skip',
         'click @ui.volumeBar': 'changeVol'
     },
 
     initialize() {
-        application.channel.reply('reset:UpNext', this.render, this);
+        this.listenTo(application.channel,'reset:UpNext', this.render);
         this.listenTo(application.appState, 'change:currentTrack',
             function(appState, currentTrack) {
                 if (currentTrack) {
@@ -39,7 +39,7 @@ const Player = Mn.LayoutView.extend({
 
     onRender() {
         let audio = this.ui.player.get(0);
-        audio.ontimeupdate = this.timeupdate;
+        audio.ontimeupdate = this.onTimeUpdate;
         audio.onended = this.next;
         audio.onvolumechange = this.onVolumeChange;
         audio.volume = 0.5;
@@ -109,13 +109,25 @@ const Player = Mn.LayoutView.extend({
         }
     },
 
-    scroll(e) {
+    // Go to a certain time in the track
+    skip(e) {
         let audio = this.ui.player.get(0);
         let bar = this.ui.progressBar.get(0);
         let newTime = audio.duration * ((e.pageX - bar.offsetLeft) / bar.clientWidth);
         audio.currentTime = newTime;
     },
 
+    // Change the time displayed
+    onTimeUpdate() {
+        let player = application.appLayout.getRegion('player').currentView;
+        let audio = player.ui.player.get(0);
+        player.ui.currentTime.html(timeToString(audio.currentTime));
+        player.ui.totalTime.html(timeToString(audio.duration));
+        let percent = audio.currentTime / audio.duration * 100 + '%';
+        player.ui.progress.width(percent);
+    },
+
+    // Change the volume displayed
     onVolumeChange() {
         let player = application.appLayout.getRegion('player').currentView;
         let audio = player.ui.player.get(0);
@@ -124,20 +136,12 @@ const Player = Mn.LayoutView.extend({
         player.ui.volume.width(percent);
     },
 
+    // Change the volume
     changeVol(e) {
         let audio = this.ui.player.get(0);
         let bar = this.ui.volumeBar.get(0);
         let volume = (e.pageX - bar.offsetLeft) / bar.clientWidth;
         audio.volume = volume;
-    },
-
-    timeupdate() {
-        let player = application.appLayout.getRegion('player').currentView;
-        let audio = player.ui.player.get(0);
-        player.ui.currentTime.html(timeToString(audio.currentTime));
-        player.ui.totalTime.html(timeToString(audio.duration));
-        let percent = audio.currentTime / audio.duration * 100 + '%';
-        player.ui.progress.width(percent);
     }
 });
 

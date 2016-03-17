@@ -12,6 +12,7 @@ export function syncFiles() {
     });
 }
 
+// Get all needed variable
 function getAllTracksFileId(musicFiles) {
     cozysdk.run('Track', 'file', {}, (err, res) => {
         let tracksFileId = [];
@@ -34,6 +35,7 @@ function getAllTracksFileId(musicFiles) {
     });
 }
 
+// Delete track if the files associated is deleted too
 function deleteTrack(allTracks, musicFilesFileId) {
     for (let i = 0; i < allTracks.length; i++) {
         let t = allTracks[i];
@@ -43,6 +45,7 @@ function deleteTrack(allTracks, musicFilesFileId) {
     }
 }
 
+// Save the track if it's a new file that has not been synced
 function saveTrack(musicFiles, tracksFileId) {
     let files = musicFiles;
     for (let i = 0; i < files.length; i++) {
@@ -59,7 +62,7 @@ function saveTrack(musicFiles, tracksFileId) {
             }
         });
 
-        if (tracksFileId.indexOf(fileid) <= -1) { // does not contains fileid 
+        if (tracksFileId.indexOf(fileid) <= -1) { // does not contains fileid
             application.allTracks.get('tracks').create(t);
         }
     }

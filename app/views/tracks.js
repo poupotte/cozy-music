@@ -18,22 +18,20 @@ const TracksView = Mn.CompositeView.extend({
             'change:currentTrack',
             this.setCurrentTrack
         );
+        this.setCurrentTrack(null, application.appState.get('currentTrack'));
     },
 
-    onDestroy() {
+    remove() { // override to catch the error
+        this._removeElement();
         try {
             this.stopListening(); // throw weird errors
         } catch (e) {
             //console.log(e);
         }
-    },
-
-    remove() {
-        this._removeElement();
-        //this.stopListening(); // Overrided for now
         return this;
     },
 
+    // highlight the current playing track
     setCurrentTrack(appState, currentTrack) {
         if (currentTrack) {
             let item = this.children.findByModel(currentTrack);

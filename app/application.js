@@ -11,7 +11,7 @@ require('./styles/app.styl');
 
 let Application = Mn.Application.extend({
 
-    _initChannel () {
+    _initChannel () { // Use Backbone.Radio instead of wreqr
         this.channelName = _.result(this, 'channelName') || 'global';
         this.channel = _.result(this, 'channel') || Radio.channel(this.channelName);
     },
@@ -21,10 +21,13 @@ let Application = Mn.Application.extend({
     },
 
     onBeforeStart () {
-        let allTracks = new Tracks([], { type: 'all' });
         let self = this;
+
+        // All track initialization
+        let allTracks = new Tracks([], { type: 'all' });
+
         allTracks.fetch({
-            success() {
+            success() { // For now initialize upNext with all track
                 self.allTracks.get('tracks').each(function(track) {
                     self.upNext.get('tracks').add(track);
                 });
@@ -35,6 +38,7 @@ let Application = Mn.Application.extend({
             tracks: allTracks
         });
 
+        // Up Next initialization
         let upNext = new Tracks([], { type: 'upNext' });
 
         this.upNext = new Playlist({
@@ -42,6 +46,7 @@ let Application = Mn.Application.extend({
             tracks: upNext
         });
 
+        // the default playlist is all tracks
         this.appState.set('currentPlaylist', this.allTracks);
 
         this.allPlaylists = new Playlists();

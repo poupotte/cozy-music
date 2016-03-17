@@ -29,6 +29,7 @@ const Header = Mn.ItemView.extend({
         }
     },
 
+    // Rebind the listener to the correct playlist
     changedPlaylist(model, newValue) {
         this.stopListening(model.changed.currentPlaylist);
         this.listenTo(
@@ -45,9 +46,7 @@ const Header = Mn.ItemView.extend({
     },
 
     resetUpNext() {
-        application.appState.set('currentTrack', undefined);
-        application.upNext.get('tracks').reset();
-        application.channel.request('reset:UpNext');
+        application.channel.trigger('reset:UpNext');
     },
 
 });

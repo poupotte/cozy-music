@@ -11,9 +11,21 @@ const Tracks = Backbone.Collection.extend({
         this.type = options.type;
         if (this.type == 'upNext') {
             this.listenTo(application, 'start', this.addCurrentToUpNext);
+            this.listenTo(
+                application.channel,
+                'reset:UpNext',
+                this.resetUpNext
+            );
         }
     },
 
+    // UpNext : reset
+    resetUpNext() {
+        application.appState.set('currentTrack', undefined);
+        application.upNext.get('tracks').reset();
+    },
+
+    // UpNext : add the current track to up next if not alreay in it.
     addCurrentToUpNext() {
         this.listenTo(
             application.appState,
@@ -45,6 +57,7 @@ const Tracks = Backbone.Collection.extend({
     }
 });
 
+// COZYSDK : Requests \\
 cozysdk.defineRequest('File', 'music', (doc) => {
         if (doc.class == 'music') {
             emit(doc._id, doc);

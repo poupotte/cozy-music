@@ -20,6 +20,7 @@ const TrackView = Mn.ItemView.extend({
         application.appState.set('currentTrack', this.model);
     },
 
+    // TODO not used for now
     delete(e) {
         let item = this.model;
         item.set('hidden', true);
@@ -33,7 +34,7 @@ const TrackView = Mn.ItemView.extend({
             _.extend({}, metas, {
                 duration: metas.duration ? timeToString(metas.duration / 1000) : '--:--'
             }),
-            { artist: '', album: '', number: 4 }
+            { artist: '', album: '', number: '' }
         );
     }
 });

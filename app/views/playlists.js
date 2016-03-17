@@ -32,6 +32,7 @@ const Playlists = Mn.CompositeView.extend({
         );
     },
 
+    // Create the playlist when `Enter` is pressed
     keyupPlaylistText(e) {
         let title = this.ui.playlistText.val();
         if(e.keyCode == 13) {
@@ -42,17 +43,24 @@ const Playlists = Mn.CompositeView.extend({
         }
     },
 
+    // Show the input
+    createPlaylist() {
+        this.ui.addPlaylist.removeClass('add-playlist').addClass('input');
+        this.ui.playlistText.focus();
+    },
+
+    // Hide the input
+    focusoutAddPlaylist() {
+        if (this.ui.playlistText.val() == '') {
+            this.ui.addPlaylist.addClass('add-playlist').removeClass('input');
+        }
+    },
+
     deletedPlaylist(playlist) {
         let currentPlaylist = application.appState.get('currentPlaylist');
         if (currentPlaylist == playlist) {
             application.appState.set('currentPlaylist', application.allTracks);
             $("#all-song").addClass('selected');
-        }
-    },
-
-    focusoutAddPlaylist() {
-        if (this.ui.playlistText.val() == '') {
-            this.ui.addPlaylist.addClass('add-playlist').removeClass('input');
         }
     },
 
@@ -72,11 +80,6 @@ const Playlists = Mn.CompositeView.extend({
             let playlist = application.allPlaylists.at(index);
             application.appState.set('currentPlaylist', playlist);
         }
-    },
-
-    createPlaylist() {
-        this.ui.addPlaylist.removeClass('add-playlist').addClass('input');
-        this.ui.playlistText.focus();
     }
 });
 
