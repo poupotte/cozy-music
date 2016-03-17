@@ -26,7 +26,6 @@ const Playlists = Backbone.Collection.extend({
     sync(method, model, options) {
         if (method == 'read') {
             cozysdk.run('Playlist', 'all', {}, (err, res) => {
-                console.log('Playlist fetched', err, res);
                 if (res) {
                     let playlists = JSON.parse('' + res);
                     for (let i = 0; i < playlists.length; i++) {
@@ -42,7 +41,6 @@ const Playlists = Backbone.Collection.extend({
 cozysdk.defineRequest('Playlist', 'all', (doc) => {
         emit(doc._id, doc);
     }, (error, response) => {
-        console.log('ALLPLAYLISTREQ', error, response);
 });
 
 export default Playlists;

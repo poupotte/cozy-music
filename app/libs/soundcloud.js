@@ -82,8 +82,6 @@ class Soundcloud {
             }
         }
 
-        console.log('SCDL', url);
-
         $.ajax({
             dataType: 'json',
             url: url,

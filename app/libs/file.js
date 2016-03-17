@@ -5,7 +5,6 @@ import cozysdk from 'cozysdk-client';
 
 export function syncFiles() {
     cozysdk.run('File', 'music', {}, (err, res) => {
-        console.log('syncFiles', err, res);
         if (res) {
             let files = JSON.parse('' + res);
             getAllTracksFileId(files);
@@ -15,7 +14,6 @@ export function syncFiles() {
 
 function getAllTracksFileId(musicFiles) {
     cozysdk.run('Track', 'file', {}, (err, res) => {
-        console.log('getAllTracksFileId', err, res);
         let tracksFileId = [];
         let allTracksFiles = [];
         let musicFilesFileId = [];

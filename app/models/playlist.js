@@ -23,7 +23,6 @@ const Playlist = Backbone.Model.extend({
         switch (method) {
             case 'create':
                 cozysdk.create('Playlist', model.toJSON(), (err, res) => {
-                    console.log('CREATE Playlist', err, res);
                     if (res) {
                         model.set('_id', res._id);
                         options.success();
@@ -32,7 +31,6 @@ const Playlist = Backbone.Model.extend({
                 break;
             case 'read':
                 cozysdk.find('Playlist', model.get('_id'), (err, res) => {
-                    console.log('READ Playlist', err, res);
                     if (res) {
                         options.success();
                     }
@@ -44,12 +42,10 @@ const Playlist = Backbone.Model.extend({
                     if (res) {
                         options.success();
                     }
-                    console.log('UPDATE Playlist', err, res);
                 });
                 break;
             case 'delete':
                 cozysdk.destroy('Playlist', model.get('_id'), (err, res) => {
-                    console.log('DELETE Playlist', err, res);
                     if (res) {
                         options.success();
                     }

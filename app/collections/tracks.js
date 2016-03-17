@@ -33,7 +33,6 @@ const Tracks = Backbone.Collection.extend({
     sync(method, model, options) {
         if (method == 'read' && this.type) {
             cozysdk.run('Track', this.type, {}, (err, res) => {
-                console.log('TRACKS fetch', err, res);
                 if (res) {
                     let tracks = JSON.parse('' + res);
                     for (let i = 0; i < tracks.length; i++) {
@@ -51,13 +50,11 @@ cozysdk.defineRequest('File', 'music', (doc) => {
             emit(doc._id, doc);
         }
     }, (error, response) => {
-        console.log('FILEMUSICREQ', error, response);
 });
 
 cozysdk.defineRequest('Track', 'all', (doc) => {
         emit(doc._id, doc);
     }, (error, response) => {
-        console.log('ALLTRACKREQ', error, response);
 });
 
 cozysdk.defineRequest('Track', 'playable', (doc) => {
@@ -65,7 +62,6 @@ cozysdk.defineRequest('Track', 'playable', (doc) => {
             emit(doc._id, doc);
         }
     }, (error, response) => {
-        console.log('PLAYABLEREQ', error, response);
 });
 
 cozysdk.defineRequest('Track', 'file', (doc) => {
@@ -73,7 +69,6 @@ cozysdk.defineRequest('Track', 'file', (doc) => {
             emit(doc._id, doc);
         }
     }, (error, response) => {
-        console.log('TRACKFILEREQ', error, response);
 });
 
 cozysdk.defineRequest('Track', 'soundcloud', (doc) => {
@@ -81,7 +76,6 @@ cozysdk.defineRequest('Track', 'soundcloud', (doc) => {
             emit(doc._id, doc);
         }
     }, (error, response) => {
-        console.log('TRACKSCREQ', error, response);
 });
 
 export default Tracks;

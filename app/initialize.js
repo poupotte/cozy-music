@@ -3,7 +3,6 @@ import Polyglot from 'node-polyglot';
 
 function initLocale() {
     let locale = document.documentElement.getAttribute('lang');
-    console.log(locale);
     let phrases;
     try {
     	phrases = require("./locales/#{locale}")

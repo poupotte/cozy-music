@@ -21,7 +21,6 @@ const TrackView = Mn.ItemView.extend({
     },
 
     delete(e) {
-        console.log('delete')
         let item = this.model;
         item.set('hidden', true);
         item.save();
