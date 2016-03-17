@@ -31,7 +31,8 @@ class Soundcloud {
                 if (!exist) {
                     this.importTrack(track);
                 } else {
-                    alert('This track is already in the Database')
+                    let msg = t('track is already in the database');
+                    application.channel.request('notification', msg);
                 }
             }
         });
@@ -53,7 +54,9 @@ class Soundcloud {
             genre: track.genre,
             duration: track.duration
         });
-        application.allTracks.add(newTrack);
+        application.allTracks.get('tracks').create(newTrack);
+        let msg = t('stream track imported');
+        application.channel.request('notification', msg);
     }
 
     addClientID(url) {

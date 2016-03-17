@@ -8,7 +8,6 @@ const Tracks = Backbone.Collection.extend({
     model: Track,
 
     initialize(models, options) {
-        this.on('add', this.onAdd, this);
         this.type = options.type;
         if (this.type == 'upNext') {
             this.listenTo(application, 'start', this.addCurrentToUpNext);
@@ -16,24 +15,15 @@ const Tracks = Backbone.Collection.extend({
     },
 
     addCurrentToUpNext() {
-        console.log('addCurrentToUpNext')
         this.listenTo(
             application.appState,
             'change:currentTrack',
-            function() {
-                console.log('change:currentTrack')
-                let currentTrack = application.appState.get('currentTrack');
+            function(appState, currentTrack) {
                 if (!this.contains(currentTrack)) {
                     this.push(currentTrack);
                 }
             }
         );
-    },
-
-    onAdd(track) {
-        if (!track.get('_id')) {
-            track.save();
-        }
     },
 
     comparator(model) {

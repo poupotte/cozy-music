@@ -5,29 +5,31 @@ import application from '../application';
 
 
 const Content = Mn.LayoutView.extend({
-    
+
     template: require('./templates/content'),
 
     regions: {
-        header: '[role="header"]',
-        tracks: '[role="tracks"]',
+        header: '[role="complementary"]',
+        tracks: '#tracks',
     },
 
     onBeforeShow() {
-        let header = new HeaderView({ model: application.appState })
+        let appState = application.appState;
+        let currentPlaylist = appState.get('currentPlaylist');
+        let header = new HeaderView({ model: appState })
         this.showChildView('header', header);
         this.listenTo(
-            application.appState,
+            appState,
             'change:currentPlaylist',
             this.switchPlaylist
         );
-        this.switchPlaylist();
+        this.switchPlaylist(appState, currentPlaylist);
     },
 
-    switchPlaylist() {
-        let collection = application.appState.get('currentPlaylist').get('tracks');
+    switchPlaylist(appState, currentPlaylist) {
+        let collection = currentPlaylist.get('tracks');
         this.showChildView('tracks',
-            new TracksView({ collection: collection})
+            new TracksView({ collection: collection })
         );
     }
 });

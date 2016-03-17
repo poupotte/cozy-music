@@ -1,5 +1,5 @@
-import Mn from 'backbone.marionette';
 import Backbone from 'backbone';
+import Mn from 'backbone.marionette';
 import Tracks from './collections/tracks';
 import Playlist from './models/playlist';
 import Playlists from './collections/playlists';
@@ -22,10 +22,11 @@ let Application = Mn.Application.extend({
 
     onBeforeStart () {
         let allTracks = new Tracks([], { type: 'all' });
+        let self = this;
         allTracks.fetch({
             success() {
-                app.allTracks.get('tracks').each(function(track) {
-                    app.upNext.get('tracks').add(track);
+                self.allTracks.get('tracks').each(function(track) {
+                    self.upNext.get('tracks').add(track);
                 });
             }
         });
@@ -56,6 +57,4 @@ let Application = Mn.Application.extend({
     }
 });
 
-let app = new Application();
-
-export default app;
+export default new Application();

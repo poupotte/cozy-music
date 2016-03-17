@@ -33,6 +33,10 @@ var loaders = [
         loader: 'underscore'
     },
     {
+        test: /\.json$/,
+        loader: 'json'
+    },
+    {
         test: /\.styl$/,
         loader: ExtractTextPlugin.extract('style', cssOptions + '!stylus')
     },
@@ -129,7 +133,7 @@ module.exports = {
         filename: optimize? 'app.[hash].js' : 'app.js',
     },
     resolve: {
-        extensions: ['', '.js', '.sass', '.jst']
+        extensions: ['', '.js', '.sass', '.jst', '.json']
     },
     debug: !optimize,
     devtool: 'source-map',

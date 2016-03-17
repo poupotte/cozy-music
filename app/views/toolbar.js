@@ -7,7 +7,7 @@ import application from '../application';
 
 
 const Toolbar = Mn.LayoutView.extend({
-    
+
     template: require('./templates/toolbar'),
 
     ui: {
@@ -24,8 +24,11 @@ const Toolbar = Mn.LayoutView.extend({
 
     events: {
         'click #sync-files': 'sync',
-        'click #import-sc': 'importStream',
-        'click #search': 'search'
+        'click @ui.importSC': 'importStream',
+        'click @ui.search': 'search',
+        'focusout @ui.importSC': 'focusoutImportSc',
+        'focusout @ui.search': 'focusoutSearch',
+        'keyup @ui.importText': 'keyImportScText'
     },
 
     sync() {
@@ -33,27 +36,34 @@ const Toolbar = Mn.LayoutView.extend({
     },
 
     onRender() {
-        let ui = this.ui;
-        this.showChildView('playlists', new PlaylistsView());
-        ui.importSC.focusout(function() {
-            if (ui.importText.val() == '') {
-                ui.importSC
-                    .addClass('button')
-                    .removeClass('input')
-                    .removeClass('input-focused');
-            }
-        });
-        ui.search.focusout(function() {
-            if (ui.searchText.val() == '') {
-                ui.search.removeClass('input-focused');
-            }
-        });
-        ui.importText.keyup(function(e) {
-            if(e.keyCode == 13) {
-                scdl.import(ui.importText.val());
-            }
-        });
+        this.showChildView('playlists', new PlaylistsView({
+            collection: application.allPlaylists
+        }));
         application.channel.reply('notification', this.showNotification, this);
+    },
+
+    keyImportScText(e) {
+        let url = this.ui.importText.val();
+        if(e.keyCode == 13) {
+            scdl.import(url);
+            this.ui.importText.val('');
+            this.focusoutImportSc();
+        }
+    },
+
+    focusoutSearch() {
+        if (this.ui.searchText.val() == '') {
+            this.ui.search.removeClass('input-focused');
+        }
+    },
+
+    focusoutImportSc() {
+        if (this.ui.importText.val() == '') {
+            this.ui.importSC
+                .addClass('button')
+                .removeClass('input')
+                .removeClass('input-focused');
+        }
     },
 
     showNotification(msg) {

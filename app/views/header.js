@@ -18,11 +18,11 @@ const Header = Mn.ItemView.extend({
             this.model.get('currentPlaylist').get('tracks'),
             'update reset',
             this.render
-        ); 
+        );
    },
 
     serializeData() {
-        let currentPlaylist = this.model.get('currentPlaylist')
+        let currentPlaylist = this.model.get('currentPlaylist');
         return {
             title: currentPlaylist.get('title'),
             count: currentPlaylist.get('tracks').length
@@ -35,14 +35,19 @@ const Header = Mn.ItemView.extend({
             this.model.get('currentPlaylist').get('tracks'),
             'update reset',
             this.render
-        ); 
+        );
         this.render();
+    },
+
+    deletePlaylist() {
+        let currentPlaylist = this.model.get('currentPlaylist');
+        application.channel.trigger('delete:playlist', currentPlaylist);
     },
 
     resetUpNext() {
         application.appState.set('currentTrack', undefined);
         application.upNext.get('tracks').reset();
-        application.channel.request('reset:UpNext')
+        application.channel.request('reset:UpNext');
     },
 
 });

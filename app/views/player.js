@@ -4,7 +4,7 @@ import { timeToString } from '../libs/utils';
 
 
 const Player = Mn.LayoutView.extend({
-    
+
     template: require('./templates/player'),
 
     ui: {
@@ -23,17 +23,17 @@ const Player = Mn.LayoutView.extend({
         'click #prev': 'prev',
         'click #play': 'toggle',
         'click #next': 'next',
-        'click #progress-bar': 'scroll',
-        'click #volume-bar': 'changeVol'
+        'click @ui.progressBar': 'scroll',
+        'click @ui.volumeBar': 'changeVol'
     },
 
     initialize() {
         application.channel.reply('reset:UpNext', this.render, this);
-        this.listenTo(application.appState, 'change:currentTrack', function() {
-            let currentTrack = application.appState.get('currentTrack');
-            if (currentTrack) {
-                this.load(currentTrack);
-            }
+        this.listenTo(application.appState, 'change:currentTrack',
+            function(appState, currentTrack) {
+                if (currentTrack) {
+                    this.load(currentTrack);
+                }
         });
     },
 
@@ -66,14 +66,31 @@ const Player = Mn.LayoutView.extend({
         audio.src = url;
         audio.load();
         audio.play();
-        this.ui.playButton.children('use').attr(
-            'xlink:href', 
+        this.ui.playButton.find('use').attr(
+            'xlink:href',
             require('../assets/icons/pause-lg.svg')
         );
     },
 
+    toggle() {
+        let audio = this.ui.player.get(0);
+        if (audio.paused && audio.src) {
+            audio.play();
+            this.ui.playButton.find('use').attr(
+                'xlink:href',
+                require('../assets/icons/pause-lg.svg')
+            );
+        } else if (audio.src) {
+            audio.pause();
+            this.ui.playButton.find('use').attr(
+                'xlink:href',
+                require('../assets/icons/play-lg.svg')
+            );
+        }
+    },
+
     prev() {
-        let upNext = application.upNext;
+        let upNext = application.upNext.get('tracks');
         let currentTrack = application.appState.get('currentTrack');
         let index = upNext.indexOf(currentTrack);
         let prev = upNext.at(index - 1)
@@ -83,7 +100,7 @@ const Player = Mn.LayoutView.extend({
     },
 
     next() {
-        let upNext = application.upNext;
+        let upNext = application.upNext.get('tracks');
         let currentTrack = application.appState.get('currentTrack');
         let index = upNext.indexOf(currentTrack);
         let next = upNext.at(index + 1)
@@ -112,23 +129,6 @@ const Player = Mn.LayoutView.extend({
         let bar = this.ui.volumeBar.get(0);
         let volume = (e.pageX - bar.offsetLeft) / bar.clientWidth;
         audio.volume = volume;
-    },
-
-    toggle() {
-        let audio = this.ui.player.get(0);
-        if (audio.paused && audio.src) {
-            audio.play();
-            this.ui.playButton.children('use').attr(
-                'xlink:href', 
-                require('../assets/icons/pause-lg.svg')
-            );
-        } else if (audio.src) {
-            audio.pause();
-            this.ui.playButton.children('use').attr(
-                'xlink:href', 
-                require('../assets/icons/play-lg.svg')
-            );
-        }
     },
 
     timeupdate() {

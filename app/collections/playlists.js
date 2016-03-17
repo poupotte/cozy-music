@@ -1,23 +1,27 @@
 import Backbone from 'backbone';
 import Playlist from '../models/playlist';
 import cozysdk from 'cozysdk-client';
+import application from '../application';
 
 
 const Playlists = Backbone.Collection.extend({
-   	
+
    	model: Playlist,
 
+    comparator: 'title',
+
     initialize() {
-        this.on('add', this.onAdd, this);
+        this.listenTo(
+            application.channel,
+            'delete:playlist',
+            this.deletePlaylist
+        );
     },
 
-    onAdd(playlist) {
-        if (!playlist.get('_id')) {
-            playlist.save()
-        }
+    deletePlaylist(playlist) {
+        this.remove(playlist);
+        playlist.destroy();
     },
-    
-    comparator: 'title',
 
     sync(method, model, options) {
         if (method == 'read') {

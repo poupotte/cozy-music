@@ -4,12 +4,17 @@ import Tracks from '../collections/tracks';
 
 
 const Playlist = Backbone.Model.extend({
-    
+
     defaults: {
         _id: undefined,
         title: '',
-        tracks: new Tracks([], {}),
+        tracks: '',
         dateAdded: Date.now
+    },
+
+    initialize(attributes, options) {
+        let tracks = attributes.tracks || new Tracks([], {});
+        this.set('tracks', tracks);
     },
 
     idAttribute:'_id',

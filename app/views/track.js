@@ -4,7 +4,7 @@ import { timeToString } from '../libs/utils';
 
 
 const TrackView = Mn.ItemView.extend({
-    
+
     template: require('./templates/track'),
 
     tagName: 'tr',
@@ -19,7 +19,7 @@ const TrackView = Mn.ItemView.extend({
     play(e) {
         application.appState.set('currentTrack', this.model);
     },
-    
+
     delete(e) {
         console.log('delete')
         let item = this.model;
@@ -27,24 +27,15 @@ const TrackView = Mn.ItemView.extend({
         item.save();
         e.stopPropagation();
     },
-    
+
     serializeData() {
-        let title = this.model.get('metas').title;
-        let album = this.model.get('metas').album;
-        let artist = this.model.get('metas').artist;
-        let duration;
-        if (this.model.get('metas').duration) {
-            duration = timeToString(this.model.get('metas').duration / 1000);
-        } else {
-            duration = '--:--';
-        }
-        return {
-            number: 4,
-            title: title,
-            artist: artist,
-            album: album,
-            duration: duration
-        };
+        let metas = this.model.get('metas');
+        return _.defaults(
+            _.extend({}, metas, {
+                duration: metas.duration ? timeToString(metas.duration / 1000) : '--:--'
+            }),
+            { artist: '', album: '', number: 4 }
+        );
     }
 });
 

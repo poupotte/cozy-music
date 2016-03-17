@@ -18,34 +18,47 @@ const Playlists = Mn.CompositeView.extend({
     },
 
     events: {
-        'click p': 'changePlaylist',
-        'click #add-playlist': 'createPlaylist'
+        'click .playlist': 'changePlaylist',
+        'click @ui.addPlaylist': 'createPlaylist',
+        'focusout @ui.addPlaylist': 'focusoutAddPlaylist',
+        'keyup @ui.playlistText': 'keyupPlaylistText'
     },
 
-    onRender() {
-        let ui = this.ui;
-        ui.addPlaylist.focusout(function() {
-            if (ui.playlistText.val() == '') {
-                ui.addPlaylist
-                        .addClass('add-playlist')
-                        .removeClass('input');
-            }
-        });
-        ui.playlistText.keyup(function(e) {
-            if(e.keyCode == 13) {
-                let newPlaylist = new Playlist();
-                newPlaylist.set('title', ui.playlistText.val());
-                application.allPlaylists.add(newPlaylist);
-                ui.addPlaylist
-                        .addClass('add-playlist')
-                        .removeClass('input');
-            }
-        });
+    initialize() {
+        this.listenTo(
+            application.channel,
+            'delete:playlist',
+            this.deletedPlaylist
+        );
+    },
+
+    keyupPlaylistText(e) {
+        let title = this.ui.playlistText.val();
+        if(e.keyCode == 13) {
+            let newPlaylist = new Playlist({ title: title });
+            application.allPlaylists.create(newPlaylist);
+            this.ui.playlistText.val('');
+            this.focusoutAddPlaylist();
+        }
+    },
+
+    deletedPlaylist(playlist) {
+        let currentPlaylist = application.appState.get('currentPlaylist');
+        if (currentPlaylist == playlist) {
+            application.appState.set('currentPlaylist', application.allTracks);
+            $("#all-song").addClass('selected');
+        }
+    },
+
+    focusoutAddPlaylist() {
+        if (this.ui.playlistText.val() == '') {
+            this.ui.addPlaylist.addClass('add-playlist').removeClass('input');
+        }
     },
 
     changePlaylist(e) {
         let playlist = $(e.currentTarget);
-        let playlists = $(".playlists p");
+        let playlists = this.$('.playlist');
         let index = playlists.index(playlist) - 2;
         playlists.removeClass('selected');
         playlist.addClass('selected');
@@ -56,16 +69,14 @@ const Playlists = Mn.CompositeView.extend({
             application.appState.set('currentPlaylist', application.allTracks);
         } else {
             this.currentIndex = index;
+            let playlist = application.allPlaylists.at(index);
+            application.appState.set('currentPlaylist', playlist);
         }
     },
 
     createPlaylist() {
         this.ui.addPlaylist.removeClass('add-playlist').addClass('input');
         this.ui.playlistText.focus();
-    },
-    
-    initialize() {
-        this.collection = application.allPlaylists;
     }
 });
 

@@ -4,25 +4,21 @@ import PlayerView from './player';
 import ToolbarView from './toolbar';
 
 const AppLayout = Mn.LayoutView.extend({
-    
+
     template: require('./templates/app_layout'),
 
     el: '[role="application"]',
 
     regions: {
         toolbar: '[role="toolbar"]',
-        content: '[role="content"]',
-        player: '[role="player"]'
+        content: '[role="contentinfo"]',
+        player: '#player-container'
     },
 
     onRender() {
         this.showChildView('content', new ContentView());
         this.showChildView('player', new PlayerView());
         this.showChildView('toolbar', new ToolbarView());
-    },
-
-    getTracksView() {
-        return this.content.currentView.tracks.currentView;
     }
 });
 

@@ -18,6 +18,8 @@
     "backbone.radio": "^1.0.2",
     "cozysdk-client": "0.0.4",
     "jquery": "^2.2.0",
+    "json-loader": "^0.5.4",
+    "node-polyglot": "^1.0.0",
     "underscore": "^1.8.3"
   },
   "devDependencies": {

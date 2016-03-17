@@ -33,7 +33,21 @@ div[role='application']
     height: 100%
     width: 100%
     display: flex
-    
+
+:focus
+    outline:none
+::-moz-focus-inner
+    border: 0
+
+button
+    all: unset
+    cursor: pointer
+
+ellipsis()
+    overflow: hidden
+    display: inline
+    text-overflow: ellipsis
+
 placeholder()
     &::-webkit-input-placeholder
         {block}

@@ -23,16 +23,16 @@ div[role='toolbar']
             width: 100%
             padding-left: 15px
             box-sizing: border-box
-            
+
             #import-sc-text
                 display: none
-            
+
             svg
                 position: relative
                 height: 20px
                 width: 20px
                 top: 6px
-                
+
                 path
                     fill: white
 
@@ -46,22 +46,23 @@ div[role='toolbar']
                 height: 20px
                 color: white
                 display: inline-block
+                text-transform: uppercase
 
         .button:active
             padding-top: 1px
-        
+
         .button-focused
             background-color: transparent
             border: solid 1px $blue
-            
-            
+
+
             input[type='text']
                 all: unset
                 box-sizing: border-box
                 width: 100%
                 height: 100%
                 color: $text-light
-        
+
         #search
             margin-top: 30px
 
@@ -73,7 +74,7 @@ div[role='toolbar']
             border: solid 1px $grey
             box-sizing: border-box
             position: relative
-            
+
             p
                 display: none
 
@@ -83,7 +84,7 @@ div[role='toolbar']
                 width: 20px
                 top: 8px
                 left: 15px
-                
+
                 path
                     fill: $grey
 
@@ -94,7 +95,7 @@ div[role='toolbar']
                 box-sizing: border-box
                 width: 100%
                 height: 100%
-            
+
         .input-focused
             border: solid 1px $blue
             font-family: 'SSP-reg'
@@ -105,31 +106,31 @@ div[role='toolbar']
 
     .playlists
         padding-right: 16px
-        
+
         .container
             padding-left: 16px
 
         .add-playlist
-                cursor: pointer
-                
-                input[type='text']
-                    display: none
-                
-                h4
-                    margin-top: 0px
-                    padding-left: 20px
-                    display: inline-block
-                
-                svg
-                    height 16px
-                    width: 16px
-                    position: relative
-                    left: 16px
-                    top: 4px
+            cursor: pointer
 
-                    path
-                        fill: #92a0b2
-                    
+            input[type='text']
+                display: none
+
+            h4
+                margin-top: 0px
+                padding-left: 20px
+                display: inline-block
+
+            svg
+                height 16px
+                width: 16px
+                position: relative
+                left: 16px
+                top: 4px
+
+                path
+                    fill: #92a0b2
+
         .input
             border: solid 1px $blue
             font-family: 'SSP-reg'
@@ -137,7 +138,7 @@ div[role='toolbar']
             height: 32px
             border-radius: 2px
             position: relative
-            
+
             h4
                 display: none
 
@@ -147,7 +148,7 @@ div[role='toolbar']
                 width: 16px
                 top: 8px
                 left: 15px
-                
+
                 path
                     fill: $blue
 
@@ -168,21 +169,22 @@ div[role='toolbar']
             font-size: 13px
             line-height: 2.5
             color: $text
+            text-transform: uppercase
 
-        p
-            padding-left: 32px    
+        li
+            padding-left: 32px
             height: 36px
             font-size: 16px
             line-height: 2.3
             color: $text-dark
             cursor: pointer
 
-        p.selected
+        li.selected
             color: white
             border-top-right-radius: 2px
             border-bottom-right-radius: 2px
             background-color: #f14a53
-            
+
     .notification
         position: absolute
         left: 16px
@@ -193,8 +195,8 @@ div[role='toolbar']
         background-color: #696d78
         box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.1)
         opacity: 0
-        display: none
-        
+        visibility: hidden
+
         p
             position: absolute
             top: 10px
@@ -205,25 +207,25 @@ div[role='toolbar']
             font-size: 16px
             line-height: 1.3
             color: #ffffff
-        
+
         svg
             position: absolute
             left: 14px
             top: 13px
             width: 40px
             height: 40px
-            
+
             path
                 fill: white
-                
-    .show
+
+    .notify
         animation-timing-function: ease;
-        animation-name: show;
+        animation-name: notify;
         animation-duration: 3s;
 
-@keyframes show {
-    0%   {opacity: 0}
+@keyframes notify {
+    0%   {opacity: 0; visibility: visible}
     10%  {opacity: 1}
     90%  {opacity: 1}
-    100% {opacity: 0}
+    100% {opacity: 0; visibility: hidden}
 }

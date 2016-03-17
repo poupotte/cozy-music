@@ -14,11 +14,7 @@ const Notification = Mn.ItemView.extend({
     },
 
     onRender() {
-        this.ui.notification.show();
-        this.ui.notification.addClass('show');
-        setTimeout(function() {
-            $('.notification').hide();
-        }, 4500);
+        this.ui.notification.removeClass('notify').addClass('notify');
     },
 
     serializeData() {

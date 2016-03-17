@@ -20,8 +20,21 @@ const TracksView = Mn.CompositeView.extend({
         );
     },
 
-    setCurrentTrack() {
-        let currentTrack = application.appState.get('currentTrack');
+    onDestroy() {
+        try {
+            this.stopListening(); // throw weird errors
+        } catch (e) {
+            //console.log(e);
+        }
+    },
+
+    remove() {
+        this._removeElement();
+        //this.stopListening(); // Overrided for now
+        return this;
+    },
+
+    setCurrentTrack(appState, currentTrack) {
         if (currentTrack) {
             let item = this.children.findByModel(currentTrack);
             if (item) {

@@ -1,4 +1,4 @@
-div[role='player']
+#player-container
     box-sizing: border-box
     position:absolute
     bottom:0
@@ -7,7 +7,7 @@ div[role='player']
     width: 100%
     background-color: #eff1f4
     border: solid 1px #cedae4
-    
+
     audio
         position: absolute
         top: 20px
@@ -16,23 +16,23 @@ div[role='player']
     .player
         display: flex
         width: 100%
-    
+
     .play-controls
         padding-left 16px
         padding-top: 12px
         padding-bottom: 12px
         width: 280px
         box-sizing: border-box
-        
+
         .album
             height: 48px
             width: 48px
             box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.1)
             padding: 0px
             background-color: white
-            
+
             path
-                fill: $blue 
+                fill: $blue
 
         svg
             height: 34px
@@ -40,8 +40,7 @@ div[role='player']
             padding-top: 7px
             padding-bottom: 7px
             padding-left: 28px
-            cursor: pointer
-            
+
             path
                 fill: #696d78
 
@@ -49,19 +48,20 @@ div[role='player']
         margin-left: 32px
         margin-right: 32px
         flex-grow: 1
-        
+
         .text-container
             width: 100%
             justify-content: center
             display: flex
 
             p
+                ellipsis()
                 margin-top: 6px
                 color: $text-light
-       
+
             #artist
                 color: $text-light
-                
+
         p
             color: #92a0b2
             height: 20px
@@ -70,7 +70,7 @@ div[role='player']
             line-height: 1.5
             display: inline-block
             margin-top: 2px
-                
+
         #total-time
             float: right
 
@@ -81,7 +81,7 @@ div[role='player']
             height: 4px
             border-radius: 2px
             cursor: pointer
-            
+
             #progress
                 width: 0%
                 height: 4px
@@ -91,10 +91,7 @@ div[role='player']
 
     .controls
         width: 280px
-        
-        #speaker
-            margin-right: 8px
-        
+
         #volume-bar
             width: 90px
             height: 4px
@@ -110,21 +107,18 @@ div[role='player']
                 height: 4px
                 border-radius: 2px
                 background-color: #696d78
-        
+
         svg
             width: 20px
             height: 20px
             margin-top: 26px
-            margin-right: 16px
+            margin-right: 10px
             display: inline-block
-            cursor: pointer
-            
+
             path
                 fill: #92a0b2
-                
+
         #broadcast
-            margin-left: 104px
+            margin-left: 100px
             path
                 fill: #f14a53
-                
-

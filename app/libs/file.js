@@ -30,7 +30,7 @@ function getAllTracksFileId(musicFiles) {
             }
             saveTrack(musicFiles, tracksFileId);
             deleteTrack(allTracksFiles, musicFilesFileId);
-            let msg = 'All your audio files have been added';
+            let msg = t('all your audio files have been added');
             application.channel.request('notification', msg);
         }
     });
@@ -39,7 +39,7 @@ function getAllTracksFileId(musicFiles) {
 function deleteTrack(allTracks, musicFilesFileId) {
     for (let i = 0; i < allTracks.length; i++) {
         let t = allTracks[i];
-        if (musicFilesFileId.indexOf(t.get('ressource').fileID) <= -1) { 
+        if (musicFilesFileId.indexOf(t.get('ressource').fileID) <= -1) {
             t.destroy();
         }
     }
@@ -52,7 +52,7 @@ function saveTrack(musicFiles, tracksFileId) {
         let trackname = file.name; // TO DO : ID3TAG
         let fileid = file._id;
         let t = new Track({
-            metas: { 
+            metas: {
                 title: trackname
             },
             ressource: {
@@ -62,7 +62,7 @@ function saveTrack(musicFiles, tracksFileId) {
         });
 
         if (tracksFileId.indexOf(fileid) <= -1) { // does not contains fileid 
-            application.allTracks.add(t);
+            application.allTracks.get('tracks').create(t);
         }
     }
 }

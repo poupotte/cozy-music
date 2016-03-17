@@ -4,24 +4,32 @@
         <% if (false) { %>
             <img class="album" src="album"></img>
         <% } else { %>
-            <svg class="album">
-                <use xlink:href="<%= require('../../assets/icons/music-lg.svg') %>"/>
-            </svg>
+            <button>
+                <svg class="album">
+                    <use xlink:href="<%= require('../../assets/icons/music-lg.svg') %>"/>
+                </svg>
+            </button>
         <% }%>
 
-        <svg id="prev">
-            <use xlink:href="<%= require('../../assets/icons/prev-lg.svg') %>"/>
-        </svg>
-        <svg id="play">
-            <use xlink:href="<%= require('../../assets/icons/play-lg.svg') %>"/>
-        </svg>
-        <svg id="next">
-            <use xlink:href="<%= require('../../assets/icons/next-lg.svg') %>"/>
-        </svg>
+        <button id="prev">
+            <svg>
+                <use xlink:href="<%= require('../../assets/icons/prev-lg.svg') %>"/>
+            </svg>
+        </button>
+        <button id="play">
+            <svg>
+                <use xlink:href="<%= require('../../assets/icons/play-lg.svg') %>"/>
+            </svg>
+        </button>
+        <button id="next">
+            <svg>
+                <use xlink:href="<%= require('../../assets/icons/next-lg.svg') %>"/>
+            </svg>
+        </button>
     </div>
     <div class="timeline">
         <div class="text-container">
-            <p id="trackname">Pas de musique :(</p>
+            <p id="trackname"><%= t('no playing music') %></p>
         </div>
         <div id="progress-bar">
             <div id="progress"></div>
@@ -30,20 +38,28 @@
         <p id="total-time">0:00</p>
     </div>
     <div class="controls">
-        <svg id="shuffle">
-            <use xlink:href="<%= require('../../assets/icons/shuffle-sm.svg') %>"/>
-        </svg>
-        <svg id="repeat">
-            <use xlink:href="<%= require('../../assets/icons/repeat-sm.svg') %>"/>
-        </svg>
-        <svg id="speaker">
-            <use xlink:href="<%= require('../../assets/icons/speaker-sm.svg') %>"/>
-        </svg>
+        <button id="shuffle">
+            <svg>
+                <use xlink:href="<%= require('../../assets/icons/shuffle-sm.svg') %>"/>
+            </svg>
+        </button>
+        <button id="repeat">
+            <svg>
+                <use xlink:href="<%= require('../../assets/icons/repeat-sm.svg') %>"/>
+            </svg>
+        </button>
+        <button id="speaker">
+            <svg>
+                <use xlink:href="<%= require('../../assets/icons/speaker-sm.svg') %>"/>
+            </svg>
+        </button>
         <div id="volume-bar">
             <div id="volume"></div>
         </div>
-        <svg id="broadcast">
-            <use xlink:href="<%= require('../../assets/icons/broadcast-sm.svg') %>"/>
-        </svg>
+        <button id="broadcast">
+            <svg>
+                <use xlink:href="<%= require('../../assets/icons/broadcast-sm.svg') %>"/>
+            </svg>
+        </button>
     </div>
 </div>
