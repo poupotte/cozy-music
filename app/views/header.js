@@ -11,7 +11,9 @@ const Header = Mn.ItemView.extend({
         'click #delete-playlist': 'deletePlaylist'
     },
 
-    modelEvents: { "change:currentPlaylist": 'changedPlaylist' },
+    modelEvents: {
+      'change:currentPlaylist': 'changedPlaylist'
+   },
 
     initialize() {
        this.listenTo(

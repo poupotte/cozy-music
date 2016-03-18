@@ -6,7 +6,7 @@ import application from '../application';
 
 const Playlists = Backbone.Collection.extend({
 
-   	model: Playlist,
+    model: Playlist,
 
     comparator: 'title',
 

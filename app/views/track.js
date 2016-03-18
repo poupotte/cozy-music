@@ -14,13 +14,14 @@ const TrackView = Mn.ItemView.extend({
         'click .delete': 'delete'
     },
 
-    modelEvents: { change: 'render' },
+    modelEvents: {
+        change: 'render'
+    },
 
     play(e) {
         application.appState.set('currentTrack', this.model);
     },
 
-    // TODO not used for now
     delete(e) {
         let item = this.model;
         item.set('hidden', true);
@@ -30,12 +31,13 @@ const TrackView = Mn.ItemView.extend({
 
     serializeData() {
         let metas = this.model.get('metas');
-        return _.defaults(
-            _.extend({}, metas, {
-                duration: metas.duration ? timeToString(metas.duration / 1000) : '--:--'
-            }),
-            { artist: '', album: '', number: '' }
-        );
+        return _.extend( _.defaults({}, metas, {
+            artist: '',
+            album: '',
+            number: ''
+        }), {
+            duration: metas.duration? timeToString(metas.duration/1000):'--:--'
+        });
     }
 });
 
