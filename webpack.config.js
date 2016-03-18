@@ -2,9 +2,9 @@ var path = require('path');
 
 var webpack = require('webpack');
 
+var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var CopyPlugin        = require('copy-webpack-plugin');
-var AssetsPlugin      = require('assets-webpack-plugin');
 var BrowserSyncPlugin = require('browser-sync-webpack-plugin');
 
 // use the `OPTIMIZE` env VAR to switch from dev to production build
@@ -68,13 +68,18 @@ var plugins = [
     new ExtractTextPlugin(optimize? 'app.[hash].css' : 'app.css'),
     new CopyPlugin([
         {
-            from: 'app/assets/index.html'
-        },
-        {
             from: 'app/assets/fonts',
             to: 'fonts'
         }
     ]),
+    new HtmlWebpackPlugin({
+        template: './app/index.ejs',
+        inject: false,
+        minify: {
+            collapseWhitespace: true,
+            collapseBooleanAttributes: true
+        }
+    }),
     new webpack.ProvidePlugin({
         $: "jquery",
         _: "underscore"
@@ -83,9 +88,6 @@ var plugins = [
 
 if (optimize) {
     plugins = plugins.concat([
-        new AssetsPlugin({
-            filename: '../build/webpack-assets.json'
-        }),
         new webpack.optimize.DedupePlugin(),
         new webpack.optimize.OccurenceOrderPlugin(),
         new webpack.optimize.UglifyJsPlugin({
@@ -129,7 +131,7 @@ var postcss = [
 module.exports = {
     entry: './app/initialize',
     output: {
-        path: path.join(optimize? '../build/client' : '', 'public'),
+        path: 'public',
         filename: optimize? 'app.[hash].js' : 'app.js',
     },
     resolve: {
