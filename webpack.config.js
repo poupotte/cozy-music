@@ -68,7 +68,7 @@ var plugins = [
     new ExtractTextPlugin(optimize? 'app.[hash].css' : 'app.css'),
     new CopyPlugin([
         {
-            from: 'app/assets/fonts',
+            from: 'vendor/fonts',
             to: 'fonts'
         }
     ]),
