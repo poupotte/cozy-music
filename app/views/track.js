@@ -18,6 +18,12 @@ const TrackView = Mn.ItemView.extend({
         change: 'render'
     },
 
+    initialize () {
+        this.listenTo(application.appState, {
+            'change:currentTrack': this.togglePlayingState
+        })
+    },
+
     play(e) {
         application.appState.set('currentTrack', this.model);
     },
@@ -38,7 +44,15 @@ const TrackView = Mn.ItemView.extend({
         }), {
             duration: metas.duration? timeToString(metas.duration/1000):'--:--'
         });
-    }
+    },
+
+    togglePlayingState () {
+        let isPlayed = application.appState.get('currentTrack') === this.model;
+        this.$el.toggleClass('playing', isPlayed);
+    },
+
 });
+
+TrackView.prototype.onRender = TrackView.prototype.togglePlayingState;
 
 export default TrackView;
