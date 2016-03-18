@@ -50,6 +50,7 @@
     "copy:manifest": "cp package.json public/",
     "postbuild": "npm run copy:manifest",
     "prebuild": "npm run clean",
+    "prewatch": "npm run clean",
     "publish": "git subtree push --prefix public origin build",
     "watch": "webpack --display-modules --display-chunks --watch"
   },
