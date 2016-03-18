@@ -47,6 +47,7 @@
   "scripts": {
     "clean": "rm -rf public",
     "prebuild": "npm run clean",
+    "prewatch": "npm run clean",
     "build": "env OPTIMIZE=true webpack",
     "watch": "webpack --display-modules --display-chunks --watch"
   },
