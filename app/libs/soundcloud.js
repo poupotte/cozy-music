@@ -1,4 +1,6 @@
 import Track from '../models/track';
+import application from '../application';
+import cozysdk from 'cozysdk-client';
 
 
 const api = 'https://api.soundcloud.com';
@@ -7,7 +9,7 @@ const clientID = '02gUJC0hH2ct1EGOcYXQIzRFU91c72Ea';
 class Soundcloud {
 
     import(url) {
-        this.get('/resolve', { url: url}, (res) => {
+        this.get('/resolve', { url: url }, (res) => {
             if (res.kind == 'playlist') {
 
             } else if (res.kind == 'track') {
@@ -16,11 +18,12 @@ class Soundcloud {
         });
     }
 
+    // Check if the track is already in the database
     checkIfAlreadyExist(track) {
         cozysdk.run('Track', 'soundcloud', {}, (err, res) => {
             if (res) {
                 let exist = false;
-                const tracks = JSON.parse('' + res);
+                let tracks = JSON.parse('' + res);
                 for (let i = 0; i < tracks.length; i++) {
                     if (tracks[i].value.ressource.url == track.stream_url) {
                         exist = true;
@@ -29,15 +32,17 @@ class Soundcloud {
                 if (!exist) {
                     this.importTrack(track);
                 } else {
-                    alert('Already in DB')
+                    let msg = t('track is already in the database');
+                    application.channel.request('notification', msg);
                 }
             }
         });
     }
 
+    // Set the track's metas and save it.
     importTrack(track) {
         if (!track.streamable) {
-            alert('Track is not streamable');
+            alert('This track is not streamable');
             return;
         }
         let newTrack = new Track();
@@ -49,16 +54,19 @@ class Soundcloud {
             title: track.title,
             artist: track.user.username,
             genre: track.genre,
+            duration: track.duration
         });
-        console.log(newTrack);
-        newTrack.save();
-        alert('Imported ' + track.title);
+        application.allTracks.get('tracks').create(newTrack);
+        let msg = t('stream track imported');
+        application.channel.request('notification', msg);
     }
 
+    // Add our clientID to the current url
     addClientID(url) {
         return url + '?client_id=' + clientID;
     }
 
+    // Call the soundcoud API
     get(endpoint, params, callback) {
         if (typeof params === 'function') {
             callback = params;
@@ -77,8 +85,6 @@ class Soundcloud {
                 url += '&' + key + '=' + params[key];
             }
         }
-
-        console.log('SCDL', url);
 
         $.ajax({
             dataType: 'json',

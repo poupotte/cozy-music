@@ -1,38 +1,46 @@
 import Mn from 'backbone.marionette';
-import Tracks from '../collections/tracks';
 import TrackView from './track';
+import application from '../application';
 
-const TracksView = Mn.CollectionView.extend({  
-    el: '#app-hook',
-    tagName: 'ul',
+
+const TracksView = Mn.CompositeView.extend({
+
+    template: require('./templates/tracks'),
+
+    childViewContainer: '#track-list',
 
     childView: TrackView,
-    events: {
-        'click a': 'play',
-        'click .delete': 'delete'
-    },
-    play: function (e) {
-        const id = e.currentTarget.dataset.id;
-        const item = this.collection.get(id);
-        item.getStreamURL(playAudio);
-    },
-    delete: function (e) {
-        const id = e.currentTarget.dataset.id;
-        const item = this.collection.get(id);
-        item.set('hidden', true);
-        item.save();
-    },
-    initialize: function() {
-        const tracks = new Tracks();
-        tracks.fetch();
-        this.collection = tracks;
-    }
-});
 
-const playAudio = function(url) {
-    window.player.src = url;
-    window.player.load();
-    window.player.play();
-}
+    onRender() {
+        this.setCurrentTrack();
+        this.listenTo(
+            application.appState,
+            'change:currentTrack',
+            this.setCurrentTrack
+        );
+        this.setCurrentTrack(null, application.appState.get('currentTrack'));
+    },
+
+    remove() { // override to catch the error
+        this._removeElement();
+        try {
+            this.stopListening(); // throw weird errors
+        } catch (e) {
+            //console.log(e);
+        }
+        return this;
+    },
+
+    // highlight the current playing track
+    setCurrentTrack(appState, currentTrack) {
+        if (currentTrack) {
+            let item = this.children.findByModel(currentTrack);
+            if (item) {
+                item.$el.addClass('playing').siblings().removeClass('playing');
+            }
+        }
+    }
+
+});
 
 export default TracksView;

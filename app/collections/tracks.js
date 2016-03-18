@@ -1,42 +1,73 @@
 import Backbone from 'backbone';
 import Track from '../models/track';
-
+import cozysdk from 'cozysdk-client';
+import application from '../application'
 
 const Tracks = Backbone.Collection.extend({
+
     model: Track,
-    
-    comparator: function (collection) {
-        return collection.get('metas').title;
+
+    initialize(models, options) {
+        this.type = options.type;
+        if (this.type == 'upNext') {
+            this.listenTo(application, 'start', this.addCurrentToUpNext);
+            this.listenTo(
+                application.channel,
+                'reset:UpNext',
+                this.resetUpNext
+            );
+        }
     },
-    
-    sync: function (method, model, options) {
-        if (method == 'read') {
-            console.log('fetch');
-            cozysdk.run('Track', 'playable', {}, (err, res) => {
-                console.log('TRACKS fetch', err, res);
+
+    // UpNext : reset
+    resetUpNext() {
+        application.appState.set('currentTrack', undefined);
+        application.upNext.get('tracks').reset();
+    },
+
+    // UpNext : add the current track to up next if not alreay in it.
+    addCurrentToUpNext() {
+        this.listenTo(
+            application.appState,
+            'change:currentTrack',
+            function(appState, currentTrack) {
+                if (!this.contains(currentTrack)) {
+                    this.push(currentTrack);
+                }
+            }
+        );
+    },
+
+    comparator(model) {
+        return model.get('metas').title;
+    },
+
+    sync(method, model, options) {
+        if (method == 'read' && this.type) {
+            cozysdk.run('Track', this.type, {}, (err, res) => {
                 if (res) {
-                    const tracks = JSON.parse('' + res);
+                    let tracks = JSON.parse('' + res);
                     for (let i = 0; i < tracks.length; i++) {
                         this.add(tracks[i].value);
                     }
+                    options.success();
                 }
             });
         }
     }
 });
 
+// COZYSDK : Requests \\
 cozysdk.defineRequest('File', 'music', (doc) => {
         if (doc.class == 'music') {
             emit(doc._id, doc);
         }
     }, (error, response) => {
-        console.log('FILEMUSICREQ', error, response);
 });
 
 cozysdk.defineRequest('Track', 'all', (doc) => {
         emit(doc._id, doc);
     }, (error, response) => {
-        console.log('ALLTRACKREQ', error, response);
 });
 
 cozysdk.defineRequest('Track', 'playable', (doc) => {
@@ -44,7 +75,6 @@ cozysdk.defineRequest('Track', 'playable', (doc) => {
             emit(doc._id, doc);
         }
     }, (error, response) => {
-        console.log('PLAYABLEREQ', error, response);
 });
 
 cozysdk.defineRequest('Track', 'file', (doc) => {
@@ -52,7 +82,6 @@ cozysdk.defineRequest('Track', 'file', (doc) => {
             emit(doc._id, doc);
         }
     }, (error, response) => {
-        console.log('TRACKFILEREQ', error, response);
 });
 
 cozysdk.defineRequest('Track', 'soundcloud', (doc) => {
@@ -60,7 +89,6 @@ cozysdk.defineRequest('Track', 'soundcloud', (doc) => {
             emit(doc._id, doc);
         }
     }, (error, response) => {
-        console.log('TRACKSCREQ', error, response);
 });
 
 export default Tracks;

@@ -1,0 +1,63 @@
+$background-dark = #eff1f4
+$border-color = #cedae4
+$grey = #a7b5c6
+$white = #ffffff
+$blue = #0dbabe
+$text-dark = #32363f
+$text-light = #788195
+$text = #92a0b2
+$red = #ef4c57
+
+@import 'reset'
+global-reset()
+
+@font-face
+    font-family 'SSP-it'
+    font-style normal
+    src url('/apps/Cozic-v2/fonts/SourceSansPro-Italic.ttf')
+@font-face
+    font-family 'SSP-reg'
+    font-style normal
+    src url('/apps/Cozic-v2/fonts/SourceSansPro-Regular.ttf')
+@font-face
+    font-family 'SSP-sb'
+    font-style normal
+    src url('/apps/Cozic-v2/fonts/SourceSansPro-Semibold.ttf')
+
+html, body
+    height: 100%
+    font-family: 'SSP-reg'
+    overflow: hidden
+
+div[role='application']
+    height: 100%
+    width: 100%
+    display: flex
+
+:focus
+    outline:none
+::-moz-focus-inner
+    border: 0
+
+button
+    all: unset
+    cursor: pointer
+
+ellipsis()
+    overflow: hidden
+    display: inline
+    text-overflow: ellipsis
+
+placeholder()
+    &::-webkit-input-placeholder
+        {block}
+    &:-moz-placeholder
+        {block}
+    &::-moz-placeholder
+        {block}
+    &:-ms-input-placeholder
+        {block}
+
+@import 'content'
+@import 'toolbar'
+@import 'player'

@@ -4,18 +4,11 @@
     <meta charset="UTF-8">
     <title>Cozic</title>
     <link rel="stylesheet" href="app.css">
-    <script async src="app.js"></script>
+    <script defer src="app.js"></script>
 </head>
 
-<body onload="require('initialize')">
-	<input id="sync-from-files" type="submit" value="Get tracks from files">
-	<hr>
-	<input id="import-text" type="text" placeholder="enter a soundcloud link">
-	<input id="import" type="submit" value="Import">
-	<hr>
-	<audio id="player" controls autoplay preload autobuffer></audio>
-	<hr>
-    <div id="app-hook"></div>
+<body>
+    <div role="application"></div>
 </body>
 
 </html>

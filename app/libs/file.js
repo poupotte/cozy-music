@@ -1,24 +1,25 @@
 import Track from '../models/track';
+import application from '../application';
+import cozysdk from 'cozysdk-client';
 
 
-export const syncFiles = function () {
+export function syncFiles() {
     cozysdk.run('File', 'music', {}, (err, res) => {
-        console.log('syncFiles', err, res);
         if (res) {
-            const files = JSON.parse('' + res);
+            let files = JSON.parse('' + res);
             getAllTracksFileId(files);
         }
     });
 }
 
+// Get all needed variable
 function getAllTracksFileId(musicFiles) {
     cozysdk.run('Track', 'file', {}, (err, res) => {
-        console.log('getAllTracksFileId', err, res);
         let tracksFileId = [];
         let allTracksFiles = [];
         let musicFilesFileId = [];
         if (res) {
-            const tracks = JSON.parse('' + res);
+            let tracks = JSON.parse('' + res);
             for (let i = 0; i < tracks.length; i++) {
                 tracksFileId.push(tracks[i].value.ressource.fileID);
                 allTracksFiles.push(new Track(tracks[i].value));
@@ -28,27 +29,31 @@ function getAllTracksFileId(musicFiles) {
             }
             saveTrack(musicFiles, tracksFileId);
             deleteTrack(allTracksFiles, musicFilesFileId);
+            let msg = t('all your audio files have been added');
+            application.channel.request('notification', msg);
         }
     });
 }
 
+// Delete track if the files associated is deleted too
 function deleteTrack(allTracks, musicFilesFileId) {
     for (let i = 0; i < allTracks.length; i++) {
-        const t = allTracks[i];
-        if (musicFilesFileId.indexOf(t.get('ressource').fileID) <= -1) { 
+        let t = allTracks[i];
+        if (musicFilesFileId.indexOf(t.get('ressource').fileID) <= -1) {
             t.destroy();
         }
     }
 }
 
+// Save the track if it's a new file that has not been synced
 function saveTrack(musicFiles, tracksFileId) {
-    const files = musicFiles;
+    let files = musicFiles;
     for (let i = 0; i < files.length; i++) {
-        const file = files[i].value;
-        const trackname = file.name; // TO DO : ID3TAG
-        const fileid = file._id;
-        const t = new Track({
-            metas: { 
+        let file = files[i].value;
+        let trackname = file.name; // TO DO : ID3TAG
+        let fileid = file._id;
+        let t = new Track({
+            metas: {
                 title: trackname
             },
             ressource: {
@@ -57,8 +62,8 @@ function saveTrack(musicFiles, tracksFileId) {
             }
         });
 
-        if (tracksFileId.indexOf(fileid) <= -1) { // does not contains fileid 
-            t.save();
+        if (tracksFileId.indexOf(fileid) <= -1) { // does not contains fileid
+            application.allTracks.get('tracks').create(t);
         }
     }
 }

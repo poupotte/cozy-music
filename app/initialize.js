@@ -1,20 +1,20 @@
 import application from './application';
-import { syncFiles } from './libs/file';
-import scdl from './libs/soundcloud';
+import Polyglot from 'node-polyglot';
 
+function initLocale() {
+    let locale = document.documentElement.getAttribute('lang');
+    let phrases;
+    try {
+    	phrases = require("./locales/#{locale}")
+    } catch (e) {
+        phrases = require('./locales/en')
+    }
+    let polyglot = new Polyglot({phrases: phrases, locale: locale})
 
-window.player = document.querySelector('#player');
+    window.t = polyglot.t.bind(polyglot)
+}
 
-const sync = document.querySelector('#sync-from-files');
-sync.addEventListener('click', () => {
-    syncFiles();
-}, false);
-
-const importSC = document.querySelector('#import');
-const importURL = document.querySelector('#import-text');
-importSC.addEventListener('click', () => {
-    scdl.import(importURL.value);
-}, false);
-
-
-application.start();
+document.addEventListener('DOMContentLoaded', function () {
+	initLocale();
+	application.start();
+});
