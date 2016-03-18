@@ -70,6 +70,10 @@ var plugins = [
         {
             from: 'vendor/fonts',
             to: 'fonts'
+        },
+        {
+            from: 'vendor/app-icon.svg',
+            to: 'app-icon.svg'
         }
     ]),
     new HtmlWebpackPlugin({
