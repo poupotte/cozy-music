@@ -6,7 +6,7 @@
   "cozy-type": "static",
   "cozy-displayName": "Cozic-v2",
   "cozy-color": "#3BDA6C",
-  "icon-path": "main_icon.png",
+  "icon-path": "app-icon.svg",
   "author": "flyingrub",
   "repository": {
     "type": "git",
@@ -45,10 +45,13 @@
     "webpack": "1.12.14"
   },
   "scripts": {
+    "build": "env OPTIMIZE=true webpack",
     "clean": "rm -rf public",
+    "copy:manifest": "cp package.json public/",
+    "postbuild": "npm run copy:manifest",
     "prebuild": "npm run clean",
     "prewatch": "npm run clean",
-    "build": "env OPTIMIZE=true webpack",
+    "publish": "git subtree push --prefix public origin build",
     "watch": "webpack --display-modules --display-chunks --watch"
   },
   "cozy-permissions": {
