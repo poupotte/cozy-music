@@ -21,15 +21,13 @@ let Application = Mn.Application.extend({
     },
 
     onBeforeStart () {
-        let self = this;
-
         // All track initialization
         let allTracks = new Tracks([], { type: 'all' });
 
         allTracks.fetch({
-            success() { // For now initialize upNext with all track
-                self.allTracks.get('tracks').each(function(track) {
-                    self.upNext.get('tracks').add(track);
+            success: () => { // For now initialize upNext with all track
+                this.allTracks.get('tracks').each(track => {
+                    this.upNext.get('tracks').add(track);
                 });
             }
         });

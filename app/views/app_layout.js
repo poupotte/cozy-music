@@ -2,6 +2,8 @@ import Mn from 'backbone.marionette';
 import ContentView from './content';
 import PlayerView from './player';
 import ToolbarView from './toolbar';
+import application from '../application'
+
 
 const AppLayout = Mn.LayoutView.extend({
 
@@ -16,7 +18,9 @@ const AppLayout = Mn.LayoutView.extend({
     },
 
     onRender() {
-        this.showChildView('content', new ContentView());
+        this.showChildView('content', new ContentView({
+            model: application.appState
+        }));
         this.showChildView('player', new PlayerView());
         this.showChildView('toolbar', new ToolbarView());
     }

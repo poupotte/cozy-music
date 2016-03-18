@@ -13,24 +13,19 @@ const Content = Mn.LayoutView.extend({
         tracks: '#tracks',
     },
 
-    onBeforeShow() {
-        let appState = application.appState;
-        let currentPlaylist = appState.get('currentPlaylist');
-        let header = new HeaderView({ model: appState })
-        this.showChildView('header', header);
-        this.listenTo(
-            appState,
-            'change:currentPlaylist',
-            this.switchPlaylist
-        );
-        this.switchPlaylist(appState, currentPlaylist);
+    modelEvents: {
+        'change:currentPlaylist': 'switchPlaylist'
     },
 
-    switchPlaylist(appState, currentPlaylist) {
-        let collection = currentPlaylist.get('tracks');
-        this.showChildView('tracks',
-            new TracksView({ collection: collection })
-        );
+    onBeforeShow () {
+        this.showChildView('header', new HeaderView({ model: this.model }));
+        this.switchPlaylist(null, this.model.get('currentPlaylist'));
+    },
+
+    switchPlaylist (appState, currentPlaylist) {
+        this.showChildView('tracks', new TracksView({
+            collection: currentPlaylist.get('tracks')
+        }));
     }
 });
 
