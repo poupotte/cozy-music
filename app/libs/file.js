@@ -40,7 +40,9 @@ function deleteTrack(allTracks, musicFilesFileId) {
     for (let i = 0; i < allTracks.length; i++) {
         let t = allTracks[i];
         if (musicFilesFileId.indexOf(t.get('ressource').fileID) <= -1) {
-            t.destroy();
+            t.destroy({ success: () => {
+                application.allTracks.get('tracks').remove(t);
+            }});
         }
     }
 }
