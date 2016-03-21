@@ -16,7 +16,9 @@ const Player = Mn.LayoutView.extend({
         volume: '#volume',
         volumeBar: '#volume-bar',
         playButton: '#play',
-        trackname: '#trackname'
+        trackname: '#trackname',
+        shuffle: '#shuffle',
+        repeat: '#repeat'
     },
 
     events: {
@@ -24,7 +26,9 @@ const Player = Mn.LayoutView.extend({
         'click #play': 'toggle',
         'click #next': 'next',
         'click @ui.progressBar': 'skip',
-        'click @ui.volumeBar': 'changeVol'
+        'click @ui.volumeBar': 'changeVol',
+        'click @ui.shuffle': 'toggleShuffle',
+        'click @ui.repeat': 'toggleRepeat'
     },
 
     initialize() {
@@ -92,20 +96,71 @@ const Player = Mn.LayoutView.extend({
     prev() {
         let upNext = application.upNext.get('tracks');
         let currentTrack = application.appState.get('currentTrack');
-        let index = upNext.indexOf(currentTrack);
-        let prev = upNext.at(index - 1)
-        if (prev) {
+        let index = upNext.indexOf(currentTrack) - 1;
+        let prev = upNext.at(index)
+        if (prev && index > -1) {
             application.appState.set('currentTrack', prev);
+        } else {
+            this.replayCurrent();
         }
     },
 
     next() {
+        let repeat = application.appState.get('repeat');
         let upNext = application.upNext.get('tracks');
         let currentTrack = application.appState.get('currentTrack');
-        let index = upNext.indexOf(currentTrack);
-        let next = upNext.at(index + 1)
-        if (next) {
+        let index = upNext.indexOf(currentTrack) + 1;
+        let next = upNext.at(index)
+        if (repeat == 'track') {
+            this.replayCurrent();
+        } else if (next) {
             application.appState.set('currentTrack', next);
+        } else if (repeat == 'playlist' && upNext.at(0)) {
+            if (upNext.length == 1) {
+                this.replayCurrent();
+            }
+            application.appState.set('currentTrack', upNext.at(0));
+        }
+    },
+
+    replayCurrent() {
+        let audio = this.ui.player.get(0);
+        audio.currentTime = 0;
+        audio.play();
+        this.ui.playButton.find('use').attr(
+            'xlink:href',
+            require('../assets/icons/pause-lg.svg')
+        );
+    },
+
+    toggleShuffle() {
+        let shuffle = application.appState.get('shuffle');
+        application.appState.set('shuffle', !shuffle);
+        $('#shuffle-sm').toggleClass('active', !shuffle);
+    },
+
+    toggleRepeat() {
+        let repeat = application.appState.get('repeat');
+        switch (repeat) {
+            case 'false':
+                application.appState.set('repeat', 'track');
+                $('#repeat-sm').toggleClass('active', true);
+                this.ui.repeat.find('use').attr(
+                    'xlink:href',
+                    require('../assets/icons/repeat-one-sm.svg')
+                );
+                break;
+            case 'track':
+                application.appState.set('repeat', 'playlist');
+                this.ui.repeat.find('use').attr(
+                    'xlink:href',
+                    require('../assets/icons/repeat-sm.svg')
+                );
+                break;
+            case 'playlist':
+                application.appState.set('repeat', 'false');
+                $('#repeat-sm').toggleClass('active', false);
+                break;
         }
     },
 

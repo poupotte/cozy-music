@@ -16,7 +16,20 @@ const Tracks = Backbone.Collection.extend({
                 'reset:UpNext',
                 this.resetUpNext
             );
+            this.listenTo(
+                application.appState,
+                'change:shuffle',
+                this.shuffleUpNext
+            );
         }
+    },
+
+    // UpNext : shuffle
+    shuffleUpNext() {
+        if (application.appState.get('shuffle')) {
+            this.reset(this.shuffle(), {silent:true});
+        }
+        this.sort();
     },
 
     // UpNext : reset
@@ -39,7 +52,13 @@ const Tracks = Backbone.Collection.extend({
     },
 
     comparator(model) {
-        return model.get('metas').title;
+        if (this.type == 'upNext') {
+            if (!application.appState.get('shuffle')) {
+                return model.get('metas').title;
+            }
+        } else {
+            return model.get('metas').title;
+        }
     },
 
     sync(method, model, options) {
