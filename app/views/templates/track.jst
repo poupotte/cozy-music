@@ -1,7 +1,12 @@
-<td class="number"><%- number %></td>
-<td class="title"><%- title %></td>
-<td><%- artist %></td>
-<td><%- album %>
+<div class="number-column-cell" role="gridcell">
+    <%- number %>
+    <svg>
+        <use xlink:href="<%= require('../../assets/icons/speaker-sm.svg') %>"/>
+    </svg>
+</div>
+<div class="song-column-cell" role="gridcell"><%- title %></div>
+<div class="artist-column-cell" role="gridcell"><%- artist %></div>
+<div class="album-column-cell" role="gridcell"><%- album %>
     <div class="actions">
         <button id="add-to-upnext">
             <p class="help">Add To Up Next</p>
@@ -20,5 +25,13 @@
             </svg>
         </button>
     </div>
-</td>
-<td><%- duration %><td>
+</div>
+<div class="length-column-cell" role="gridcell"><%- duration %></div>
+<div class="popup-menu">
+    <ul>
+        <li>Add To Playlist</li>
+        <li>Add This Album to Up Next</li>
+        <li>Edit Details</li>
+        <li>Delete</li>
+    </ul>
+</div>
