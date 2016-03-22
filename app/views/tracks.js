@@ -10,6 +10,7 @@ const TracksView = Mn.CompositeView.extend({
     childViewContainer: '#track-list',
 
     childView: TrackView
+
 });
 
 export default TracksView;

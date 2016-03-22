@@ -11,7 +11,10 @@ const TrackView = Mn.ItemView.extend({
 
     events: {
         'click': 'play',
-        'click .delete': 'delete'
+        'click .delete': 'delete',
+        'click #menu': 'displayMenu',
+        'click #add-to-upnext':'addToUpNext',
+        'click "delete-from-upnext': 'deleteFromUpNext'
     },
 
     modelEvents: {
@@ -22,6 +25,23 @@ const TrackView = Mn.ItemView.extend({
         this.listenTo(application.appState, {
             'change:currentTrack': this.togglePlayingState
         })
+    },
+
+    onRender() {
+        let currentPlaylist = application.currentPlaylist;
+        let type = currentPlaylist ? currentPlaylist.get('tracks').type : 'all'
+        switch (type) { // Can be refactored ?
+            case 'upNext':
+                this.$('.actions').addClass('upNext');
+                break;
+            case 'all':
+                this.$('.actions').addClass('all');
+                break;
+            case 'playlist':
+                this.$('.actions').addClass('playlist');
+                break;
+        }
+        this.togglePlayingState();
     },
 
     play(e) {
@@ -52,7 +72,5 @@ const TrackView = Mn.ItemView.extend({
     },
 
 });
-
-TrackView.prototype.onRender = TrackView.prototype.togglePlayingState;
 
 export default TrackView;
