@@ -1,4 +1,6 @@
 import Track from '../models/track';
+import Tracks from '../collections/tracks';
+import Playlist from '../models/playlist';
 import application from '../application';
 import cozysdk from 'cozysdk-client';
 
@@ -11,7 +13,15 @@ class Soundcloud {
     import(url) {
         this.get('/resolve', { url: url }, (res) => {
             if (res.kind == 'playlist') {
-
+                let playlistTracks = new Tracks([], {});
+                let playlist = new Playlist({
+                    title: res.title,
+                    tracks: playlistTracks
+                });
+                application.allPlaylists.create(playlist);
+                for (let track in res.tracks) {
+                    this.checkIfAlreadyExist(track, playlist.addTrack);
+                }
             } else if (res.kind == 'track') {
                 this.checkIfAlreadyExist(res);
             }
@@ -19,7 +29,7 @@ class Soundcloud {
     }
 
     // Check if the track is already in the database
-    checkIfAlreadyExist(track) {
+    checkIfAlreadyExist(track, callback) {
         cozysdk.run('Track', 'soundcloud', {}, (err, res) => {
             if (res) {
                 let exist = false;
@@ -30,7 +40,7 @@ class Soundcloud {
                     }
                 }
                 if (!exist) {
-                    this.importTrack(track);
+                    this.importTrack(track, callback);
                 } else {
                     let notification = {
                         status: 'ko',
@@ -43,7 +53,7 @@ class Soundcloud {
     }
 
     // Set the track's metas and save it.
-    importTrack(track) {
+    importTrack(track, callback) {
         if (!track.streamable) {
             let notification = {
                 status: 'ko',
@@ -63,7 +73,11 @@ class Soundcloud {
             genre: track.genre,
             duration: track.duration
         });
-        application.allTracks.get('tracks').create(newTrack);
+        application.allTracks.get('tracks').create(newTrack, {
+            success: () => {
+                callback(newTrack);
+            }
+        });
         let notification = {
             status: 'ok',
             message: t('stream track imported')
