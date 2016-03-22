@@ -43,7 +43,7 @@ const Track = Backbone.Model.extend({
                 break;
             case 'delete':
                 cozysdk.destroy('Track', model.get('_id'), (err, res) => {
-                    if (!err) {
+                    if (res) {
                         options.success();
                     }
                 });
