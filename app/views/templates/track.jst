@@ -1,5 +1,24 @@
 <td class="number"><%- number %></td>
 <td class="title"><%- title %></td>
 <td><%- artist %></td>
-<td><%- album %></td>
+<td><%- album %>
+    <div class="actions">
+        <button id="add-to-upnext">
+            <p class="help">Add To Up Next</p>
+            <svg>
+                <use xlink:href="<%= require('../../assets/icons/add-to-playlist-sm.svg') %>"/>
+            </svg>
+        </button>
+        <button id="delete-from-upnext">
+            <svg>
+                <use xlink:href="<%= require('../../assets/icons/cross-sm.svg') %>"/>
+            </svg>
+        </button>
+        <button id="menu">
+            <svg>
+                <use xlink:href="<%= require('../../assets/icons/more-sm.svg') %>"/>
+            </svg>
+        </button>
+    </div>
+</td>
 <td><%- duration %><td>

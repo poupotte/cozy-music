@@ -28,7 +28,8 @@ const Toolbar = Mn.LayoutView.extend({
         'click @ui.search': 'search',
         'focusout @ui.importSC': 'focusoutImportSc',
         'focusout @ui.search': 'focusoutSearch',
-        'keyup @ui.importText': 'keyImportScText'
+        'keyup @ui.importText': 'keyImportScText',
+        'keyup @ui.searchText': 'keySearchText'
     },
 
     sync() {
@@ -44,12 +45,17 @@ const Toolbar = Mn.LayoutView.extend({
 
     // Import the track when `Enter` is pressed
     keyImportScText(e) {
+        e.stopPropagation();
         let url = this.ui.importText.val();
         if(e.keyCode == 13) {
             scdl.import(url);
             this.ui.importText.val('');
             this.focusoutImportSc();
         }
+    },
+
+    keySearchText(e) {
+        e.stopPropagation();
     },
 
     // Show the input
