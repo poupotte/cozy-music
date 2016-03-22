@@ -25,8 +25,8 @@ const Tracks = Backbone.Collection.extend({
     },
 
     // UpNext : shuffle
-    shuffleUpNext() {
-        if (application.appState.get('shuffle')) {
+    shuffleUpNext(appState, shuffle) {
+        if (shuffle) {
             this.reset(this.shuffle(), {silent:true});
         }
         this.sort();
@@ -52,10 +52,8 @@ const Tracks = Backbone.Collection.extend({
     },
 
     comparator(model) {
-        if (this.type == 'upNext') {
-            if (!application.appState.get('shuffle')) {
-                return model.get('metas').title;
-            }
+        if (this.type == 'upNext' && application.appState.get('shuffle')) {
+            return undefined;
         } else {
             return model.get('metas').title;
         }
