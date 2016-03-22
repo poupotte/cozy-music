@@ -191,6 +191,22 @@ const Player = Mn.LayoutView.extend({
 
     toggleVolume() {
         let audio = this.ui.player.get(0);
+        let mute = application.appState.get('mute');
+        application.appState.set('mute', !mute);
+        if (!mute) {
+            this.ui.speaker.find('use').attr(
+                'xlink:href',
+                require('../assets/icons/mute-sm.svg')
+            );
+            audio.volume = 0;
+        } else {
+            this.ui.speaker.find('use').attr(
+                'xlink:href',
+                require('../assets/icons/speaker-sm.svg')
+            );
+            audio.volume = application.appState.get('currentVolume');
+        }
+
     },
 
     // Go to a certain time in the track
@@ -226,6 +242,7 @@ const Player = Mn.LayoutView.extend({
         let bar = this.ui.volumeBar.get(0);
         let volume = (e.pageX - bar.offsetLeft) / bar.clientWidth;
         audio.volume = volume;
+        application.appState.set('currentVolume', volume);
     }
 });
 
