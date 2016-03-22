@@ -18,7 +18,8 @@ const Player = Mn.LayoutView.extend({
         playButton: '#play',
         trackname: '#trackname',
         shuffle: '#shuffle',
-        repeat: '#repeat'
+        repeat: '#repeat',
+        speaker: '#speaker'
     },
 
     events: {
@@ -28,7 +29,8 @@ const Player = Mn.LayoutView.extend({
         'click @ui.progressBar': 'skip',
         'click @ui.volumeBar': 'changeVol',
         'click @ui.shuffle': 'toggleShuffle',
-        'click @ui.repeat': 'toggleRepeat'
+        'click @ui.repeat': 'toggleRepeat',
+        'click @ui.speaker': 'toggleVolume'
     },
 
     initialize() {
@@ -38,6 +40,29 @@ const Player = Mn.LayoutView.extend({
                 if (currentTrack) {
                     this.load(currentTrack);
                 }
+        });
+        $(document).keyup((e) => {
+             e.preventDefault();
+            switch (e.key) {
+                case ' ':
+                    this.toggle();
+                    break;
+                case 'ArrowRight':
+                    this.next();
+                    break;
+                case 'ArrowLeft':
+                    this.prev();
+                    break;
+                case 'ArrowUp':
+                    // increaseVol
+                    break;
+                case 'ArrowDown':
+                    // decreaseVol
+                    break;
+                case 'm':
+                    // mute
+                    break;
+            }
         });
     },
 
@@ -162,6 +187,10 @@ const Player = Mn.LayoutView.extend({
                 $('#repeat-sm').toggleClass('active', false);
                 break;
         }
+    },
+
+    toggleVolume() {
+        let audio = this.ui.player.get(0);
     },
 
     // Go to a certain time in the track
