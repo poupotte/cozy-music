@@ -39,10 +39,8 @@ function getAllTracksFileId(musicFiles) {
 function deleteTrack(allTracks, musicFilesFileId) {
     for (let i = 0; i < allTracks.length; i++) {
         let t = allTracks[i];
-        if (!_.includes(musicFilesFileId, t.get('ressource').fileID)) {
-            t.destroy({ success: () => {
-                application.allTracks.get('tracks').remove(t);
-            }});
+        if (musicFilesFileId.indexOf(t.get('ressource').fileID) <= -1) {
+            t.destroy();
         }
     }
 }
@@ -64,7 +62,7 @@ function saveTrack(musicFiles, tracksFileId) {
             }
         });
 
-        if (!_.includes(tracksFileId, fileid)) { // does not contains fileid
+        if (tracksFileId.indexOf(fileid) <= -1) { // does not contains fileid
             application.allTracks.get('tracks').create(t);
         }
     }
