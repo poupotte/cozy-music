@@ -71,7 +71,7 @@ const Player = Mn.LayoutView.extend({
         audio.ontimeupdate = this.onTimeUpdate;
         audio.onended = this.next;
         audio.onvolumechange = this.onVolumeChange;
-        audio.volume = 0.5;
+        audio.volume = application.appState.get('currentVolume');
     },
 
     load(track) {

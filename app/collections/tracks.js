@@ -22,6 +22,7 @@ const Tracks = Backbone.Collection.extend({
                 this.shuffleUpNext
             );
         }
+        this.on('change:hidden', this.removeTrack, this);
     },
 
     // UpNext : shuffle
@@ -51,6 +52,10 @@ const Tracks = Backbone.Collection.extend({
         );
     },
 
+    removeTrack(track) {
+        this.remove(track);
+    },
+
     comparator(model) {
         if (this.type == 'upNext' && application.appState.get('shuffle')) {
             return undefined;
@@ -60,8 +65,8 @@ const Tracks = Backbone.Collection.extend({
     },
 
     sync(method, model, options) {
-        if (method == 'read' && this.type) {
-            cozysdk.run('Track', this.type, {}, (err, res) => {
+        if (method == 'read' && this.type == "all") {
+            cozysdk.run('Track', 'playable', {}, (err, res) => {
                 if (res) {
                     let tracks = JSON.parse('' + res);
                     for (let i = 0; i < tracks.length; i++) {

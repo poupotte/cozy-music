@@ -56,7 +56,12 @@ const Playlist = Backbone.Model.extend({
 
     // Add a track to the playlist
     addTrack(track) {
-        this.set('tracks', this.get('tracks').push(track));
+        this.get('tracks').push(track);
+    },
+
+    // Remove a track to the playlist
+    removeTrack(track) {
+        this.get('tracks').remove(track);
     }
 });
 

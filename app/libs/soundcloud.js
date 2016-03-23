@@ -32,8 +32,11 @@ class Soundcloud {
                 if (!exist) {
                     this.importTrack(track);
                 } else {
-                    let msg = t('track is already in the database');
-                    application.channel.request('notification', msg);
+                    let notification = {
+                        status: 'ko',
+                        message: t('track is already in the database')
+                    }
+                    application.channel.request('notification', notification);
                 }
             }
         });
@@ -42,7 +45,11 @@ class Soundcloud {
     // Set the track's metas and save it.
     importTrack(track) {
         if (!track.streamable) {
-            alert('This track is not streamable');
+            let notification = {
+                status: 'ko',
+                message: 'This track is not streamable'
+            }
+            application.channel.request('notification', notification);
             return;
         }
         let newTrack = new Track();
@@ -57,8 +64,11 @@ class Soundcloud {
             duration: track.duration
         });
         application.allTracks.get('tracks').create(newTrack);
-        let msg = t('stream track imported');
-        application.channel.request('notification', msg);
+        let notification = {
+            status: 'ok',
+            message: t('stream track imported')
+        }
+        application.channel.request('notification', notification);
     }
 
     // Add our clientID to the current url

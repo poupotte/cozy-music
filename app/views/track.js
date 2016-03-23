@@ -9,12 +9,21 @@ const TrackView = Mn.ItemView.extend({
 
     tagName: 'li',
 
+    ui: {
+        'menu': '#menu',
+        'popupMenu': '.popup-menu'
+    },
+
     events: {
         'click': 'play',
-        'click .delete': 'delete',
-        'click #menu': 'displayMenu',
+        'click @ui.menu': 'toggleMenu',
         'click #add-to-upnext':'addToUpNext',
-        'click #delete-from-upnext': 'deleteFromUpNext'
+        'click #add-to-playlist':'addToPlaylist',
+        'click #album-to-upnext':'albumToUpNext',
+        'click #edit-details':'editDetails',
+        'click #delete':'delete',
+        'click #delete-from-upnext': 'deleteFromUpNext',
+        'mouseleave': 'hidePopupMenu'
     },
 
     modelEvents: {
@@ -28,8 +37,8 @@ const TrackView = Mn.ItemView.extend({
     },
 
     onRender() {
-        let currentPlaylist = application.currentPlaylist;
-        let type = currentPlaylist ? currentPlaylist.get('tracks').type : 'all'
+        let currentPlaylist = application.appState.get('currentPlaylist');
+        let type = currentPlaylist.get('tracks').type;
         switch (type) { // Can be refactored ?
             case 'upNext':
                 this.$('.actions').addClass('upNext');
@@ -48,15 +57,44 @@ const TrackView = Mn.ItemView.extend({
         application.appState.set('currentTrack', this.model);
     },
 
-    displayMenu(e) {
+    toggleMenu(e) {
+        e.stopPropagation();
+        this.ui.popupMenu.toggleClass('show');
+        this.ui.menu.toggleClass('active');
+    },
+
+    hidePopupMenu(e) {
+        this.ui.popupMenu.removeClass('show');
+        this.ui.menu.removeClass('active');
+    },
+
+    addToPlaylist(e) {
         e.stopPropagation();
     },
 
     addToUpNext(e) {
         e.stopPropagation();
+        application.upNext.addTrack(this.model);
+
+        let notification = {
+            status: 'ok',
+            message: 'Added to Up Next'
+        }
+        application.channel.request('notification', notification);
     },
 
     deleteFromUpNext(e) {
+        e.stopPropagation();
+        application.upNext.removeTrack(this.model);
+    },
+
+    // TO DO
+    albumToUpNext(e) {
+        e.stopPropagation();
+    },
+
+    // TO DO
+    editDetails(e) {
         e.stopPropagation();
     },
 

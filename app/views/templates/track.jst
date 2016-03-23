@@ -29,9 +29,32 @@
 <div class="length-column-cell" role="gridcell"><%- duration %></div>
 <div class="popup-menu">
     <ul>
-        <li>Add To Playlist</li>
-        <li>Add This Album to Up Next</li>
-        <li>Edit Details</li>
-        <li>Delete</li>
+        <li id="add-to-playlist">
+            <svg>
+                <use xlink:href="<%= require('../../assets/icons/plus-sm.svg') %>"/>
+            </svg>
+            Add To Playlist
+            <svg class="small">
+                <use xlink:href="<%= require('../../assets/icons/play-sm.svg') %>"/>
+            </svg>
+        </li>
+        <li id="album-to-upnext">
+            <svg>
+                <use xlink:href="<%= require('../../assets/icons/add-to-playlist-sm.svg') %>"/>
+            </svg>
+            Add This Album to Up Next
+        </li>
+        <li id="edit-details">
+            <svg>
+                <use xlink:href="<%= require('../../assets/icons/edit-sm.svg') %>"/>
+            </svg>
+            Edit Details
+        </li>
+        <li id="delete">
+            <svg>
+                <use xlink:href="<%= require('../../assets/icons/trash-sm.svg') %>"/>
+            </svg>
+            Delete
+        </li>
     </ul>
 </div>

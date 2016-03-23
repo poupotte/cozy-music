@@ -103,6 +103,7 @@ div[role='contentinfo']
             box-shadow: inset 0 -1px 0 0 #d5dce1
             font-size: 14px
             color: $text-light
+            position: relative
 
             .song-column-cell
                 flex-grow: 1
@@ -117,6 +118,16 @@ div[role='contentinfo']
                 right: 18px
                 top: 0px
 
+                .active
+                    path
+                        fill: #f14a53
+
+                button:hover:not(.active)
+                    .help
+                        visibility: visibile
+                    path
+                        fill: #32363f
+
                 button
                     height: 100%
                     width: 22px
@@ -125,6 +136,8 @@ div[role='contentinfo']
                         width: 20px
                         path
                             fill: #696d78
+                            -webkit-transition: fill 0.2s; /* Safari */
+                            transition: fill 0.2s;
 
             .all
                 #delete-from-upnext
@@ -138,14 +151,46 @@ div[role='contentinfo']
                 position: absolute
                 visibility: hidden
 
-            button:hover
-                .help
-                    visibility: visibile
-
             .popup-menu
                 visibility: hidden
                 position: absolute
+                z-index: 99
                 top: 37px
+                right: 50px
+                padding: 14px 0px
+                border-radius: 10px
+                background-color: white
+                box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.1), 0 1px 3px 0 rgba(0, 0, 0, 0.2)
+
+                .small
+                    width: 14px
+                    height: 14px
+                    opacity: 0.3
+                    position: absolute
+                    right: 14px
+                    svg
+                        path
+                            fill: #696d78
+                ul
+                    li
+                        font-size: 16px
+                        padding: 0px 20px
+                        height: 36px
+                        box-shadow: none
+                        color: $text-dark
+                        align-items: center
+
+                        svg
+                            height: 20px
+                            width: 20px
+                            padding-right: 14px
+                            path
+                                fill: #696d78
+
+                    li:hover
+                        background-color: $background-dark;
+            .popup-menu.show
+                visibility: visible
 
         li:hover
             background-color: $background-dark
