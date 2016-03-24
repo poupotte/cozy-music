@@ -26,8 +26,8 @@ const Player = Mn.LayoutView.extend({
         'click #prev': 'prev',
         'click #play': 'toggle',
         'click #next': 'next',
-        'click @ui.progressBar': 'skip',
-        'click @ui.volumeBar': 'changeVol',
+        'mousedown @ui.progressBar': 'skip',
+        'mousedown @ui.volumeBar': 'changeVol',
         'click @ui.shuffle': 'toggleShuffle',
         'click @ui.repeat': 'toggleRepeat',
         'click @ui.speaker': 'toggleVolume'
@@ -63,6 +63,17 @@ const Player = Mn.LayoutView.extend({
                     // mute
                     break;
             }
+        });
+        $(document).mousemove((e) => {
+            if (this.volumeDown) {
+                this.changeVol(e);
+            } else if (this.progressDown) {
+                this.skip(e);
+            }
+        });
+        $(document).mouseup((e) => {
+            this.volumeDown = false;
+            this.progressDown = false;
         });
     },
 
@@ -211,6 +222,7 @@ const Player = Mn.LayoutView.extend({
 
     // Go to a certain time in the track
     skip(e) {
+        this.progressDown = true;
         let audio = this.ui.player.get(0);
         let bar = this.ui.progressBar.get(0);
         let newTime = audio.duration * ((e.pageX - bar.offsetLeft) / bar.clientWidth);
@@ -238,6 +250,7 @@ const Player = Mn.LayoutView.extend({
 
     // Change the volume
     changeVol(e) {
+        this.volumeDown = true;
         let audio = this.ui.player.get(0);
         let bar = this.ui.volumeBar.get(0);
         let volume = (e.pageX - bar.offsetLeft) / bar.clientWidth;
