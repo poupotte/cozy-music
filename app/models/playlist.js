@@ -20,6 +20,7 @@ const Playlist = Backbone.Model.extend({
     idAttribute:'_id',
 
     sync(method, model, options) {
+        console.log(model.toJSON());
         switch (method) {
             case 'create':
                 cozysdk.create('Playlist', model.toJSON(), (err, res) => {
@@ -56,18 +57,23 @@ const Playlist = Backbone.Model.extend({
 
     // Add a track to the playlist
     addTrack(track) {
-        this.get('tracks').push(track);
+        let tracks = this.get('tracks');
+        tracks.push(track);
+        if (tracks.type == 'playlist') this.save();
     },
 
     // Remove a track to the playlist
     removeTrack(track) {
-        this.get('tracks').remove(track);
+        let tracks = this.get('tracks');
+        tracks.remove(track);
+        if (tracks.type == 'playlist') this.save();
     },
 
-    parse(attrs) {
-        console.log('parse', attrs);
-        return {
-
+    parse(attrs, options) {
+        if (attrs) {
+            let tracks = attrs.tracks;
+            attrs.tracks = new Tracks(tracks, { type: 'playlist'});
+            return attrs
         }
     }
 });

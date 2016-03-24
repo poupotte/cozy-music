@@ -27,14 +27,25 @@ const Playlists = Backbone.Collection.extend({
         if (method == 'read') {
             cozysdk.run('Playlist', 'all', {}, (err, res) => {
                 if (res) {
-                    let playlists = JSON.parse('' + res);
-                    for (let i = 0; i < playlists.length; i++) {
-                        this.add(playlists[i].value);
+                    if (options && options.success) {
+                        options.success(res);
                     }
-                    options.success();
+                } else {
+                    if (options && options.error) {
+                        options.error(err);
+                    }
                 }
             });
         }
+    },
+
+    parse(resp, options) {
+        let playlists = JSON.parse('' + resp);
+        let result = [];
+        for (let i = 0; i < playlists.length; i++) {
+            result.push(playlists[i].value);
+        }
+        return result;
     }
 });
 
