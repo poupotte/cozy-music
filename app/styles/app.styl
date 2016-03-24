@@ -7,6 +7,8 @@ $text-dark = #32363f
 $text-light = #788195
 $text = #92a0b2
 $red = #ef4c57
+$svg = #696d78
+$svg-red = #f14a53
 
 @import 'reset'
 global-reset()
@@ -45,6 +47,9 @@ placeholder()
     &:-ms-input-placeholder
         {block}
 
-@import 'content'
+@import 'tracks'
+@import 'header'
+@import 'track-actions'
+@import 'popup-menu'
 @import 'toolbar'
 @import 'player'

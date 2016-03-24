@@ -1,0 +1,40 @@
+#tracks
+    .actions
+        height: 41px
+        visibility: hidden
+        position: absolute
+        right: 18px
+        top: 0px
+
+        .active
+            path
+                fill: $svg-red
+
+        button:hover:not(.active)
+            .help
+                visibility: visibile
+            path
+                fill: $text-dark
+
+        button
+            height: 100%
+            width: 22px
+            svg
+                height: 20px
+                width: 20px
+                path
+                    fill: $svg
+                    -webkit-transition: fill 0.2s; /* Safari */
+                    transition: fill 0.2s;
+
+    .all
+        #delete-from-upnext
+            display: none
+
+    .upNext
+        #add-to-upnext
+            display: none
+
+    .help
+        position: absolute
+        visibility: hidden
