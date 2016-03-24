@@ -1,9 +1,9 @@
 import Mn from 'backbone.marionette';
 import application from '../application';
 import { timeToString } from '../libs/utils';
+import PopPlaylistView from './popupPlaylists'
 
-
-const TrackView = Mn.ItemView.extend({
+const TrackView = Mn.LayoutView.extend({
 
     template: require('./templates/track'),
 
@@ -11,19 +11,24 @@ const TrackView = Mn.ItemView.extend({
 
     ui: {
         'menu': '#menu',
-        'popupMenu': '.popup-menu'
+        'popupMenu': '#popup-menu',
+    },
+
+    regions: {
+        playlistPopup: '#playlist-popup-container',
     },
 
     events: {
         'click': 'play',
         'click @ui.menu': 'toggleMenu',
         'click #add-to-upnext':'addToUpNext',
-        'click #add-to-playlist':'addToPlaylist',
+        'mouseenter #add-to-playlist':'showPlaylist',
+        'mouseleave #add-to-playlist':'hidePlaylist',
         'click #album-to-upnext':'albumToUpNext',
         'click #edit-details':'editDetails',
         'click #delete':'delete',
         'click #delete-from-upnext': 'deleteFromUpNext',
-        'mouseleave': 'hidePopupMenu'
+        'mouseleave @ui.popupMenu': 'hidePopupMenu',
     },
 
     modelEvents: {
@@ -37,6 +42,10 @@ const TrackView = Mn.ItemView.extend({
     },
 
     onRender() {
+        this.showChildView('playlistPopup', new PopPlaylistView({
+            model: this.model,
+            collection: application.allPlaylists
+        }));
         let currentPlaylist = application.appState.get('currentPlaylist');
         let type = currentPlaylist.get('tracks').type;
         switch (type) { // Can be refactored ?
@@ -68,8 +77,15 @@ const TrackView = Mn.ItemView.extend({
         this.ui.menu.removeClass('active');
     },
 
-    addToPlaylist(e) {
+    showPlaylist(e) {
         e.stopPropagation();
+        application.channel.trigger('playlistPopup:show', this.model);
+    },
+
+    hidePlaylist(e)  {
+        e.stopPropagation();
+        application.channel.trigger('playlistPopup:hide', this.model);
+        this.hidePopupMenu();
     },
 
     addToUpNext(e) {

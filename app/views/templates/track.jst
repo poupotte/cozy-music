@@ -27,7 +27,7 @@
     </div>
 </div>
 <div class="length-column-cell" role="gridcell"><%- duration %></div>
-<div class="popup-menu">
+<div id="popup-menu" class="popup-menu">
     <ul>
         <li id="add-to-playlist">
             <svg>
@@ -37,6 +37,7 @@
             <svg class="small">
                 <use xlink:href="<%= require('../../assets/icons/play-sm.svg') %>"/>
             </svg>
+            <div id="playlist-popup-container">
         </li>
         <li id="album-to-upnext">
             <svg>

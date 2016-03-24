@@ -38,8 +38,29 @@
             li:hover
                 background-color: $background-dark;
 
+    .show
+        visibility: visible
+
+    #playlist-popup-menu
+        z-index: 100
+        right: 200px
+        top: 0px
+        min-width: 200px
+
         #add-playlist
             border-top: 1px solid #d5dce1;
+            height: 40px
+            display: flex
+            align-items: center
+            padding: 0px 20px
 
-    .popup-menu.show
-        visibility: visible
+            input
+                width: 100%
+                height: 100%
+                display:none
+
+        #add-playlist.input
+            p
+                display:none
+            input
+                display: block

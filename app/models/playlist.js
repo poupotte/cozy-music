@@ -62,6 +62,13 @@ const Playlist = Backbone.Model.extend({
     // Remove a track to the playlist
     removeTrack(track) {
         this.get('tracks').remove(track);
+    },
+
+    parse(attrs) {
+        console.log('parse', attrs);
+        return {
+
+        }
     }
 });
 

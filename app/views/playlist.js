@@ -10,7 +10,11 @@ const PlaylistView = Mn.ItemView.extend({
 
     className: 'playlist',
 
-    modelEvents: { change: 'render' }
+    modelEvents: { change: 'render' },
+
+    onRender() {
+        this.$el.attr('data-id', this.model.get('_id'));
+    }
 });
 
 export default PlaylistView;
