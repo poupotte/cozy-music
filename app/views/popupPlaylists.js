@@ -54,6 +54,11 @@ const PopupPlaylists = Mn.CompositeView.extend({
         let id = e.currentTarget.dataset.id;
         let playlist = application.allPlaylists.get(id);
         playlist.addTrack(this.model);
+        let notification = {
+            status: 'ok',
+            message: 'Added to ' + playlist.get('title')
+        }
+        application.channel.request('notification', notification);
     },
 
     showInput(e) {
@@ -70,7 +75,6 @@ const PopupPlaylists = Mn.CompositeView.extend({
             newPlaylist.addTrack(this.model);
             application.allPlaylists.create(newPlaylist);
             this.ui.playlistText.val('');
-            this.focusoutAddPlaylist();
         }
     },
 

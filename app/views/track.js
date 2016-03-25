@@ -28,7 +28,8 @@ const TrackView = Mn.LayoutView.extend({
         'click #edit-details':'editDetails',
         'click #delete':'delete',
         'click #delete-from-upnext': 'deleteFromUpNext',
-        'mouseleave @ui.popupMenu': 'hidePopupMenu',
+        'click #remove-from-playlist': 'removeFromPlaylist',
+        'mouseleave #popup-menu': 'hidePopupMenu',
     },
 
     modelEvents: {
@@ -46,19 +47,6 @@ const TrackView = Mn.LayoutView.extend({
             model: this.model,
             collection: application.allPlaylists
         }));
-        let currentPlaylist = application.appState.get('currentPlaylist');
-        let type = currentPlaylist.get('tracks').type;
-        switch (type) { // Can be refactored ?
-            case 'upNext':
-                this.$('.actions').addClass('upNext');
-                break;
-            case 'all':
-                this.$('.actions').addClass('all');
-                break;
-            case 'playlist':
-                this.$('.actions').addClass('playlist');
-                break;
-        }
         this.togglePlayingState();
     },
 
@@ -78,14 +66,11 @@ const TrackView = Mn.LayoutView.extend({
     },
 
     showPlaylist(e) {
-        e.stopPropagation();
         application.channel.trigger('playlistPopup:show', this.model);
     },
 
     hidePlaylist(e)  {
-        e.stopPropagation();
         application.channel.trigger('playlistPopup:hide', this.model);
-        this.hidePopupMenu();
     },
 
     addToUpNext(e) {
@@ -102,6 +87,11 @@ const TrackView = Mn.LayoutView.extend({
     deleteFromUpNext(e) {
         e.stopPropagation();
         application.upNext.removeTrack(this.model);
+    },
+
+    removeFromPlaylist(e) {
+        e.stopPropagation();
+        application.appState.get('currentPlaylist').removeTrack(this.model);
     },
 
     // TO DO
@@ -123,10 +113,12 @@ const TrackView = Mn.LayoutView.extend({
 
     serializeData() {
         let metas = this.model.get('metas');
+        let currentPlaylist = application.appState.get('currentPlaylist');
         return _.extend( _.defaults({}, metas, {
             artist: '',
             album: '',
-            number: ''
+            number: '',
+            type: currentPlaylist.get('tracks').type
         }), {
             duration: metas.duration? timeToString(metas.duration/1000):'--:--'
         });

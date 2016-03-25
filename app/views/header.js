@@ -6,14 +6,20 @@ const Header = Mn.ItemView.extend({
 
     template: require('./templates/header'),
 
+    ui: {
+        title: '#playlist-title'
+    },
+
     events: {
         'click #reset-upnext': 'resetUpNext',
-        'click #delete-playlist': 'deletePlaylist'
+        'click #delete-playlist': 'deletePlaylist',
+        'keypress @ui.title': 'keypressPlaylistTitle',
+        'focusout @ui.title' : 'savePlaylistTitle'
     },
 
     modelEvents: {
       'change:currentPlaylist': 'changedPlaylist'
-   },
+    },
 
     initialize() {
        this.listenTo(
@@ -21,13 +27,28 @@ const Header = Mn.ItemView.extend({
             'update reset',
             this.render
         );
-   },
+    },
+
+    keypressPlaylistTitle(e) {
+        if (e.key == 'Enter') {
+            this.savePlaylistTitle();
+            this.ui.title.blur();
+            return false;
+        }
+    },
+
+    savePlaylistTitle(e) {
+        let currentPlaylist = this.model.get('currentPlaylist');
+        currentPlaylist.set('title', this.ui.title.html());
+        currentPlaylist.save();
+    },
 
     serializeData() {
         let currentPlaylist = this.model.get('currentPlaylist');
         return {
             title: currentPlaylist.get('title'),
-            count: currentPlaylist.get('tracks').length
+            count: currentPlaylist.get('tracks').length,
+            type: currentPlaylist.get('tracks').type
         }
     },
 
