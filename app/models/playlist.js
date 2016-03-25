@@ -20,7 +20,6 @@ const Playlist = Backbone.Model.extend({
     idAttribute:'_id',
 
     sync(method, model, options) {
-        console.log(model.toJSON());
         switch (method) {
             case 'create':
                 cozysdk.create('Playlist', model.toJSON(), (err, res) => {

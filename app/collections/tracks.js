@@ -68,14 +68,25 @@ const Tracks = Backbone.Collection.extend({
         if (method == 'read' && this.type == "all") {
             cozysdk.run('Track', 'playable', {}, (err, res) => {
                 if (res) {
-                    let tracks = JSON.parse('' + res);
-                    for (let i = 0; i < tracks.length; i++) {
-                        this.add(tracks[i].value);
+                    if (options && options.success) {
+                        options.success(res);
                     }
-                    options.success();
+                } else {
+                    if (options && options.error) {
+                        options.error(err);
+                    }
                 }
             });
         }
+    },
+
+    parse(resp, options) {
+        let result = [];
+        let tracks = JSON.parse('' + resp);
+        for (let i = 0; i < tracks.length; i++) {
+            result.push(tracks[i].value);
+        }
+        return result;
     }
 });
 
