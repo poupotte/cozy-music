@@ -73,7 +73,7 @@ const PopupPlaylists = Mn.CompositeView.extend({
         if(e.keyCode == 13) {
             let newPlaylist = new Playlist({ title: title });
             newPlaylist.addTrack(this.model);
-            application.allPlaylists.create(newPlaylist);
+            application.allPlaylists.add(newPlaylist);
             this.ui.playlistText.val('');
         }
     },

@@ -35,6 +35,7 @@ const Player = Mn.LayoutView.extend({
 
     initialize() {
         this.listenTo(application.channel,'reset:UpNext', this.render);
+        this.listenTo(application.channel, 'player:next', this.next)
         this.listenTo(application.appState, 'change:currentTrack',
             function(appState, currentTrack) {
                 if (currentTrack) {
@@ -80,7 +81,7 @@ const Player = Mn.LayoutView.extend({
     onRender() {
         let audio = this.ui.player.get(0);
         audio.ontimeupdate = this.onTimeUpdate;
-        audio.onended = this.next;
+        audio.onended = () => { this.next() };
         audio.onvolumechange = this.onVolumeChange;
         audio.volume = application.appState.get('currentVolume');
     },
@@ -156,6 +157,9 @@ const Player = Mn.LayoutView.extend({
                 this.replayCurrent();
             }
             application.appState.set('currentTrack', upNext.at(0));
+        } else {
+            application.appState.set('currentTrack', undefined);
+            this.render();
         }
     },
 

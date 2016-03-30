@@ -14,7 +14,7 @@ const Header = Mn.ItemView.extend({
         'click #reset-upnext': 'resetUpNext',
         'click #delete-playlist': 'deletePlaylist',
         'keypress @ui.title': 'keypressPlaylistTitle',
-        'focusout @ui.title' : 'savePlaylistTitle'
+        'blur @ui.title' : 'savePlaylistTitle'
     },
 
     modelEvents: {
@@ -31,16 +31,19 @@ const Header = Mn.ItemView.extend({
 
     keypressPlaylistTitle(e) {
         if (e.key == 'Enter') {
-            this.savePlaylistTitle();
             this.ui.title.blur();
             return false;
         }
     },
 
     savePlaylistTitle(e) {
-        let currentPlaylist = this.model.get('currentPlaylist');
-        currentPlaylist.set('title', this.ui.title.html());
-        currentPlaylist.save();
+        if (this.ui.title.html() == '') {
+            setTimeout(() => { this.ui.title.focus() }, 0);
+        } else {
+            let currentPlaylist = this.model.get('currentPlaylist');
+            currentPlaylist.set('title', this.ui.title.html());
+            currentPlaylist.save();
+        }
     },
 
     serializeData() {
