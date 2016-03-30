@@ -34,8 +34,10 @@ const Player = Mn.LayoutView.extend({
     },
 
     initialize() {
-        this.listenTo(application.channel,'reset:UpNext', this.render);
-        this.listenTo(application.channel, 'player:next', this.next)
+        this.listenTo(application.channel, {
+            'reset:UpNext': this.render,
+            'player:next': this.next
+        });
         this.listenTo(application.appState, 'change:currentTrack',
             function(appState, currentTrack) {
                 if (currentTrack) {

@@ -10,25 +10,25 @@ const TrackView = Mn.LayoutView.extend({
     tagName: 'li',
 
     ui: {
-        'menu': '#menu',
+        'menu': '.menu',
         'popupMenu': '#popup-menu',
     },
 
     regions: {
-        playlistPopup: '#playlist-popup-container',
+        playlistPopup: '.playlist-popup-container',
     },
 
     events: {
         'click': 'play',
         'click @ui.menu': 'toggleMenu',
-        'click #add-to-upnext':'addToUpNext',
-        'mouseenter #add-to-playlist':'showPlaylist',
-        'mouseleave #add-to-playlist':'hidePlaylist',
-        'click #album-to-upnext':'albumToUpNext',
-        'click #edit-details':'editDetails',
-        'click #delete':'delete',
-        'click #delete-from-upnext': 'deleteFromUpNext',
-        'click #remove-from-playlist': 'removeFromPlaylist',
+        'click .add-to-upnext':'addToUpNext',
+        'mouseenter .add-to-playlist':'showPlaylist',
+        'mouseleave .add-to-playlist':'hidePlaylist',
+        'click .album-to-upnext':'albumToUpNext',
+        'click .edit-details':'editDetails',
+        'click .delete':'delete',
+        'click .delete-from-upnext': 'deleteFromUpNext',
+        'click .remove-from-playlist': 'removeFromPlaylist',
         'mouseleave #popup-menu': 'hidePopupMenu',
     },
 

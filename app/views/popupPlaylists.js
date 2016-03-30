@@ -25,16 +25,10 @@ const PopupPlaylists = Mn.CompositeView.extend({
     },
 
     initialize() {
-        this.listenTo(
-            application.channel,
-            'playlistPopup:show',
-            this.showPopup
-        );
-        this.listenTo(
-            application.channel,
-            'playlistPopup:hide',
-            this.hidePopup
-        );
+        this.listenTo(application.channel, {
+            'playlistPopup:show': this.showPopup,
+            'playlistPopup:hide': this.hidePopup
+        });
     },
 
     showPopup(model) {
