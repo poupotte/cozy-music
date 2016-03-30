@@ -30,6 +30,7 @@ const Header = Mn.ItemView.extend({
     },
 
     keypressPlaylistTitle(e) {
+        e.stopPropagation();
         if (e.key == 'Enter') {
             this.ui.title.blur();
             return false;

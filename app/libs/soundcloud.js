@@ -13,14 +13,15 @@ class Soundcloud {
     import(url) {
         this.get('/resolve', { url: url }, (res) => {
             if (res.kind == 'playlist') {
-                let playlistTracks = new Tracks([], {});
+                let playlistTracks = new Tracks([], { type: 'playlist' });
                 let playlist = new Playlist({
                     title: res.title,
                     tracks: playlistTracks
                 });
                 application.allPlaylists.create(playlist);
-                for (let track in res.tracks) {
-                    this.checkIfAlreadyExist(track, playlist.addTrack);
+                for (let i = 0; i < res.tracks.length; i++) {
+                    let track = res.tracks[i];
+                    this.checkIfAlreadyExist(track, playlist);
                 }
             } else if (res.kind == 'track') {
                 this.checkIfAlreadyExist(res);
@@ -29,31 +30,38 @@ class Soundcloud {
     }
 
     // Check if the track is already in the database
-    checkIfAlreadyExist(track, callback) {
+    checkIfAlreadyExist(track, playlist) {
         cozysdk.run('Track', 'soundcloud', {}, (err, res) => {
             if (res) {
-                let exist = false;
+                let trackID = undefined;
                 let tracks = JSON.parse('' + res);
                 for (let i = 0; i < tracks.length; i++) {
                     if (tracks[i].value.ressource.url == track.stream_url) {
-                        exist = true;
+                        trackID = tracks[i].value._id;
                     }
                 }
-                if (!exist) {
-                    this.importTrack(track, callback);
+                if (!trackID) {
+                    this.importTrack(track, playlist);
                 } else {
-                    let notification = {
-                        status: 'ko',
-                        message: t('track is already in the database')
+                    if (playlist) {
+                        let tracks = application.allTracks.get('tracks');
+                        let track = tracks.get(trackID);
+                        playlist.addTrack(track);
+                    } else {
+                        let notification = {
+                            status: 'ko',
+                            message: t('track is already in the database')
+                        }
+                        application.channel.request('notification', notification);
                     }
-                    application.channel.request('notification', notification);
                 }
             }
         });
     }
 
     // Set the track's metas and save it.
-    importTrack(track, callback) {
+    importTrack(track, playlist) {
+        console.log('IMPORT', track);
         if (!track.streamable) {
             let notification = {
                 status: 'ko',
@@ -75,7 +83,7 @@ class Soundcloud {
         });
         application.allTracks.get('tracks').create(newTrack, {
             success: () => {
-                callback(newTrack);
+                if (playlist) playlist.addTrack(newTrack);
             }
         });
         let notification = {
