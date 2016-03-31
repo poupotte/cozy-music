@@ -13,7 +13,7 @@ const Playlist = Backbone.Model.extend({
     },
 
     initialize(attributes, options) {
-        let tracks = attributes.tracks || new Tracks(tracks, {
+        let tracks = attributes.tracks || new Tracks([], {
             type: 'playlist'
         });
         this.set('tracks', tracks);
