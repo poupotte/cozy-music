@@ -1,54 +1,46 @@
-# Description
-Cozic is a music player developed to fill my needs for my Cozy Cloud. It uses SoundManager2 javascript library. 
+# [Cozy](https://cozy.io) Music
 
-If you want to test it go to https://demo.cozycloud.cc/#apps/cozic/ .
+Cozy Music allows you to hear all the sounds you uploaded in Cozy Files and add more music from streaming service.
 
-shortcuts enabled :
-- spacebar : play/pause
-- "b" : previous track
-- "n" : next track
-- "-" : volume down
-- "+" : volume up
-- "m" : mute
-- "v" : switch between tracks view and play-queue view
 
-### NB
-For now, it's impossible to upload file from IE.
+## Contribution
 
-### Warning
-Don't try to upload songs from multiple devices simultaneously or you'll regret it.
+You can contribute to the Cozy Music in many ways:
 
-# Run
-Clone this repository, install dependencies and run server (it requires Node.js
-and Coffee-script)
-```
-git clone git://github.com/rdubigny/cozy-music.git
-cd cozy-music
-npm install
-npm start
-```
+* Pick up an [issue](https://github.com/cozy/cozy-Music/issues?state=open) and solve it.
+* Translate it in [a new language](https://github.com/cozy/cozy-music/tree/master/client/app/locales).
 
-# Contributing
-Let me know what you would like to see in the application so we can discuss it. The simplest way to do it is [opening an issue](https://github.com/flyingrub/cozy-music/issues/new).
 
-Make sure there is not already an issue discussing the feature or the bug you are about to post about!
+## Hack
 
-# What is Cozy?
+Hacking the Music app requires you [setup a dev environment](https://dev.cozy.io/#set-up-the-development-environment). Once it's done you can hack Cozy Music just like it was your own app.
 
-![Cozy Logo](https://raw.github.com/mycozycloud/cozy-setup/gh-pages/assets/images/happycloud.png)
+    git clone https://github.com/flyingrub/cozy-music
+    cd cozy-music
+    npm install
 
-[Cozy](http://cozy.io) is a platform that brings all your web services in the
+
+## License
+
+Cozy Music is developed by Cozy Cloud and distributed under the AGPL v3 license.
+
+
+## What is Cozy?
+
+![Cozy Logo](https://raw.github.com/cozy/cozy-setup/gh-pages/assets/images/happycloud.png)
+
+[Cozy](https://cozy.io) is a platform that brings all your web services in the
 same private space.  With it, your web apps and your devices can share data
 easily, providing you
 with a new experience. You can install Cozy on your own hardware where no one
-profiles you. You install only the applications you want. You can build your
-own one too.
+profiles you.
+
 
 ## Community
 
-You can reach the Cozy community via various channels:
+You can reach the Cozy Community by:
 
-* IRC #cozycloud on irc.freenode.net
-* Post on our [Forum](https://forum.cozy.io/)
-* Post issues on the [Github repos](https://github.com/cozy/)
-* [Twitter](http://twitter.com/mycozycloud)
+* Chatting with us on IRC #cozycloud on irc.freenode.net
+* Posting on our [Forum](https://forum.cozy.io/)
+* Posting issues on the [Github repos](https://github.com/cozy/)
+* Mentioning us on [Twitter](https://twitter.com/mycozycloud)
