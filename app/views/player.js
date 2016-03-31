@@ -26,15 +26,18 @@ const Player = Mn.LayoutView.extend({
         'click #prev': 'prev',
         'click #play': 'toggle',
         'click #next': 'next',
-        'click @ui.progressBar': 'skip',
-        'click @ui.volumeBar': 'changeVol',
+        'mousedown @ui.progressBar': 'skip',
+        'mousedown @ui.volumeBar': 'changeVol',
         'click @ui.shuffle': 'toggleShuffle',
         'click @ui.repeat': 'toggleRepeat',
         'click @ui.speaker': 'toggleVolume'
     },
 
     initialize() {
-        this.listenTo(application.channel,'reset:UpNext', this.render);
+        this.listenTo(application.channel, {
+            'reset:UpNext': this.render,
+            'player:next': this.next
+        });
         this.listenTo(application.appState, 'change:currentTrack',
             function(appState, currentTrack) {
                 if (currentTrack) {
@@ -64,14 +67,25 @@ const Player = Mn.LayoutView.extend({
                     break;
             }
         });
+        $(document).mousemove((e) => {
+            if (this.volumeDown) {
+                this.changeVol(e);
+            } else if (this.progressDown) {
+                this.skip(e);
+            }
+        });
+        $(document).mouseup((e) => {
+            this.volumeDown = false;
+            this.progressDown = false;
+        });
     },
 
     onRender() {
         let audio = this.ui.player.get(0);
         audio.ontimeupdate = this.onTimeUpdate;
-        audio.onended = this.next;
+        audio.onended = () => { this.next() };
         audio.onvolumechange = this.onVolumeChange;
-        audio.volume = 0.5;
+        audio.volume = application.appState.get('currentVolume');
     },
 
     load(track) {
@@ -145,6 +159,9 @@ const Player = Mn.LayoutView.extend({
                 this.replayCurrent();
             }
             application.appState.set('currentTrack', upNext.at(0));
+        } else {
+            application.appState.set('currentTrack', undefined);
+            this.render();
         }
     },
 
@@ -211,6 +228,7 @@ const Player = Mn.LayoutView.extend({
 
     // Go to a certain time in the track
     skip(e) {
+        this.progressDown = true;
         let audio = this.ui.player.get(0);
         let bar = this.ui.progressBar.get(0);
         let newTime = audio.duration * ((e.pageX - bar.offsetLeft) / bar.clientWidth);
@@ -238,6 +256,7 @@ const Player = Mn.LayoutView.extend({
 
     // Change the volume
     changeVol(e) {
+        this.volumeDown = true;
         let audio = this.ui.player.get(0);
         let bar = this.ui.volumeBar.get(0);
         let volume = (e.pageX - bar.offsetLeft) / bar.clientWidth;

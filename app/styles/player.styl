@@ -5,8 +5,8 @@
     left:0
     height: 72px
     width: 100%
-    background-color: #eff1f4
-    border: solid 1px #cedae4
+    background-color: $background-dark
+    border: solid 1px $border-color
 
     audio
         position: absolute
@@ -42,7 +42,7 @@
             padding-left: 28px
 
             path
-                fill: #696d78
+                fill: $svg
 
     .timeline
         margin-left: 32px
@@ -63,7 +63,7 @@
                 color: $text-light
 
         p
-            color: #92a0b2
+            color: $text
             height: 20px
             font-family: "Source Sans Pro"
             font-weight: bold
@@ -77,7 +77,7 @@
 
         #progress-bar
             margin-top: 8px
-            background-color: #cedae4
+            background-color: $border-color
             width: 100%
             height: 4px
             border-radius: 2px
@@ -87,8 +87,7 @@
                 width: 0%
                 height: 4px
                 border-radius: 2px
-                background-color: #0dbabe
-
+                background-color: $blue
 
     .controls
         width: 280px
@@ -97,7 +96,7 @@
             width: 90px
             height: 4px
             border-radius: 2px
-            background-color: #cedae4
+            background-color: $border-color
             display: inline-block
             position: absolute
             top: 34px
@@ -107,7 +106,7 @@
                 width: 100%
                 height: 4px
                 border-radius: 2px
-                background-color: #696d78
+                background-color: $svg
 
         svg
             width: 20px
@@ -117,17 +116,17 @@
             display: inline-block
 
             path
-                fill: #92a0b2
+                fill: $text
 
         .active
             path
-                fill: #f14a53
+                fill: $svg-red
 
         #repeat-one-sm
             path
-                fill: #f14a53
+                fill: $svg-red
 
         #broadcast
             margin-left: 100px
             path
-                fill: #f14a53
+                fill: $svg-red

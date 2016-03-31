@@ -1,12 +1,18 @@
-<h3><%= title %> <em>(<%= count %>)</em></h3>
-<% if (title == t('up next')) { %>
+<% if (type == 'playlist') { %>
+<h3><span id="playlist-title" contenteditable="true"><%= title %></span></h3>
+<% } else { %>
+<h3><span id="playlist-title"><%= title %></span></h3>
+<% } %>
+<p>(<%= count %>)</p>
+
+<% if (type == 'upNext') { %>
     <button class="button" id="reset-upnext">
         <svg>
             <use xlink:href="<%= require('../../assets/icons/cross-sm.svg') %>"/>
         </svg>
         <%= t('reset up next') %>
     </button>
-<% } else if (title != t('all songs')) { %>
+<% } else if (type == 'playlist') { %>
     <button class="button" id="delete-playlist">
         <svg>
             <use xlink:href="<%= require('../../assets/icons/trash-sm.svg') %>"/>

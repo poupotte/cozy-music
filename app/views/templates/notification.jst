@@ -1,6 +1,12 @@
 <div class="notification">
+    <% if (status == 'ok') { %>
     <svg>
         <use xlink:href="<%= require('../../assets/icons/checkmark-lg.svg') %>"/>
     </svg>
+    <% } else { %>
+    <svg>
+        <use xlink:href="<%= require('../../assets/icons/cross-lg.svg') %>"/>
+    </svg>
+    <% } %>
     <p><%= message %></p>
 </div>

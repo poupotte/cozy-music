@@ -29,8 +29,11 @@ function getAllTracksFileId(musicFiles) {
             }
             saveTrack(musicFiles, tracksFileId);
             deleteTrack(allTracksFiles, musicFilesFileId);
-            let msg = t('all your audio files have been added');
-            application.channel.request('notification', msg);
+            let notification = {
+                status: 'ok',
+                message: t('all your audio files have been added')
+            }
+            application.channel.request('notification', notification);
         }
     });
 }

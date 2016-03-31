@@ -87,10 +87,10 @@ const Toolbar = Mn.LayoutView.extend({
         }
     },
 
-    showNotification(msg) {
+    showNotification(notification) {
         this.showChildView(
             'notification',
-            new NotificationView({ message: msg })
+            new NotificationView(notification)
         );
     }
 });
