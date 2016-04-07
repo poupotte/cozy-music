@@ -45,25 +45,31 @@ const Player = Mn.LayoutView.extend({
                 }
         });
         $(document).keyup((e) => {
-             e.preventDefault();
-            switch (e.key) {
-                case ' ':
+            e.preventDefault();
+            let audio = this.ui.player.get(0);
+            let volume;
+            switch (e.which) {
+                case 32: // 'Space'
                     this.toggle();
                     break;
-                case 'ArrowRight':
+                case 39: // ArrowRight
                     this.next();
                     break;
-                case 'ArrowLeft':
+                case 37: // ArrowLeft
                     this.prev();
                     break;
-                case 'ArrowUp':
-                    // increaseVol
+                case 38: // ArrowUp
+                    volume = audio.volume + 0.1 > 1 ? 1 : audio.volume + 0.1;
+                    audio.volume = volume;
+                    application.appState.set('currentVolume', volume);
                     break;
-                case 'ArrowDown':
-                    // decreaseVol
+                case 40: // ArrowDown
+                    volume = audio.volume - 0.1 < 0 ? 0 : audio.volume - 0.1;
+                    audio.volume = volume;
+                    application.appState.set('currentVolume', volume);
                     break;
-                case 'm':
-                    // mute
+                case 77: // m
+                    this.toggleVolume();
                     break;
             }
         });
@@ -178,7 +184,7 @@ const Player = Mn.LayoutView.extend({
     toggleShuffle() {
         let shuffle = application.appState.get('shuffle');
         application.appState.set('shuffle', !shuffle);
-        $('#shuffle-sm').toggleClass('active', !shuffle);
+        this.ui.shuffle.toggleClass('active', !shuffle);
     },
 
     toggleRepeat() {
@@ -186,7 +192,7 @@ const Player = Mn.LayoutView.extend({
         switch (repeat) {
             case 'false':
                 application.appState.set('repeat', 'track');
-                $('#repeat-sm').toggleClass('active', true);
+                this.ui.repeat.toggleClass('active', true);
                 this.ui.repeat.find('use').attr(
                     'xlink:href',
                     require('../assets/icons/repeat-one-sm.svg')
@@ -201,7 +207,7 @@ const Player = Mn.LayoutView.extend({
                 break;
             case 'playlist':
                 application.appState.set('repeat', 'false');
-                $('#repeat-sm').toggleClass('active', false);
+                this.ui.repeat.toggleClass('active', false);
                 break;
         }
     },

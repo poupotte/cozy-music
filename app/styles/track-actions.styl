@@ -7,14 +7,14 @@
         top: 0px
 
         .active
-            path
+            svg
                 fill: $svg-red
 
         button:hover:not(.active)
+            svg
+                fill: $text-dark
             .help
                 visibility: visibile
-            path
-                fill: $text-dark
 
         button
             height: 100%
@@ -22,10 +22,7 @@
             svg
                 height: 20px
                 width: 20px
-                path
-                    fill: $svg
-                    -webkit-transition: fill 0.2s; /* Safari */
-                    transition: fill 0.2s;
+                fill: $svg
 
     .all
         #delete-from-upnext
