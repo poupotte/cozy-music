@@ -8,13 +8,13 @@ const PlaylistView = Mn.ItemView.extend({
 
     tagName: 'li',
 
-    className: 'playlist',
+    className() {
+        let currentPlaylist = application.appState.get('currentPlaylist');
+        let selected = currentPlaylist == this.model ? 'selected' : ''
+        return 'playlist ' + selected
+    },
 
-    modelEvents: { change: 'render' },
-
-    onRender() {
-        this.$el.attr('data-id', this.model.get('_id'));
-    }
+    modelEvents: { change: 'render' }
 });
 
 export default PlaylistView;

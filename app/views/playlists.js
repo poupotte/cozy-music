@@ -12,13 +12,16 @@ const Playlists = Mn.CompositeView.extend({
 
     childView: PlaylistView,
 
+    modelEvents: {
+        "change:currentPlaylist": "render"
+    },
+
     ui: {
         addPlaylist: '#add-playlist',
         playlistText: '#playlist-text',
     },
 
     events: {
-        'click .playlist': 'changePlaylist',
         'click @ui.addPlaylist': 'createPlaylist',
         'focusout @ui.addPlaylist': 'focusoutAddPlaylist',
         'keyup @ui.playlistText': 'keyupPlaylistText'
@@ -64,10 +67,14 @@ const Playlists = Mn.CompositeView.extend({
         }
     },
 
-    changePlaylist(e) {
-        this.$('.playlist').removeClass('selected');
-        $(e.currentTarget).addClass('selected');
+    serializeData() {
+        let currentPlaylist = application.appState.get('currentPlaylist');
+        return {
+            type: currentPlaylist.get('tracks').type
+        }
+    },
 
+    changePlaylist(e) {
         if ($(e.currentTarget).attr('id') == "up-next") {
             application.appState.set('currentPlaylist', application.upNext);
         } else if ($(e.currentTarget).attr('id') == "all-song") {

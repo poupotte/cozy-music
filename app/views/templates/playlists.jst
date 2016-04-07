@@ -1,7 +1,7 @@
 <h4><%= t('your music') %></h4>
 <ul>
-    <li id="all-song" class="playlist selected"><%= t('all songs') %></li>
-    <li id="up-next" class="playlist"><%= t('up next') %></li>
+    <li id="all-song" class="playlist <% if (type == 'all') { %>selected<% } %>"><a href="#tracks"><%= t('all songs') %></a></li>
+    <li id="up-next" class="playlist <% if (type == 'upNext') { %>selected<% } %>"><a href="#upnext"><%= t('up next') %></a></li>
 </ul>
 <h4><%= t('playlists') %></h4>
 <ul id="playlist-list"></ul>

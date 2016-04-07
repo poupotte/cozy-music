@@ -231,8 +231,10 @@ const Player = Mn.LayoutView.extend({
         this.progressDown = true;
         let audio = this.ui.player.get(0);
         let bar = this.ui.progressBar.get(0);
-        let newTime = audio.duration * ((e.pageX - bar.offsetLeft) / bar.clientWidth);
-        audio.currentTime = newTime;
+        let percent = (e.pageX - bar.offsetLeft) / bar.clientWidth;
+        if (isFinite(audio.duration) && percent > 0 && percent < 1) {
+            audio.currentTime = audio.duration * percent;
+        }
     },
 
     // Change the time displayed
@@ -260,8 +262,10 @@ const Player = Mn.LayoutView.extend({
         let audio = this.ui.player.get(0);
         let bar = this.ui.volumeBar.get(0);
         let volume = (e.pageX - bar.offsetLeft) / bar.clientWidth;
-        audio.volume = volume;
-        application.appState.set('currentVolume', volume);
+        if (volume > 0 && volume < 1) {
+            audio.volume = volume;
+            application.appState.set('currentVolume', volume);
+        }
     }
 });
 

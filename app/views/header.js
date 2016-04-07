@@ -58,7 +58,7 @@ const Header = Mn.ItemView.extend({
 
     // Rebind the listener to the correct playlist
     changedPlaylist(model, newValue) {
-        this.stopListening(model.changed.currentPlaylist);
+        this.stopListening(model.changed);
         this.listenTo(
             this.model.get('currentPlaylist').get('tracks'),
             'update reset',

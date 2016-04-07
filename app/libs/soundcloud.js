@@ -61,7 +61,6 @@ class Soundcloud {
 
     // Set the track's metas and save it.
     importTrack(track, playlist) {
-        console.log('IMPORT', track);
         if (!track.streamable) {
             let notification = {
                 status: 'ko',

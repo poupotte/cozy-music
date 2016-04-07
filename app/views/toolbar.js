@@ -5,7 +5,6 @@ import PlaylistsView from './playlists';
 import NotificationView from './notification';
 import application from '../application';
 
-
 const Toolbar = Mn.LayoutView.extend({
 
     template: require('./templates/toolbar'),
@@ -25,7 +24,7 @@ const Toolbar = Mn.LayoutView.extend({
     events: {
         'click #sync-files': 'sync',
         'click @ui.importSC': 'importStream',
-        'click @ui.search': 'search',
+        'click @ui.search': 'focusInput',
         'focusout @ui.importSC': 'focusoutImportSc',
         'focusout @ui.search': 'focusoutSearch',
         'keyup @ui.importText': 'keyImportScText',
@@ -38,7 +37,7 @@ const Toolbar = Mn.LayoutView.extend({
 
     onRender() {
         this.showChildView('playlists', new PlaylistsView({
-            collection: application.allPlaylists
+            collection: application.allPlaylists, model: application.appState
         }));
         application.channel.reply('notification', this.showNotification, this);
     },
@@ -54,8 +53,16 @@ const Toolbar = Mn.LayoutView.extend({
         }
     },
 
+    debounceSearch: _.debounce(val => {
+        application.router.navigate('search?q=' + val, { trigger: true });
+    }, 250),
+
     keySearchText(e) {
         e.stopPropagation();
+        let val = this.ui.searchText.val();
+        if (val) {
+            this.debounceSearch(val);
+        }
     },
 
     // Show the input
@@ -77,7 +84,7 @@ const Toolbar = Mn.LayoutView.extend({
         }
     },
 
-    search() {
+    focusInput() {
         this.ui.search.addClass('input-focused');
     },
 

@@ -25,17 +25,22 @@ const Playlists = Backbone.Collection.extend({
 
     sync(method, model, options) {
         if (method == 'read') {
-            cozysdk.run('Playlist', 'all', {}, (err, res) => {
-                if (res) {
-                    if (options && options.success) {
-                        options.success(res);
+            let promise = new Promise((resolve, reject) => {
+                cozysdk.run('Playlist', 'all', {}, (err, res) => {
+                    if (res) {
+                        if (options && options.success) {
+                            options.success(res);
+                            resolve(res);
+                        }
+                    } else {
+                        if (options && options.error) {
+                            options.error(err);
+                            reject(err);
+                        }
                     }
-                } else {
-                    if (options && options.error) {
-                        options.error(err);
-                    }
-                }
+                });
             });
+            return promise;
         }
     },
 
