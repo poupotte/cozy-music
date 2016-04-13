@@ -44,8 +44,7 @@ const Playlists = Backbone.Collection.extend({
         }
     },
 
-    parse(resp, options) {
-        let playlists = JSON.parse('' + resp);
+    parse(playlists, options) {
         let result = [];
         for (let i = 0; i < playlists.length; i++) {
             result.push(playlists[i].value);

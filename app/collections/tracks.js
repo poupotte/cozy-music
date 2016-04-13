@@ -80,9 +80,8 @@ const Tracks = Backbone.Collection.extend({
         }
     },
 
-    parse(resp, options) {
+    parse(tracks, options) {
         let result = [];
-        let tracks = JSON.parse('' + resp);
         for (let i = 0; i < tracks.length; i++) {
             result.push(tracks[i].value);
         }
@@ -99,12 +98,21 @@ cozysdk.defineRequest('File', 'music', (doc) => {
 });
 
 cozysdk.defineRequest('Track', 'all', (doc) => {
+    if (!doc._attachments) {
         emit(doc._id, doc);
+    }
+    }, (error, response) => {
+});
+
+cozysdk.defineRequest('Track', 'oldDoctype', (doc) => {
+        if (doc.title) {
+            emit(doc._id, doc);
+        }
     }, (error, response) => {
 });
 
 cozysdk.defineRequest('Track', 'playable', (doc) => {
-        if (!doc.hidden) {
+        if (!doc.hidden && !doc._attachments) {
             emit(doc._id, doc);
         }
     }, (error, response) => {
