@@ -12,6 +12,10 @@ const PopupPlaylists = Mn.CompositeView.extend({
 
     childView: PlaylistView,
 
+    childViewOptions: {
+        template: require('./templates/popupPlaylist')
+    },
+
     ui: {
         addPlaylist: '#add-playlist',
         playlistText: '#playlist-text',
@@ -19,7 +23,7 @@ const PopupPlaylists = Mn.CompositeView.extend({
     },
 
     events: {
-        'click li': 'addToPlaylist',
+        'click li p': 'addToPlaylist',
         'click @ui.addPlaylist': 'showInput',
         'keyup @ui.playlistText': 'keyupPlaylistText',
     },
@@ -69,6 +73,11 @@ const PopupPlaylists = Mn.CompositeView.extend({
             newPlaylist.addTrack(this.model);
             application.allPlaylists.add(newPlaylist);
             this.ui.playlistText.val('');
+            let notification = {
+                status: 'ok',
+                message: 'Added to ' + newPlaylist.get('title')
+            }
+            application.channel.request('notification', notification);
         }
     },
 

@@ -12,6 +12,10 @@ const Playlists = Mn.CompositeView.extend({
 
     childView: PlaylistView,
 
+    childViewOptions: {
+        template: require('./templates/playlist')
+    },
+
     modelEvents: {
         "change:currentPlaylist": "render"
     },

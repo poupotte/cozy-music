@@ -4,9 +4,11 @@ import application from '../application';
 
 const PlaylistView = Mn.ItemView.extend({
 
-    template: require('./templates/playlist'),
-
     tagName: 'li',
+
+    initialize(options) {
+        this.template = options.template;
+    },
 
     className() {
         let currentPlaylist = application.appState.get('currentPlaylist');
