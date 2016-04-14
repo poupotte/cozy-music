@@ -6,6 +6,7 @@ import Playlists from './collections/playlists';
 import AppLayout from './views/app_layout';
 import AppState from './models/appState';
 import Radio from 'backbone.radio';
+import Router from './routes/index';
 
 require('./styles/app.styl');
 
@@ -21,39 +22,35 @@ let Application = Mn.Application.extend({
     },
 
     onBeforeStart () {
-        // All track initialization
-        let allTracks = new Tracks([], { type: 'all' });
-
-        allTracks.fetch({
-            success: () => { // For now initialize upNext with all track
-                this.allTracks.get('tracks').each(track => {
-                    this.upNext.get('tracks').add(track);
-                });
-            }
-        });
         this.allTracks = new Playlist({
-            title: "All Songs",
-            tracks: allTracks
+            title: 'All Songs',
+            tracks: new Tracks([], { type: 'all' })
         });
-
-        // Up Next initialization
-        let upNext = new Tracks([], { type: 'upNext' });
+        this.allTracks.get('tracks').fetch();
 
         this.upNext = new Playlist({
-            title: "Up Next",
-            tracks: upNext
+            title: 'Up Next',
+            tracks: new Tracks([], { type: 'upNext' })
         });
+
+        this.search = new Playlist({
+            title: 'Results for ',
+            tracks: new Tracks([], { type: 'search' })
+        });
+
+        this.router = new Router();
 
         // the default playlist is all tracks
         this.appState.set('currentPlaylist', this.allTracks);
 
         this.allPlaylists = new Playlists();
-        this.allPlaylists.fetch();
+
+        this.loadPlaylist = this.allPlaylists.fetch(); // Promise
     },
 
     onStart () {
         if (Backbone.history) {
-            Backbone.history.start();
+            Backbone.history.start({pushState: false});
         }
         this.appLayout = new AppLayout();
         this.appLayout.render();

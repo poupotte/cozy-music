@@ -13,4 +13,4 @@ export function timeToString(time) {
             + (minutes == '00' ? '0:' : minutes + ':')
             + seconds;
     return r;
-}
+};

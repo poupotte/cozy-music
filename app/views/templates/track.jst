@@ -1,5 +1,72 @@
-<td class="number"><%- number %></td>
-<td class="title"><%- title %></td>
-<td><%- artist %></td>
-<td><%- album %></td>
-<td><%- duration %><td>
+<div class="number-column-cell" role="gridcell">
+    <%- number %>
+    <svg>
+        <use xlink:href="<%= require('../../assets/icons/speaker-sm.svg') %>"/>
+    </svg>
+</div>
+<div class="song-column-cell" role="gridcell"><%- title %></div>
+<div class="artist-column-cell" role="gridcell"><%- artist %></div>
+<div class="album-column-cell" role="gridcell"><%- album %>
+    <div class="actions">
+        <% if (type != 'upNext') { %>
+        <button class="add-to-upnext">
+            <p class="help">Add To Up Next</p>
+            <svg>
+                <use xlink:href="<%= require('../../assets/icons/add-to-playlist-sm.svg') %>"/>
+            </svg>
+        </button>
+        <% } else { %>
+        <button class="delete-from-upnext">
+            <svg>
+                <use xlink:href="<%= require('../../assets/icons/cross-sm.svg') %>"/>
+            </svg>
+        </button>
+        <% } %>
+        <button class="menu">
+            <svg>
+                <use xlink:href="<%= require('../../assets/icons/more-sm.svg') %>"/>
+            </svg>
+        </button>
+    </div>
+</div>
+<div class="length-column-cell" role="gridcell"><%- duration %></div>
+<div id="popup-menu" class="popup-menu">
+    <ul>
+        <li class="add-to-playlist">
+            <svg>
+                <use xlink:href="<%= require('../../assets/icons/plus-sm.svg') %>"/>
+            </svg>
+            Add To Playlist
+            <svg class="small">
+                <use xlink:href="<%= require('../../assets/icons/play-sm.svg') %>"/>
+            </svg>
+            <div class="playlist-popup-container">
+        </li>
+        <% if (type == 'playlist') { %>
+        <li class="remove-from-playlist">
+            <svg>
+                <use xlink:href="<%= require('../../assets/icons/cross-sm.svg') %>"/>
+            </svg>
+            Remove from Playlist
+        </li>
+        <% } %>
+        <li class="album-to-upnext">
+            <svg>
+                <use xlink:href="<%= require('../../assets/icons/add-to-playlist-sm.svg') %>"/>
+            </svg>
+            Add This Album to Up Next
+        </li>
+        <li class="edit-details">
+            <svg>
+                <use xlink:href="<%= require('../../assets/icons/edit-sm.svg') %>"/>
+            </svg>
+            Edit Details
+        </li>
+        <li class="delete">
+            <svg>
+                <use xlink:href="<%= require('../../assets/icons/trash-sm.svg') %>"/>
+            </svg>
+            Delete
+        </li>
+    </ul>
+</div>

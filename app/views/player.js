@@ -16,33 +16,82 @@ const Player = Mn.LayoutView.extend({
         volume: '#volume',
         volumeBar: '#volume-bar',
         playButton: '#play',
-        trackname: '#trackname'
+        trackname: '#trackname',
+        shuffle: '#shuffle',
+        repeat: '#repeat',
+        speaker: '#speaker'
     },
 
     events: {
         'click #prev': 'prev',
         'click #play': 'toggle',
         'click #next': 'next',
-        'click @ui.progressBar': 'skip',
-        'click @ui.volumeBar': 'changeVol'
+        'mousedown @ui.progressBar': 'skip',
+        'mousedown @ui.volumeBar': 'changeVol',
+        'click @ui.shuffle': 'toggleShuffle',
+        'click @ui.repeat': 'toggleRepeat',
+        'click @ui.speaker': 'toggleVolume'
     },
 
     initialize() {
-        this.listenTo(application.channel,'reset:UpNext', this.render);
+        this.listenTo(application.channel, {
+            'reset:UpNext': this.render,
+            'player:next': this.next
+        });
         this.listenTo(application.appState, 'change:currentTrack',
             function(appState, currentTrack) {
                 if (currentTrack) {
                     this.load(currentTrack);
                 }
         });
+        $(document).keyup((e) => {
+            e.preventDefault();
+            let audio = this.ui.player.get(0);
+            let volume;
+            switch (e.which) {
+                case 32: // 'Space'
+                    this.toggle();
+                    break;
+                case 39: // ArrowRight
+                    this.next();
+                    break;
+                case 37: // ArrowLeft
+                    this.prev();
+                    break;
+                case 38: // ArrowUp
+                    volume = audio.volume + 0.1 > 1 ? 1 : audio.volume + 0.1;
+                    audio.volume = volume;
+                    application.appState.set('currentVolume', volume);
+                    break;
+                case 40: // ArrowDown
+                    volume = audio.volume - 0.1 < 0 ? 0 : audio.volume - 0.1;
+                    audio.volume = volume;
+                    application.appState.set('currentVolume', volume);
+                    break;
+                case 77: // m
+                    this.toggleVolume();
+                    break;
+            }
+        });
+        $(document).mousemove((e) => {
+            if (this.volumeDown) {
+                this.changeVol(e);
+            } else if (this.progressDown) {
+                this.skip(e);
+            }
+        });
+        $(document).mouseup((e) => {
+            this.volumeDown = false;
+            this.progressDown = false;
+        });
     },
 
     onRender() {
         let audio = this.ui.player.get(0);
         audio.ontimeupdate = this.onTimeUpdate;
-        audio.onended = this.next;
+        audio.onended = () => { this.next() };
         audio.onvolumechange = this.onVolumeChange;
-        audio.volume = 0.5;
+        audio.volume = application.appState.get('currentVolume');
     },
 
     load(track) {
@@ -100,21 +149,96 @@ const Player = Mn.LayoutView.extend({
     },
 
     next() {
+        let repeat = application.appState.get('repeat');
         let upNext = application.upNext.get('tracks');
         let currentTrack = application.appState.get('currentTrack');
-        let index = upNext.indexOf(currentTrack);
-        let next = upNext.at(index + 1)
-        if (next) {
+        let index = upNext.indexOf(currentTrack) + 1;
+        let next = upNext.at(index)
+        if (repeat == 'track') {
+            this.replayCurrent();
+        } else if (next) {
             application.appState.set('currentTrack', next);
+        } else if (repeat == 'playlist' && upNext.at(0)) {
+            if (upNext.length == 1) {
+                this.replayCurrent();
+            }
+            application.appState.set('currentTrack', upNext.at(0));
+        } else {
+            application.appState.set('currentTrack', undefined);
+            this.render();
         }
+    },
+
+    replayCurrent() {
+        let audio = this.ui.player.get(0);
+        audio.currentTime = 0;
+        audio.play();
+        this.ui.playButton.find('use').attr(
+            'xlink:href',
+            require('../assets/icons/pause-lg.svg')
+        );
+    },
+
+    toggleShuffle() {
+        let shuffle = application.appState.get('shuffle');
+        application.appState.set('shuffle', !shuffle);
+        this.ui.shuffle.toggleClass('active', !shuffle);
+    },
+
+    toggleRepeat() {
+        let repeat = application.appState.get('repeat');
+        switch (repeat) {
+            case 'false':
+                application.appState.set('repeat', 'track');
+                this.ui.repeat.toggleClass('active', true);
+                this.ui.repeat.find('use').attr(
+                    'xlink:href',
+                    require('../assets/icons/repeat-one-sm.svg')
+                );
+                break;
+            case 'track':
+                application.appState.set('repeat', 'playlist');
+                this.ui.repeat.find('use').attr(
+                    'xlink:href',
+                    require('../assets/icons/repeat-sm.svg')
+                );
+                break;
+            case 'playlist':
+                application.appState.set('repeat', 'false');
+                this.ui.repeat.toggleClass('active', false);
+                break;
+        }
+    },
+
+    toggleVolume() {
+        let audio = this.ui.player.get(0);
+        let mute = application.appState.get('mute');
+        application.appState.set('mute', !mute);
+        if (!mute) {
+            this.ui.speaker.find('use').attr(
+                'xlink:href',
+                require('../assets/icons/mute-sm.svg')
+            );
+            audio.volume = 0;
+        } else {
+            this.ui.speaker.find('use').attr(
+                'xlink:href',
+                require('../assets/icons/speaker-sm.svg')
+            );
+            audio.volume = application.appState.get('currentVolume');
+        }
+
     },
 
     // Go to a certain time in the track
     skip(e) {
+        this.progressDown = true;
         let audio = this.ui.player.get(0);
         let bar = this.ui.progressBar.get(0);
-        let newTime = audio.duration * ((e.pageX - bar.offsetLeft) / bar.clientWidth);
-        audio.currentTime = newTime;
+        let percent = (e.pageX - bar.offsetLeft) / bar.clientWidth;
+        if (isFinite(audio.duration) && percent > 0 && percent < 1) {
+            audio.currentTime = audio.duration * percent;
+        }
     },
 
     // Change the time displayed
@@ -138,10 +262,14 @@ const Player = Mn.LayoutView.extend({
 
     // Change the volume
     changeVol(e) {
+        this.volumeDown = true;
         let audio = this.ui.player.get(0);
         let bar = this.ui.volumeBar.get(0);
         let volume = (e.pageX - bar.offsetLeft) / bar.clientWidth;
-        audio.volume = volume;
+        if (volume > 0 && volume < 1) {
+            audio.volume = volume;
+            application.appState.set('currentVolume', volume);
+        }
     }
 });
 

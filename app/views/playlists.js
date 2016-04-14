@@ -12,13 +12,20 @@ const Playlists = Mn.CompositeView.extend({
 
     childView: PlaylistView,
 
+    childViewOptions: {
+        template: require('./templates/playlist')
+    },
+
+    modelEvents: {
+        "change:currentPlaylist": "render"
+    },
+
     ui: {
         addPlaylist: '#add-playlist',
         playlistText: '#playlist-text',
     },
 
     events: {
-        'click .playlist': 'changePlaylist',
         'click @ui.addPlaylist': 'createPlaylist',
         'focusout @ui.addPlaylist': 'focusoutAddPlaylist',
         'keyup @ui.playlistText': 'keyupPlaylistText'
@@ -64,20 +71,21 @@ const Playlists = Mn.CompositeView.extend({
         }
     },
 
-    changePlaylist(e) {
-        let playlist = $(e.currentTarget);
-        let playlists = this.$('.playlist');
-        let index = playlists.index(playlist) - 2;
-        playlists.removeClass('selected');
-        playlist.addClass('selected');
+    serializeData() {
+        let currentPlaylist = application.appState.get('currentPlaylist');
+        return {
+            type: currentPlaylist.get('tracks').type
+        }
+    },
 
-        if (playlist.attr('id') == "up-next") {
+    changePlaylist(e) {
+        if ($(e.currentTarget).attr('id') == "up-next") {
             application.appState.set('currentPlaylist', application.upNext);
-        } else if (playlist.attr('id') == "all-song") {
+        } else if ($(e.currentTarget).attr('id') == "all-song") {
             application.appState.set('currentPlaylist', application.allTracks);
         } else {
-            this.currentIndex = index;
-            let playlist = application.allPlaylists.at(index);
+            let id = e.currentTarget.dataset.id;
+            let playlist = application.allPlaylists.get(id);
             application.appState.set('currentPlaylist', playlist);
         }
     }

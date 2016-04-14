@@ -6,6 +6,10 @@ const AppState = Backbone.Model.extend({
     defaults: {
         currentTrack: '',
         currentPlaylist: '',
+        shuffle: false,
+        repeat: 'false', // can be 'false' / 'track' / 'playlist'
+        currentVolume: 0.5,
+        mute: false
     },
 
     sync(method, model, options) {

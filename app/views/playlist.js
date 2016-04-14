@@ -4,11 +4,17 @@ import application from '../application';
 
 const PlaylistView = Mn.ItemView.extend({
 
-    template: require('./templates/playlist'),
-
     tagName: 'li',
 
-    className: 'playlist',
+    initialize(options) {
+        this.template = options.template;
+    },
+
+    className() {
+        let currentPlaylist = application.appState.get('currentPlaylist');
+        let selected = currentPlaylist == this.model ? 'selected' : ''
+        return 'playlist ' + selected
+    },
 
     modelEvents: { change: 'render' }
 });

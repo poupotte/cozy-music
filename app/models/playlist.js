@@ -13,7 +13,9 @@ const Playlist = Backbone.Model.extend({
     },
 
     initialize(attributes, options) {
-        let tracks = attributes.tracks || new Tracks([], {});
+        let tracks = attributes.tracks || new Tracks([], {
+            type: 'playlist'
+        });
         this.set('tracks', tracks);
     },
 
@@ -56,7 +58,24 @@ const Playlist = Backbone.Model.extend({
 
     // Add a track to the playlist
     addTrack(track) {
-        this.set('tracks', this.get('tracks').push(track));
+        let tracks = this.get('tracks');
+        tracks.push(track);
+        if (tracks.type == 'playlist') this.save();
+    },
+
+    // Remove a track to the playlist
+    removeTrack(track) {
+        let tracks = this.get('tracks');
+        tracks.remove(track);
+        if (tracks.type == 'playlist') this.save();
+    },
+
+    parse(attrs, options) {
+        if (attrs) {
+            let tracks = attrs.tracks;
+            attrs.tracks = new Tracks(tracks, { type: 'playlist'});
+            return attrs
+        }
     }
 });
 

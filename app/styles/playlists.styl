@@ -1,0 +1,87 @@
+div[role='toolbar']
+    .playlists
+        padding-right: 16px
+
+        .container
+            padding-left: 16px
+
+        .add-playlist
+            cursor: pointer
+
+            input[type='text']
+                display: none
+
+            h4
+                margin-top: 0px
+                padding-left: 20px
+                display: inline-block
+
+            svg
+                height 16px
+                width: 16px
+                position: relative
+                left: 16px
+                top: 4px
+                fill: $text
+
+        .input
+            border: solid 1px $blue
+            font-family: 'Source Sans Pro'
+            width: 100%
+            height: 32px
+            border-radius: 2px
+            position: relative
+
+            h4
+                display: none
+
+            svg
+                position: absolute
+                height 16px
+                width: 16px
+                top: 8px
+                left: 15px
+                fill: $blue
+
+            input[type='text']
+                color: #788195
+                all: unset
+                padding-left: 40px
+                box-sizing: border-box
+                width: 100%
+                height: 100%
+
+        h4
+            margin-top: 33px
+            margin-bottom: 0px
+            padding-left: 32px
+            height: 36px
+            font-family: "Source Sans Pro"
+            font-weight: bold
+            font-size: 13px
+            line-height: 2.5
+            color: $text
+            text-transform: uppercase
+
+        li
+            padding-left: 32px
+            height: 36px
+            font-size: 16px
+            line-height: 2.3
+            overflow: hidden
+            text-overflow: "…"
+            white-space: nowrap
+
+            a
+                width: 100%
+                height: 100%
+                text-decoration: none
+                display: block
+                color: $text-dark
+
+        li.selected
+            border-top-right-radius: 2px
+            border-bottom-right-radius: 2px
+            background-color: #f14a53
+            a
+                color: $white

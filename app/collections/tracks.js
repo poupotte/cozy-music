@@ -16,6 +16,19 @@ const Tracks = Backbone.Collection.extend({
                 'reset:UpNext',
                 this.resetUpNext
             );
+            this.listenTo(
+                application.appState,
+                'change:shuffle',
+                this.shuffleUpNext
+            );
+        }
+        this.on('change:hidden', this.removeTrack, this);
+    },
+
+    // UpNext : shuffle
+    shuffleUpNext(appState, shuffle) {
+        if (shuffle) {
+            this.reset(this.shuffle(), {silent:true});
         }
     },
 
@@ -38,22 +51,36 @@ const Tracks = Backbone.Collection.extend({
         );
     },
 
+    removeTrack(track) {
+        this.remove(track);
+    },
+
     comparator(model) {
         return model.get('metas').title;
     },
 
     sync(method, model, options) {
-        if (method == 'read' && this.type) {
-            cozysdk.run('Track', this.type, {}, (err, res) => {
+        if (method == 'read' && this.type == "all") {
+            cozysdk.run('Track', 'playable', {}, (err, res) => {
                 if (res) {
-                    let tracks = JSON.parse('' + res);
-                    for (let i = 0; i < tracks.length; i++) {
-                        this.add(tracks[i].value);
+                    if (options && options.success) {
+                        options.success(res);
                     }
-                    options.success();
+                } else {
+                    if (options && options.error) {
+                        options.error(err);
+                    }
                 }
             });
         }
+    },
+
+    parse(tracks, options) {
+        let result = [];
+        for (let i = 0; i < tracks.length; i++) {
+            result.push(tracks[i].value);
+        }
+        return result;
     }
 });
 
@@ -66,12 +93,21 @@ cozysdk.defineRequest('File', 'music', (doc) => {
 });
 
 cozysdk.defineRequest('Track', 'all', (doc) => {
+    if (!doc._attachments) {
         emit(doc._id, doc);
+    }
+    }, (error, response) => {
+});
+
+cozysdk.defineRequest('Track', 'oldDoctype', (doc) => {
+        if (doc.title) {
+            emit(doc._id, doc);
+        }
     }, (error, response) => {
 });
 
 cozysdk.defineRequest('Track', 'playable', (doc) => {
-        if (!doc.hidden) {
+        if (!doc.hidden && !doc._attachments) {
             emit(doc._id, doc);
         }
     }, (error, response) => {

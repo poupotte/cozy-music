@@ -6,7 +6,7 @@ div[role='toolbar']
     flex-basis: 280px
     display: flex
     flex-direction: column
-    background-color: #eff1f4
+    background-color: $background-dark
     border: solid 1px #cedae4
 
     .tools
@@ -33,9 +33,7 @@ div[role='toolbar']
                 height: 20px
                 width: 20px
                 top: 6px
-
-                path
-                    fill: white
+                fill: $white
 
             p
                 position: relative
@@ -45,7 +43,7 @@ div[role='toolbar']
                 margin-top: 9px
                 margin-bottom: 10px
                 height: 20px
-                color: white
+                color: $white
                 display: inline-block
                 text-transform: uppercase
 
@@ -86,9 +84,7 @@ div[role='toolbar']
                 width: 20px
                 top: 8px
                 left: 15px
-
-                path
-                    fill: $grey
+                fill: $grey
 
             input[type='text']
                 color: #788195
@@ -100,131 +96,10 @@ div[role='toolbar']
 
         .input-focused
             border: solid 1px $blue
-            font-family: 'Source Sans Pro'
+            font-style: normal
 
             svg
-                path
-                    fill: $blue
-
-    .playlists
-        padding-right: 16px
-
-        .container
-            padding-left: 16px
-
-        .add-playlist
-            cursor: pointer
-
-            input[type='text']
-                display: none
-
-            h4
-                margin-top: 0px
-                padding-left: 20px
-                display: inline-block
-
-            svg
-                height 16px
-                width: 16px
-                position: relative
-                left: 16px
-                top: 4px
-
-                path
-                    fill: #92a0b2
-
-        .input
-            border: solid 1px $blue
-            font-family: 'Source Sans Pro'
-            width: 100%
-            height: 32px
-            border-radius: 2px
-            position: relative
-
-            h4
-                display: none
-
-            svg
-                position: absolute
-                height 16px
-                width: 16px
-                top: 8px
-                left: 15px
-
-                path
-                    fill: $blue
-
-            input[type='text']
-                color: #788195
-                all: unset
-                padding-left: 40px
-                box-sizing: border-box
-                width: 100%
-                height: 100%
-
-        h4
-            margin-top: 33px
-            margin-bottom: 0px
-            padding-left: 32px
-            height: 36px
-            font-family: "Source Sans Pro"
-            font-weight: bold
-            font-size: 13px
-            line-height: 2.5
-            color: $text
-            text-transform: uppercase
-
-        li
-            padding-left: 32px
-            height: 36px
-            font-size: 16px
-            line-height: 2.3
-            color: $text-dark
-            cursor: pointer
-
-        li.selected
-            color: white
-            border-top-right-radius: 2px
-            border-bottom-right-radius: 2px
-            background-color: #f14a53
-
-    .notification
-        position: absolute
-        left: 16px
-        bottom: 93px
-        width: 248px
-        height: 66px
-        border-radius: 3px
-        background-color: #696d78
-        box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.1)
-        opacity: 0
-        visibility: hidden
-
-        p
-            position: absolute
-            top: 10px
-            left: 64px
-            padding-right: 32px
-            height: 42px
-            font-family: "Source Sans Pro"
-            font-size: 16px
-            line-height: 1.3
-            color: #ffffff
-
-        svg
-            position: absolute
-            left: 14px
-            top: 13px
-            width: 40px
-            height: 40px
-
-            path
-                fill: white
-
-    .notify
-        animation-timing-function: ease;
-        animation-name: notify;
-        animation-duration: 3s;
+                fill: $blue
 
 @keyframes notify {
     0%   {opacity: 0; visibility: visible}
