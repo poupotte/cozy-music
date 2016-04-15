@@ -86,7 +86,7 @@ const TrackView = Mn.LayoutView.extend({
 
         let notification = {
             status: 'ok',
-            message: 'Added to Up Next'
+            message: t('added to upnext')
         }
         application.channel.request('notification', notification);
     },

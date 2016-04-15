@@ -31,10 +31,9 @@ class Soundcloud {
 
     // Check if the track is already in the database
     checkIfAlreadyExist(track, playlist) {
-        cozysdk.run('Track', 'soundcloud', {}, (err, res) => {
-            if (res) {
+        cozysdk.run('Track', 'soundcloud', {}, (err, tracks) => {
+            if (tracks) {
                 let trackID = undefined;
-                let tracks = JSON.parse('' + res);
                 for (let i = 0; i < tracks.length; i++) {
                     if (tracks[i].value.ressource.url == track.stream_url) {
                         trackID = tracks[i].value._id;
@@ -64,7 +63,7 @@ class Soundcloud {
         if (!track.streamable) {
             let notification = {
                 status: 'ko',
-                message: 'This track is not streamable'
+                message: t('this track is not streamable')
             }
             application.channel.request('notification', notification);
             return;
