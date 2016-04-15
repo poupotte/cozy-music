@@ -60,8 +60,14 @@
     "watch": "webpack --display-modules --display-chunks --watch"
   },
   "cozy-permissions": {
+    "CozyInstance": {
+      "description": "Get the current locale."
+    },
     "File": {
       "description": "Acess music from files."
+    },
+    "Folder": {
+      "description": "Create the cozic folder to import old track."
     },
     "Track": {
       "description": "Hear your track in your cozy."
