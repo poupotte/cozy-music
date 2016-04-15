@@ -3,7 +3,6 @@ import Polyglot from 'node-polyglot';
 import cozysdk from 'cozysdk-client';
 
 function init(locale) {
-    console.log(locale)
     let phrases;
     try {
         phrases = require("./locales/" + locale);
