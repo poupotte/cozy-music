@@ -11,3 +11,6 @@ lib-cov
 public
 node_modules
 npm-debug.log
+
+locales
+!locales/en.json
