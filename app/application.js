@@ -54,6 +54,14 @@ let Application = Mn.Application.extend({
         }
         this.appLayout = new AppLayout();
         this.appLayout.render();
+
+        // prevent the scroll with keyboard
+        document.addEventListener('keydown', (e) => {
+            let isScrollKey = [33, 34, 37, 38, 39, 40].indexOf(e.which) != -1;
+            if (isScrollKey && e.target == document.body) {
+                e.preventDefault();
+            }
+        });
     }
 });
 
