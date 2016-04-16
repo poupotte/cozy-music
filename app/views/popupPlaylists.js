@@ -54,7 +54,10 @@ const PopupPlaylists = Mn.CompositeView.extend({
         playlist.addTrack(this.model);
         let notification = {
             status: 'ok',
-            message: 'Added to ' + playlist.get('title')
+            message: t('added to playlist',
+                        {
+                            playlist_name: playlist.get('title')
+                        })
         }
         application.channel.request('notification', notification);
     },
@@ -75,7 +78,10 @@ const PopupPlaylists = Mn.CompositeView.extend({
             this.ui.playlistText.val('');
             let notification = {
                 status: 'ok',
-                message: 'Added to ' + newPlaylist.get('title')
+                message: t('added to playlist',
+                            {
+                                playlist_name: newPlaylist.get('title')
+                            })
             }
             application.channel.request('notification', notification);
         }
