@@ -10,7 +10,7 @@ const Content = Mn.LayoutView.extend({
 
     regions: {
         header: '[role="complementary"]',
-        tracks: '#tracks',
+        tracks: '.tracks',
     },
 
     modelEvents: {

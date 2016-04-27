@@ -62,6 +62,8 @@ const Toolbar = Mn.LayoutView.extend({
         let val = this.ui.searchText.val();
         if (val) {
             this.debounceSearch(val);
+        } else {
+            application.router.navigate('/tracks', { trigger: true });
         }
     },
 

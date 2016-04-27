@@ -73,7 +73,7 @@ const Header = Mn.ItemView.extend({
     },
 
     resetUpNext() {
-        application.channel.trigger('reset:UpNext');
+        application.channel.trigger('upnext:reset');
     },
 
 });

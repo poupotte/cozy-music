@@ -51,13 +51,7 @@ const TrackView = Mn.LayoutView.extend({
     },
 
     play(e) {
-        // Add current playlist to upNext if no track in UpNext
-        let tracks = application.appState.get('currentPlaylist').get('tracks');
-        if (application.upNext.get('tracks').length == 0) {
-            tracks.each(track => {
-                application.upNext.get('tracks').add(track);
-            });
-        }
+        application.channel.trigger('upnext:addCurrentPlaylist');
         application.appState.set('currentTrack', this.model);
     },
 
