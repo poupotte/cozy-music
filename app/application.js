@@ -10,6 +10,7 @@ import Router from './routes/index';
 
 require('./styles/app.styl');
 
+
 let Application = Mn.Application.extend({
 
     _initChannel () { // Use Backbone.Radio instead of wreqr

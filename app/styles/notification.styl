@@ -22,15 +22,28 @@ div[role='toolbar']
             color: $white
             overflow: hidden
             text-overflow: "…"
-            white-space: nowrap
 
         svg
-            padding-left: 14px
+            margin-left: 14px
             width: 40px
             height: 40px
             fill: $white
+
+        .spinner
+            animation 1s linear infinite spin
+
+    .load
+        visibility: visible
+        opacity: 1
 
     .notify
         animation-timing-function: ease;
         animation-name: notify;
         animation-duration: 3s;
+
+@keyframes notify {
+    0%   {opacity: 0; visibility: visible}
+    10%  {opacity: 1}
+    90%  {opacity: 1}
+    100% {opacity: 0; visibility: hidden}
+}

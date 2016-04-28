@@ -4,6 +4,11 @@ import cozysdk from 'cozysdk-client';
 import async from 'async';
 
 export function syncFiles() {
+    let notification = {
+        status: 'loading',
+        message: t('retrieving all new and deleted files')
+    }
+    application.channel.request('notification', notification);
     cozysdk.run('Track', 'oldDoctype', {}, (err, tracks) => {
         if (tracks.length > 0) {
             createCozicFolder(tracks);
@@ -117,32 +122,37 @@ function getAllTracksFileId(musicFiles) {
             for (let i = 0; i < musicFiles.length; i++) {
                 musicFilesFileId.push(musicFiles[i].value._id);
             }
-            saveTrack(musicFiles, tracksFileId);
-            deleteTrack(allTracksFiles, musicFilesFileId);
-            let notification = {
-                status: 'ok',
-                message: t('all your audio files have been added')
-            }
-            application.channel.request('notification', notification);
+            deleteTrack(allTracksFiles, musicFilesFileId, musicFiles, tracksFileId);
         }
     });
 }
 
 // Delete track if the files associated is deleted too
-function deleteTrack(allTracks, musicFilesFileId) {
+function deleteTrack(allTracks, musicFilesFileId, musicFiles, tracksFileId) {
+    let toDelete= [];
     for (let i = 0; i < allTracks.length; i++) {
         let t = allTracks[i];
         if (!_.includes(musicFilesFileId, t.get('ressource').fileID)) {
-            t.destroy({ success: () => {
-                application.allTracks.get('tracks').remove(t);
-            }});
+            toDelete.push(t)
         }
+    }
+    toDelete.forEach((track, index, array) => {
+        track.destroy({ success: () => {
+            application.allTracks.get('tracks').remove(track);
+            if (index + 1 == array.length) {
+                deleteTrackEnded(musicFiles, tracksFileId);
+            }
+        }});
+    });
+    if (toDelete.length == 0) {
+        deleteTrackEnded(musicFiles, tracksFileId);
     }
 }
 
 // Save the track if it's a new file that has not been synced
 function saveTrack(musicFiles, tracksFileId) {
     let files = musicFiles;
+    let toSave = [];
     for (let i = 0; i < files.length; i++) {
         let file = files[i].value;
         let trackname = file.name; // TO DO : ID3TAG
@@ -158,7 +168,34 @@ function saveTrack(musicFiles, tracksFileId) {
         });
 
         if (!_.includes(tracksFileId, fileid)) { // does not contains fileid
-            application.allTracks.get('tracks').create(t);
+            toSave.push(t);
         }
     }
+    toSave.forEach((track, index, array) => {
+        application.allTracks.get('tracks').create(track, { success: () => {
+            if (index + 1 == array.length) {
+                saveTrackEnded();
+            }
+        }});
+    });
+    if (toSave.length == 0) {
+        saveTrackEnded();
+    }
+}
+
+function deleteTrackEnded(musicFiles, tracksFileId) {
+    let notification = {
+        status: 'loading',
+        message: t('all deleted files removed, saving new tracks')
+    }
+    application.channel.request('notification', notification);
+    saveTrack(musicFiles, tracksFileId);
+}
+
+function saveTrackEnded() {
+    let notification = {
+        status: 'ok',
+        message: t('all your audio files are synced')
+    }
+    application.channel.request('notification', notification);
 }

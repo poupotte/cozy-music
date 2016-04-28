@@ -1,12 +1,12 @@
 <div class="notification">
-    <% if (status == 'ok') { %>
-    <svg>
-        <use xlink:href="<%= require('../../assets/icons/checkmark-lg.svg') %>"/>
+    <svg  <% if (status == 'loading') { %>class="spinner"<% } %> >
+        <% if (status == 'ok') { %>
+            <use xlink:href="<%= require('../../assets/icons/checkmark-lg.svg') %>"/>
+        <% } else if (status == 'ko') { %>
+            <use xlink:href="<%= require('../../assets/icons/cross-lg.svg') %>"/>
+        <% } else if (status == 'loading') { %>
+            <use xlink:href="<%= require('../../assets/icons/spinner.svg') %>"/>
+        <% } %>
     </svg>
-    <% } else { %>
-    <svg>
-        <use xlink:href="<%= require('../../assets/icons/cross-lg.svg') %>"/>
-    </svg>
-    <% } %>
     <p><%= message %></p>
 </div>

@@ -22,6 +22,17 @@ const Tracks = Backbone.Collection.extend({
                 this.shuffleUpNext
             );
         }
+
+        // Remove a track from all it's playlist when he is destroyed
+        if (this.type != 'all') {
+            this.listenTo(
+                application.allTracks.get('tracks'),
+                'remove',
+                function(removedTrack, allTracks) {
+                    this.remove(removedTrack);
+                }
+            );
+        }
         this.on('change:hidden', this.removeTrack, this);
     },
 
@@ -59,9 +70,7 @@ const Tracks = Backbone.Collection.extend({
             application.appState,
             'change:currentTrack',
             function(appState, currentTrack) {
-                if (!this.contains(currentTrack)) {
-                    this.push(currentTrack);
-                }
+                this.push(currentTrack);
             }
         );
     },
