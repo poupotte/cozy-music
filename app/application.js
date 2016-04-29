@@ -7,8 +7,11 @@ import AppLayout from './views/app_layout';
 import AppState from './models/appState';
 import Radio from 'backbone.radio';
 import Router from './routes/index';
+import { syncFiles } from './libs/file';
+
 
 require('./styles/app.styl');
+
 
 let Application = Mn.Application.extend({
 
@@ -54,10 +57,11 @@ let Application = Mn.Application.extend({
         }
         this.appLayout = new AppLayout();
         this.appLayout.render();
+        syncFiles();
 
         // prevent the scroll with keyboard
         document.addEventListener('keydown', (e) => {
-            let isScrollKey = [33, 34, 37, 38, 39, 40].indexOf(e.which) != -1;
+            let isScrollKey = [32, 33, 34, 37, 38, 39, 40].indexOf(e.which) != -1;
             if (isScrollKey && e.target == document.body) {
                 e.preventDefault();
             }

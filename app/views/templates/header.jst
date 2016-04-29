@@ -4,6 +4,8 @@
 <h3><span id="playlist-title"><%= t('up next') %></span></h3>
 <% } else if (type == 'all') { %>
 <h3><span id="playlist-title"><%= t('all songs') %></span></h3>
+<% } else if (type == 'search') { %>
+<h3><span id="playlist-title"><%= title %></span></h3>
 <% } %>
 <p>(<%= count %>)</p>
 

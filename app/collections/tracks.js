@@ -10,16 +10,27 @@ const Tracks = Backbone.Collection.extend({
     initialize(models, options) {
         this.type = options.type;
         if (this.type == 'upNext') {
-            this.listenTo(application, 'start', this.addCurrentToUpNext);
+            this.listenTo(application, 'start', this.addCurrentTrackToUpNext);
             this.listenTo(
-                application.channel,
-                'reset:UpNext',
-                this.resetUpNext
-            );
+                application.channel,{
+                'upnext:reset': this.resetUpNext,
+                'upnext:addCurrentPlaylist': this.addCurrentPlaylistToUpNext
+            });
             this.listenTo(
                 application.appState,
                 'change:shuffle',
                 this.shuffleUpNext
+            );
+        }
+
+        // Remove a track from all it's playlist when he is destroyed
+        if (this.type != 'all') {
+            this.listenTo(
+                application.allTracks.get('tracks'),
+                'remove',
+                function(removedTrack, allTracks) {
+                    this.remove(removedTrack);
+                }
             );
         }
         this.on('change:hidden', this.removeTrack, this);
@@ -38,15 +49,27 @@ const Tracks = Backbone.Collection.extend({
         application.upNext.get('tracks').reset();
     },
 
-    // UpNext : add the current track to up next if not alreay in it.
-    addCurrentToUpNext() {
+    // UpNext : Add current playlist to upNext if no track in UpNext
+    addCurrentPlaylistToUpNext() {
+        let currentPlaylist = application.appState.get('currentPlaylist');
+        let tracks = currentPlaylist.get('tracks');
+        if (tracks == this) {
+            tracks = application.allTracks.get('tracks');
+        }
+        if (application.upNext.get('tracks').length == 0) {
+            tracks.each(track => {
+                application.upNext.get('tracks').add(track);
+            });
+        }
+    },
+
+    // UpNext : add the current track to up next if not alreay in it
+    addCurrentTrackToUpNext() {
         this.listenTo(
             application.appState,
             'change:currentTrack',
             function(appState, currentTrack) {
-                if (!this.contains(currentTrack)) {
-                    this.push(currentTrack);
-                }
+                this.push(currentTrack);
             }
         );
     },

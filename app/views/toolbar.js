@@ -1,5 +1,4 @@
 import Mn from 'backbone.marionette';
-import { syncFiles } from '../libs/file';
 import scdl from '../libs/soundcloud';
 import PlaylistsView from './playlists';
 import NotificationView from './notification';
@@ -22,17 +21,12 @@ const Toolbar = Mn.LayoutView.extend({
     },
 
     events: {
-        'click #sync-files': 'sync',
         'click @ui.importSC': 'importStream',
         'click @ui.search': 'focusInput',
         'focusout @ui.importSC': 'focusoutImportSc',
         'focusout @ui.search': 'focusoutSearch',
         'keyup @ui.importText': 'keyImportScText',
         'keyup @ui.searchText': 'keySearchText'
-    },
-
-    sync() {
-        syncFiles();
     },
 
     onRender() {
@@ -62,6 +56,8 @@ const Toolbar = Mn.LayoutView.extend({
         let val = this.ui.searchText.val();
         if (val) {
             this.debounceSearch(val);
+        } else {
+            application.router.navigate('/tracks', { trigger: true });
         }
     },
 
