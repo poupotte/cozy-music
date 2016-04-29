@@ -4,11 +4,7 @@ import cozysdk from 'cozysdk-client';
 import async from 'async';
 
 export function syncFiles() {
-    let notification = {
-        status: 'loading',
-        message: t('retrieving all new and deleted files')
-    }
-    application.channel.request('notification', notification);
+
     cozysdk.run('Track', 'oldDoctype', {}, (err, tracks) => {
         if (tracks.length > 0) {
             createCozicFolder(tracks);
@@ -19,6 +15,11 @@ export function syncFiles() {
 }
 
 function fileSynchronisation() {
+    let notification = {
+        status: 'loading',
+        message: t('retrieving all new and deleted files')
+    }
+    application.channel.request('notification', notification);
     cozysdk.run('File', 'music', {}, (err, files) => {
         if (files) {
             getAllTracksFileId(files);
@@ -28,6 +29,11 @@ function fileSynchronisation() {
 
 // Create Cozic Folder
 function createCozicFolder(tracks) {
+    let notification = {
+        status: 'loading',
+        message: t('importing cozic files')
+    }
+    application.channel.request('notification', notification);
     cozysdk.defineRequest('Folder', 'Cozic', (doc) => {
             if (doc.name == 'Cozic') {
                 emit(doc._id, doc);
@@ -65,6 +71,8 @@ function convertOneTrack(track, callback) {
     cozysdk.convertToBinaries(track._id, 'file', (err, resp) => {
         if (resp) {
             getTrack(track, callback);
+        } else if (err) {
+            callback();
         }
     });
 }

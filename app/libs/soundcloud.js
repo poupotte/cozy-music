@@ -11,6 +11,11 @@ const clientID = '02gUJC0hH2ct1EGOcYXQIzRFU91c72Ea';
 class Soundcloud {
 
     import(url) {
+        let notification = {
+            status: 'loading',
+            message: t('importing from soundcloud')
+        }
+        application.channel.request('notification', notification);
         this.get('/resolve', { url: url }, (res) => {
             if (res.kind == 'playlist') {
                 let playlistTracks = new Tracks([], { type: 'playlist' });
