@@ -58,7 +58,7 @@
     "postbuild": "npm run copy:manifest",
     "prebuild": "npm-run-all clean tx",
     "prewatch": "npm run clean",
-    "publish": "git subtree push --prefix public origin build",
+    "test": "true",
     "watch": "webpack --display-modules --display-chunks --watch"
   },
   "cozy-permissions": {

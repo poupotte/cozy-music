@@ -13,3 +13,4 @@ npm-debug.log
 
 locales
 !locales/en.json
+public/

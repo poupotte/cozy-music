@@ -1,5 +1,7 @@
 # [Cozy](https://cozy.io) Music
 
+[![Build Status](https://travis-ci.org/cozy-labs/cozy-music.svg?branch=master)](https://travis-ci.org/cozy-labs/cozy-music)
+
 Cozy Music allows you to hear all the sounds you uploaded in Cozy Files and add more music from streaming service.
 
 
