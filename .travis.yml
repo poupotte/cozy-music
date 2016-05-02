@@ -10,6 +10,13 @@ node_js:
 python:
   - 3.4
 
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-4.8
+
 cache:
   directories:
     - node_modules
@@ -38,4 +45,5 @@ deploy:
 
 env:
   global:
-    secure: CA0WhO3Gnx1jjQT1K9l8ULs3xU5pvdFr59kKESXTRp6xRhCGqW8n5fWSZ8YPr8NHAhq4BrwAlDtjbtsofau3bHBSIMvSwLV10mmya9LLA/3CxjBthpv8vPAf+RQH7ZLR61HQJJ+9f6oDCAW/LxhVUrYSlDsyRRVsmty3svObDEHF6o3SWK2Ls87uLdkBZuOgJanWom20MUGzERmvJWso8gJo5boSCNf/kvmXOZorpyshzl+CkhplIHE5vEv+ki2M9e3wOV4tUbLPbos9CD70VyQ09bnmimFsJOSWdbrodt0wBxIQSt59UtINudK9/pPjPFoDBZuqrHQomiJQSuLHLjdx9rtNGLscx5a/1+eZGeLuI4r2nm0zp8YJHZS3XiaJc/1d29uLCj5JxutHk8vWdTjQZKdQN3YkUdXCs3xzQpiBDG/1JpBs/20P9FfRS/lIEgkaWpz1/otZ2w9FlOZYgMPTJcMSUFGdY8YD0jvpwD+SXgFDOxBL02ExcIL4dIe8+f/XMyjXROcMJDsdD9p/DG9HZ6fIv4jkbzU9vdqDtMevXUXateIazdRXuqnjEM/4AN0iJ4j0kb5cAH5YWWbx7MwFnp7oWWnV30wy7bNIlhqeBAsXma8YEqjSjF+7PgubEzuoxiSJp/Pkt6npU4Rn62TdArH8F/XsNN05KKJSK3w=
+    - CXX=g++-4.8
+    - secure: CA0WhO3Gnx1jjQT1K9l8ULs3xU5pvdFr59kKESXTRp6xRhCGqW8n5fWSZ8YPr8NHAhq4BrwAlDtjbtsofau3bHBSIMvSwLV10mmya9LLA/3CxjBthpv8vPAf+RQH7ZLR61HQJJ+9f6oDCAW/LxhVUrYSlDsyRRVsmty3svObDEHF6o3SWK2Ls87uLdkBZuOgJanWom20MUGzERmvJWso8gJo5boSCNf/kvmXOZorpyshzl+CkhplIHE5vEv+ki2M9e3wOV4tUbLPbos9CD70VyQ09bnmimFsJOSWdbrodt0wBxIQSt59UtINudK9/pPjPFoDBZuqrHQomiJQSuLHLjdx9rtNGLscx5a/1+eZGeLuI4r2nm0zp8YJHZS3XiaJc/1d29uLCj5JxutHk8vWdTjQZKdQN3YkUdXCs3xzQpiBDG/1JpBs/20P9FfRS/lIEgkaWpz1/otZ2w9FlOZYgMPTJcMSUFGdY8YD0jvpwD+SXgFDOxBL02ExcIL4dIe8+f/XMyjXROcMJDsdD9p/DG9HZ6fIv4jkbzU9vdqDtMevXUXateIazdRXuqnjEM/4AN0iJ4j0kb5cAH5YWWbx7MwFnp7oWWnV30wy7bNIlhqeBAsXma8YEqjSjF+7PgubEzuoxiSJp/Pkt6npU4Rn62TdArH8F/XsNN05KKJSK3w=
