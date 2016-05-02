@@ -7,15 +7,15 @@ Cozy Music allows you to hear all the sounds you uploaded in Cozy Files and add 
 
 You can contribute to the Cozy Music in many ways:
 
-* Pick up an [issue](https://github.com/cozy/cozy-Music/issues?state=open) and solve it.
-* Translate it in [a new language](https://github.com/cozy/cozy-music/tree/master/client/app/locales).
+* Pick up an [issue](https://github.com/cozy-labs/cozy-music/issues?state=open) and solve it.
+* Translate it in [a new language](https://www.transifex.com/cozy/cozy-music/dashboard/).
 
 
 ## Hack
 
 Hacking the Music app requires you [setup a dev environment](https://dev.cozy.io/#set-up-the-development-environment). Once it's done you can hack Cozy Music just like it was your own app.
 
-    git clone https://github.com/flyingrub/cozy-music
+    git clone https://github.com/cozy-labs/cozy-music
     cd cozy-music
     npm install
 
