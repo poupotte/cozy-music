@@ -1,6 +1,6 @@
-{
+  {
   "name": "music",
-  "version": "0.4.1",
+  "version": "0.3.1",
   "description": "music description",
   "license": "AGPL-3.0",
   "cozy-type": "static",
@@ -58,7 +58,7 @@
     "postbuild": "npm run copy:manifest",
     "prebuild": "npm-run-all clean tx",
     "prewatch": "npm run clean",
-    "test": "true",
+    "publish": "git subtree push --prefix public origin build",
     "watch": "webpack --display-modules --display-chunks --watch"
   },
   "cozy-permissions": {
@@ -76,6 +76,9 @@
     },
     "Playlist": {
       "description": "Manage your playlist."
+    },
+    "Binary": {
+      "description": "Access your binary music files to stream them."
     }
   }
 }
